@@ -19,7 +19,7 @@ const uint8_t NBR_TILES_WIDTH = 14;
 const uint8_t NBR_TILES_HEIGHT = 14;
 
 
-// MAp
+// MAP
 const uint8_t MAP_LINE = 30;
 const uint8_t MAP_COLUMN = 30;
 const uint8_t MAP_SPEED = 3;
@@ -58,6 +58,19 @@ const uint8_t Map[900] =
   3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3
 };
 
+// Sound
+const Gamebuino_Meta::Sound_FX MENU_1[] = 
+{
+    {Gamebuino_Meta::Sound_FX_Wave::SQUARE,0,166,-37,-27,212,10},
+};
+const Gamebuino_Meta::Sound_FX CONST[] = 
+{
+	{Gamebuino_Meta::Sound_FX_Wave::NOISE,1,111,-52,0,32,5},
+};
+const Gamebuino_Meta::Sound_FX ERROR[] = 
+{
+	{Gamebuino_Meta::Sound_FX_Wave::SQUARE,0,162,57,0,200,2},
+};
 
 
 #endif

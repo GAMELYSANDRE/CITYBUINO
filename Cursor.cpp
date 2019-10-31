@@ -6,13 +6,15 @@
 Cursor::Cursor() :
   m_State(0),
   m_Choice(1),
-  m_Line(6),
-  m_Column(6),
+  m_ViewLine(6),   // center screen
+  m_ViewColumn(6), // center screen
+  m_GridLine(1),
+  m_GridColumn(1),
   m_CameraX(1),
   m_CameraY(1)
 
 {
-   m_TileCursor = new Tile();
+  m_TileCursor = new Tile();
 }
 
 //----------------------------------------------------------------------
@@ -35,13 +37,21 @@ uint8_t Cursor::Choice() const
 {
   return (m_Choice);
 }
-uint16_t Cursor::Line() const
+uint16_t Cursor::ViewLine() const
 {
-  return (m_Line);
+  return (m_ViewLine);
 }
-uint16_t Cursor::Column() const
+uint16_t Cursor::ViewColumn() const
 {
-  return (m_Column);
+  return (m_ViewColumn);
+}
+uint8_t Cursor::GridLine() const
+{
+  return (m_GridLine);
+}
+uint8_t Cursor::GridColumn() const
+{
+  return (m_GridColumn);
 }
 uint16_t Cursor::CameraX() const
 {
@@ -63,13 +73,21 @@ void Cursor::Choice(uint8_t ChangeChoice)
 {
   m_Choice = ChangeChoice;
 }
-void Cursor::Line(uint16_t ChangeLine)
+void Cursor::ViewLine(uint16_t ChangeViewLine)
 {
-  m_Line = ChangeLine;
+  m_ViewLine = ChangeViewLine;
 }
-void Cursor::Column(uint16_t ChangeColumn)
+void Cursor::ViewColumn(uint16_t ChangeViewColumn)
 {
-  m_Column = ChangeColumn;
+  m_ViewColumn = ChangeViewColumn;
+}
+void Cursor::GridLine(uint8_t ChangeGridLine)
+{
+  m_GridLine = ChangeGridLine;
+}
+void Cursor::GridColumn(uint8_t ChangeGridColumn)
+{
+  m_GridColumn = ChangeGridColumn;
 }
 void Cursor::CameraX(uint16_t ChangeCameraX)
 {
@@ -92,9 +110,13 @@ void Cursor::Display()
   float GridTileColumn = (floor(GridColumn) - GridColumn) * TILE_WIDTH;
   float GridTileLine = (floor(GridLine) - GridLine) * TILE_HEIGHT;
   // Modify tile coordinates for displayed in the view
-  m_TileCursor->CartX((GridTileColumn + (m_Column*TILE_WIDTH)));
-  m_TileCursor->CartY((GridTileLine + (m_Line*TILE_HEIGHT)) - 35);
+  m_TileCursor->CartX((GridTileColumn + (m_ViewColumn * TILE_WIDTH)));
+  m_TileCursor->CartY((GridTileLine + (m_ViewLine * TILE_HEIGHT)) - 35);
   m_TileCursor->TwoDToIso();
   m_TileCursor->Type(m_Choice);
   m_TileCursor->Display();
+  // save position cursor
+  m_GridLine = GridLine + m_ViewLine;
+  m_GridColumn = GridColumn + m_ViewColumn;
 };
+

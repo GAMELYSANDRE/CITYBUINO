@@ -23,6 +23,7 @@ class Grid
     // others methods
     void Display();
     void Move();
+    void ChangeTile(uint8_t ChangeI, uint8_t ChangeJ, uint8_t ChangeType);
 
   private:
     // Grid dimension

@@ -20,11 +20,15 @@ class Game
     Grid *m_City;
     Menu *m_Menu;
     Cursor *m_Cursor;
+    uint16_t m_Money;
 
     // method of use
     void DisplayMenu();
     void DisplayCursor();
     void MoveCursor();
+    void ErrorCursor();
+    void ConstructCursor();
+    void DisplayMoney();
 
 
 };

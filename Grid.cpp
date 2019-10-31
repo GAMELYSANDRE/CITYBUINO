@@ -80,6 +80,14 @@ void Grid::Display()
     }
   }
 }
+//----------------------------------------------------------------------
+//                   Method movement on the map
+//----------------------------------------------------------------------
+
+void Grid::ChangeTile(uint8_t ChangeI, uint8_t ChangeJ, uint8_t ChangeType)
+{
+  m_Grid[ChangeI][ChangeJ].Type(ChangeType);
+}
 
 //----------------------------------------------------------------------
 //                   Method movement on the map

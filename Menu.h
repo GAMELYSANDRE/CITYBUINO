@@ -15,13 +15,15 @@ class Menu
 
     // getters methods
     bool State() const;
-    bool CursorState() const;
     uint8_t Choice() const;
+    bool CursorState() const;
+    uint8_t Cost() const;
 
     // setters methods
     void State(bool ChangeState);
-    void CursorState(bool ChangeCursorState);
     void Choice(uint8_t ChangeChoice);
+    void CursorState(bool ChangeCursorState);
+    void Cost(uint8_t ChangeCost);
 
     void Display();
 
@@ -30,6 +32,8 @@ class Menu
     Tile *m_TileMenu[2];   // choice chart
     uint8_t m_Choice;	   // choice of the tile
     bool m_CursorState;    // inactive (0) or active (1)
+    uint8_t m_Cost;        // cost of construction
+
 
     void SquareSelection();
 
