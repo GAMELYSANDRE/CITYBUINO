@@ -1,10 +1,6 @@
 #include "Tile.h"
 #include "Image.h"
 
-//----------------------------------------------------------------------
-//                        Variables statics
-//----------------------------------------------------------------------
-uint16_t Tile::m_Counter = 0;
 
 //----------------------------------------------------------------------
 //                        Constructors
@@ -14,12 +10,11 @@ Tile::Tile() :
   m_Column(0),
   m_IsoX(0),
   m_IsoY(0),
-  m_Type(GRASS)
+  m_Type(GRASS),
+  m_Error(false)
 {
   InitCoordCartesian();
   TwoDToIso();
-  m_Counter++;
-  m_Number = m_Counter;
 }
 
 Tile::Tile (int8_t Line, int8_t Column, int16_t IsoX, int16_t IsoY, uint8_t Type)
@@ -29,8 +24,7 @@ Tile::Tile (int8_t Line, int8_t Column, int16_t IsoX, int16_t IsoY, uint8_t Type
   m_Line = Line;
   m_Column = Column;
   m_Type = Type;
-  m_Counter++;
-  m_Number = m_Counter;
+  m_Error = false;
 }
 //----------------------------------------------------------------------
 //                           DESTRUCTOR
@@ -44,10 +38,6 @@ Tile::~Tile()
 //----------------------------------------------------------------------
 //                       Getters methods
 //----------------------------------------------------------------------
-uint16_t Tile::Number() const
-{
-  return (m_Number);
-}
 int8_t Tile::Line() const
 {
   return (m_Line);
@@ -76,18 +66,14 @@ uint8_t Tile::Type() const
 {
   return (m_Type);
 }
-uint16_t Tile::Counter() const
+bool Tile::Error() const
 {
-  return (m_Counter);
+  return (m_Error);
 }
 
 //----------------------------------------------------------------------
 //                        Setters methods
 //----------------------------------------------------------------------
-void Tile::Number(uint16_t ChangeNumber)
-{
-  m_Number = ChangeNumber;
-}
 void Tile::Line(int8_t ChangeLine)
 {
   m_Line = ChangeLine;
@@ -116,6 +102,10 @@ void Tile::Type(uint8_t ChangeType)
 {
   m_Type = ChangeType;
 }
+void Tile::Error(bool ChangeError)
+{
+  m_Error = ChangeError;
+}
 
 
 //----------------------------------------------------------------------
@@ -128,21 +118,60 @@ void Tile::Display()
   {
     case GRASS:
       gb.display.drawImage(m_IsoX, m_IsoY, IMG_GRASS);
+      m_Error = false;
       break;
     case SAND:
       gb.display.drawImage(m_IsoX, m_IsoY, IMG_SAND);
+      m_Error = false;
       break;
     case SEA:
       gb.display.drawImage(m_IsoX, m_IsoY, IMG_SEA);
+      m_Error = false;
       break;
     case ROAD_H:
       gb.display.drawImage(m_IsoX, m_IsoY, IMG_ROAD_H);
       break;
+    case ROAD_V:
+      gb.display.drawImage(m_IsoX, m_IsoY, IMG_ROAD_V);
+      break;
+    case ROAD_DR:
+      gb.display.drawImage(m_IsoX, m_IsoY, IMG_ROAD_DR);
+      break;
+    case ROAD_DL:
+      gb.display.drawImage(m_IsoX, m_IsoY, IMG_ROAD_DL);
+      break;
+    case ROAD_UR:
+      gb.display.drawImage(m_IsoX, m_IsoY, IMG_ROAD_UR);
+      break;
+    case ROAD_UL:
+      gb.display.drawImage(m_IsoX, m_IsoY, IMG_ROAD_UL);
+      break;
+    case ROAD_INT_DOWN:
+      gb.display.drawImage(m_IsoX, m_IsoY, IMG_ROAD_INT_DOWN);
+      break;
+    case ROAD_INT_UP:
+      gb.display.drawImage(m_IsoX, m_IsoY, IMG_ROAD_INT_UP);
+      break;
+    case ROAD_INT_RIGHT:
+      gb.display.drawImage(m_IsoX, m_IsoY, IMG_ROAD_INT_RIGHT);
+      break;
+    case ROAD_INT_LEFT:
+      gb.display.drawImage(m_IsoX, m_IsoY, IMG_ROAD_INT_LEFT);
+      break;
+    case ROAD_INT:
+      gb.display.drawImage(m_IsoX, m_IsoY, IMG_ROAD_INT);
+      break;
     case HOME_RED:
       gb.display.drawImage(m_IsoX, m_IsoY, IMG_HOME_RED);
       break;
+    case BULL:
+      gb.display.drawImage(m_IsoX, m_IsoY, IMG_BULL);
+      break;
   }
-
+  if ( m_Error == true)
+  {
+    gb.display.drawImage(m_IsoX, m_IsoY, IMG_ERROR);
+  }
 }
 
 //----------------------------------------------------------------------

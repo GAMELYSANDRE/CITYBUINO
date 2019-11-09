@@ -40,7 +40,7 @@ class Cursor
     bool m_State; 	       // inactive (0) or active (1)
     Tile *m_TileCursor;    // building tile
     uint8_t m_Choice;	   // choice of the tile
-    int16_t m_ViewLine;    // Screen Position 
+    int16_t m_ViewLine;    // Screen Position
     int16_t m_ViewColumn;  // Screen Position
     int8_t m_GridLine;    // Grid Position
     int8_t m_GridColumn;  // Grid Position

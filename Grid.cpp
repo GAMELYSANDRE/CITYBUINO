@@ -52,6 +52,20 @@ int16_t Grid::CameraY() const
 {
   return (m_CameraY);
 }
+// Method return the tile on the map
+int8_t Grid::Type(uint8_t I, uint8_t J ) const
+{
+  return (m_Grid[I][J].Type());
+}
+
+//----------------------------------------------------------------------
+//                        Setters methods
+//----------------------------------------------------------------------
+//  Method change tile on the map
+void Grid::Type(uint8_t I, uint8_t J, uint8_t ChangeType)
+{
+  m_Grid[I][J].Type(ChangeType);
+}
 
 
 //----------------------------------------------------------------------
@@ -80,13 +94,201 @@ void Grid::Display()
     }
   }
 }
-//----------------------------------------------------------------------
-//                   Method movement on the map
-//----------------------------------------------------------------------
 
-void Grid::ChangeTile(uint8_t ChangeI, uint8_t ChangeJ, uint8_t ChangeType)
+void Grid::CheckTheTile()
 {
-  m_Grid[ChangeI][ChangeJ].Type(ChangeType);
+  for (int i = 0; i < m_NumberLine ; i++)
+  {
+    for (int j = 0; j < m_NumberColumn  ; j++)
+    {
+      //-------------------------------------
+      //
+      //         [j]     [j]       [j]
+      //
+      //     UP LEFT    UP     UP RIGHT
+      // [i]  -1      -1        -1
+      //         -1       1        +1
+      //    -----------------------------
+      //      LEFT              RIGHT
+      // [i]  1        1        1
+      //         -1       1        +1
+      //    -----------------------------
+      //     DOWN LEFT   DOWN   DOWN RIGHT
+      // [i]  +1        +1      +1
+      //         -1       1        +1
+      //-------------------------------------
+      // init variables
+      uint8_t TileUpLeft = SEA;
+      uint8_t TileUp = SEA;
+      uint8_t TileUpUp = SEA;
+      uint8_t TileUpRight = SEA;
+      uint8_t TileLeft = SEA;
+      uint8_t TileRight = SEA;
+      uint8_t TileDownLeft = SEA;
+      uint8_t TileDown = SEA;
+      uint8_t TileDownRight = SEA;
+      if ( i != 0) // prevents segmentation fault
+      {
+        TileUpLeft = CheckPresenceRoad(m_Grid[i - 1][j - 1].Type());
+        TileUp = CheckPresenceRoad(m_Grid[i - 1][j].Type());
+        TileUpRight = CheckPresenceRoad(m_Grid[i - 1][j + 1].Type());
+        TileUpUp = CheckPresenceRoad(m_Grid[i - 2][j].Type());
+      }
+      if ( j != 0 )  // prevents segmentation fault
+      {
+        TileDownLeft = CheckPresenceRoad(m_Grid[i + 1][j - 1].Type());
+        TileLeft = CheckPresenceRoad(m_Grid[i][j - 1].Type());
+      }
+      TileRight = CheckPresenceRoad(m_Grid[i][j + 1].Type());
+      TileDown = CheckPresenceRoad(m_Grid[i + 1][j].Type());
+      TileDownRight = CheckPresenceRoad(m_Grid[i + 1][j + 1].Type());
+
+      //-----------------------------------------
+      // check if there is a road near the house
+      //-----------------------------------------
+      if (m_Grid[i][j].Type() == HOME_RED )
+      {
+        if
+        ( TileUp == ROAD or
+            TileDown == ROAD or
+            TileLeft == ROAD or
+            TileRight == ROAD
+        )
+        {
+          m_Grid[i][j].Error(0);
+        }
+        else
+        {
+          m_Grid[i][j].Error(1);
+        }
+      }
+
+      //-----------------------------------------
+      //    create turns following the roads
+      //-----------------------------------------
+      if ((m_Grid[i][j].Type() == ROAD_H and i != 0 and j != 0) or
+          (m_Grid[i][j].Type() == ROAD_V and i != 0 and j != 0) )
+      {
+        // turn up right
+        if ( TileUpRight == ROAD and TileUp == ROAD and TileUpUp != ROAD)
+        {
+          m_Grid[i][j].Type(ROAD_H);
+          m_Grid[i - 1][j].Type(ROAD_UR);
+          m_Grid[i - 1][j + 1].Type(ROAD_V);
+        }
+        // turn up left
+        if ( TileUpLeft == ROAD and TileUp == ROAD and TileUpUp != ROAD)
+        {
+          m_Grid[i][j].Type(ROAD_H);
+          m_Grid[i - 1][j].Type(ROAD_UL);
+          m_Grid[i - 1][j - 1].Type(ROAD_V);
+        }
+        // turn down right
+        if ( TileDownRight == ROAD and TileDown == ROAD)
+        {
+          m_Grid[i][j].Type(ROAD_H);
+          m_Grid[i + 1][j].Type(ROAD_DR);
+          m_Grid[i + 1][j + 1].Type(ROAD_V);
+        }
+        // turn down left
+        if ( TileDownLeft == ROAD and TileDown == ROAD )
+        {
+          m_Grid[i][j].Type(ROAD_H);
+          m_Grid[i + 1][j].Type(ROAD_DL);
+          m_Grid[i + 1][j - 1].Type(ROAD_V);
+        }
+        // intersection up
+        if ( TileUpLeft == ROAD and TileUp == ROAD and
+             TileUpRight == ROAD and TileUpUp != ROAD
+           )
+        {
+          m_Grid[i - 1][j - 1].Type(ROAD_V);
+          m_Grid[i - 1][j].Type(ROAD_INT_UP);
+          m_Grid[i - 1][j + 1].Type(ROAD_V);
+        }
+        // intersection down
+        if ( TileDownLeft == ROAD and TileDown == ROAD and
+             TileDownRight == ROAD
+           )
+        {
+          m_Grid[i + 1][j - 1].Type(ROAD_V);
+          m_Grid[i + 1][j].Type(ROAD_INT_DOWN);
+          m_Grid[i + 1][j + 1].Type(ROAD_V);
+        }
+        // intersection right
+        if ( TileUpRight == ROAD and TileRight == ROAD and
+             TileDownRight == ROAD
+           )
+        {
+          m_Grid[i - 1][j + 1].Type(ROAD_H);
+          m_Grid[i][j + 1].Type(ROAD_INT_RIGHT );
+          m_Grid[i + 1][j + 1].Type(ROAD_H);
+        }
+        // intersection left
+        if ( TileUpLeft == ROAD and TileLeft == ROAD and
+             TileDownLeft == ROAD
+           )
+        {
+          m_Grid[i - 1][j - 1].Type(ROAD_H);
+          m_Grid[i][j - 1].Type(ROAD_INT_LEFT );
+          m_Grid[i + 1][j - 1].Type(ROAD_H);
+        }
+        // intersection center
+        if ( TileUp == ROAD and TileDown == ROAD and
+             TileLeft == ROAD and TileRight == ROAD
+           )
+        {
+          m_Grid[i - 1][j].Type(ROAD_V);
+          m_Grid[i + 1][j].Type(ROAD_V);
+          m_Grid[i][j].Type(ROAD_INT);
+          m_Grid[i][j - 1].Type(ROAD_H);
+          m_Grid[i][j + 1].Type(ROAD_H);
+        }
+        // detects vertical roads
+        if ( ( m_Grid[i][j].Type() == ROAD_H and
+               m_Grid[i][j - 1].Type() == ROAD_V ) or
+             ( m_Grid[i][j].Type() == ROAD_H and
+               m_Grid[i][j + 1].Type() == ROAD_V )
+           )
+        {
+          m_Grid[i][j].Type(ROAD_V);
+        }
+        // detects horizontal roads
+        if ( ( m_Grid[i][j].Type() == ROAD_V and
+               m_Grid[i - 1][j].Type() == ROAD_H ) or
+             ( m_Grid[i][j].Type() == ROAD_V and
+               m_Grid[i + 1][j].Type() == ROAD_H )
+           )
+        {
+          m_Grid[i][j].Type(ROAD_H);
+        }
+      }
+    }
+  }
+
+}
+
+uint8_t Grid::CheckPresenceRoad(uint8_t VerifTile )
+{
+  if ( VerifTile == ROAD_H or
+       VerifTile == ROAD_V or
+       VerifTile == ROAD_UL or
+       VerifTile == ROAD_UR or
+       VerifTile == ROAD_DL or
+       VerifTile == ROAD_DR or
+       VerifTile == ROAD_INT_DOWN or
+       VerifTile == ROAD_INT_UP or
+       VerifTile == ROAD_INT_RIGHT or
+       VerifTile == ROAD_INT_LEFT or
+       VerifTile == ROAD_INT
+     )
+  {
+    return (ROAD);
+  }
+  else
+  {
+    return (SEA);
+  }
 }
 
 //----------------------------------------------------------------------
@@ -161,4 +363,3 @@ void Grid::Move()
     }
   }
 }
-

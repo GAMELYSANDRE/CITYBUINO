@@ -5,7 +5,7 @@
 //----------------------------------------------------------------------
 
 Game::Game () :
-m_Money(2000)
+  m_Money(4000)
 {
   m_City = new Grid(Map, MAP_LINE, MAP_COLUMN);
   m_Menu = new Menu();
@@ -22,8 +22,9 @@ Game::~Game()
   delete m_Menu;
   delete m_Cursor;
 }
-
-
+//----------------------------------------------------------------------
+//                       method display Game
+//----------------------------------------------------------------------
 
 void Game::Display()
 {
@@ -42,23 +43,65 @@ void Game::Display()
     MoveCursor();
     ConstructCursor();
   }
+  // Display the money
   DisplayMoney();
+  // Engine
+  m_City->CheckTheTile();
 }
 
 void Game::ConstructCursor()
 {
-  if (gb.buttons.pressed(BUTTON_A) )
+  uint8_t i = m_Cursor->GridLine();
+  uint8_t j = m_Cursor->GridColumn();
+  uint8_t Choise = m_Cursor->Choice();
+  // disable the a button if the menu is visible
+  if (m_Menu->State() == false)
   {
-    if ( m_Money > 0)
+    if (gb.buttons.pressed(BUTTON_A) )
     {
-      m_City->ChangeTile(m_Cursor->GridLine(),m_Cursor->GridColumn(),m_Cursor->Choice() );
-      m_Money = m_Money - m_Menu->Cost();
-      gb.sound.fx(CONST);
+      // check the money
+      if ( m_Money > 0)
+      {
+        // check if there are not already constructions
+        if ( ( m_City->Type(i, j) == SEA ) or
+             ( m_City->Type(i, j) == ROAD_H and Choise != BULL ) or
+             ( m_City->Type(i, j) == ROAD_V and Choise != BULL ) or
+             ( m_City->Type(i, j) == ROAD_DR  and Choise != BULL ) or
+             ( m_City->Type(i, j) == ROAD_DL  and Choise != BULL ) or
+             ( m_City->Type(i, j) == ROAD_UL  and Choise != BULL ) or
+             ( m_City->Type(i, j) == ROAD_UR  and Choise != BULL ) or
+             ( m_City->Type(i, j) == HOME_RED  and Choise != BULL )
+
+           )
+        {
+          gb.sound.fx(SOUND_ERROR);
+        }
+        else
+        {
+          // destroyed and replaced by sand
+          if ( Choise == BULL )
+          {
+            m_City->Type(i, j, SAND );
+            m_Money = m_Money - m_Menu->Cost();
+            gb.sound.fx(SOUND_BULL);
+          }
+          else
+            // Construct the new tile
+          {
+            m_City->Type(i, j, Choise );
+            m_Money = m_Money - m_Menu->Cost();
+            gb.sound.fx(SOUND_CONST);
+          }
+        }
+      }
+      else
+      {
+        gb.sound.fx(SOUND_ERROR);
+      }
+
     }
-    else
-    {gb.sound.fx(ERROR);}
-    
   }
+
 
 }
 
@@ -96,10 +139,14 @@ void Game::DisplayCursor()
 void Game::MoveCursor()
 {
   // exit mode construction
-  if (gb.buttons.pressed(BUTTON_B))
+  if (gb.buttons.pressed(BUTTON_B) )
   {
-    m_Menu->CursorState(false);
-    m_Cursor->State(false);
+    if (m_Menu->ButtonBLock() == false)
+    {
+      m_Menu->CursorState(false);
+      m_Cursor->State(false);
+    }
+    m_Menu->ButtonBLock(false);
   }
   // Movements
   uint16_t Column = m_Cursor->ViewColumn();
@@ -169,8 +216,8 @@ void Game::MoveCursor()
   //
   // right move cartesian -->
   //
-    if (gb.buttons.pressed(BUTTON_RIGHT) and RightButtonState == 1 )
-    {
+  if (gb.buttons.pressed(BUTTON_RIGHT) and RightButtonState == 1 )
+  {
     //
     if
     (
@@ -182,15 +229,15 @@ void Game::MoveCursor()
     }
     else
     {
-      m_Cursor->ViewColumn(Column+1);
-      m_Cursor->ViewLine(Line-1);
+      m_Cursor->ViewColumn(Column + 1);
+      m_Cursor->ViewLine(Line - 1);
     }
-    }
-    //
-    // left move cartesian <--
-    //
-    if (gb.buttons.pressed(BUTTON_LEFT) and LeftButtonState == 1)
-    {
+  }
+  //
+  // left move cartesian <--
+  //
+  if (gb.buttons.pressed(BUTTON_LEFT) and LeftButtonState == 1)
+  {
     // control the left edge of the screen
     if
     (
@@ -202,15 +249,15 @@ void Game::MoveCursor()
     }
     else
     {
-      m_Cursor->ViewColumn(Column-1);
-      m_Cursor->ViewLine(Line+1);
+      m_Cursor->ViewColumn(Column - 1);
+      m_Cursor->ViewLine(Line + 1);
     }
-    }
-    //                        I
-    // down move cartesian    I
-    //                        V
-    if (gb.buttons.pressed(BUTTON_DOWN) and DownButtonState == 1)
-    {
+  }
+  //                        I
+  // down move cartesian    I
+  //                        V
+  if (gb.buttons.pressed(BUTTON_DOWN) and DownButtonState == 1)
+  {
     if
     (
       ( Line == 11 and Column == 7 ) or
@@ -231,30 +278,30 @@ void Game::MoveCursor()
     }
     else
     {
-    m_Cursor->ViewColumn(Column+1);
-    m_Cursor->ViewLine(Line+1);
+      m_Cursor->ViewColumn(Column + 1);
+      m_Cursor->ViewLine(Line + 1);
     }
-    }
-    //
-    // up move cartesian
-    //
-    if (gb.buttons.pressed(BUTTON_UP) and UpButtonState == 1)
-    {
+  }
+  //
+  // up move cartesian
+  //
+  if (gb.buttons.pressed(BUTTON_UP) and UpButtonState == 1)
+  {
     if
     (
       ( Line == Line and Column == (4 - Line ) ) or
       ( Line == Line and Column == (5 - Line ) )
     )
     {
-       ErrorCursor();
+      ErrorCursor();
     }
     else
     {
-    m_Cursor->ViewColumn(Column-1);
-    m_Cursor->ViewLine(Line-1);
+      m_Cursor->ViewColumn(Column - 1);
+      m_Cursor->ViewLine(Line - 1);
     }
 
-    }
+  }
 }
 
 //----------------------------------------------------------------------

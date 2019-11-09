@@ -19,11 +19,17 @@ class Grid
     int NumberLine() const;
     int16_t CameraX() const;
     int16_t CameraY() const;
+    int8_t Type(uint8_t I, uint8_t J ) const;
+
+    // setters methods
+    void Type(uint8_t I, uint8_t J, uint8_t ChangeType);
+
 
     // others methods
     void Display();
     void Move();
-    void ChangeTile(uint8_t ChangeI, uint8_t ChangeJ, uint8_t ChangeType);
+    void CheckTheTile();
+    uint8_t CheckPresenceRoad(uint8_t VerifTile );
 
   private:
     // Grid dimension

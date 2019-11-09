@@ -7,9 +7,10 @@ Menu::Menu() :
   m_State(0),
   m_Choice(4),
   m_CursorState(0),
-  m_Cost(0)
+  m_Cost(0),
+  m_ButtonBLock(1)
 {
-  for (int x = 1; x < 3; x++)
+  for (int x = 1; x < 5; x++)
   {
     m_TileMenu[x - 1] = new Tile(x, 1, 58, x * 10, x + 3);
   }
@@ -21,7 +22,7 @@ Menu::Menu() :
 
 Menu::~Menu()
 {
-  for (int x = 0; x < 2; x++)
+  for (int x = 0; x < 4; x++)
   {
     delete m_TileMenu[x];
   }
@@ -46,6 +47,10 @@ uint8_t Menu::Cost() const
 {
   return (m_Cost);
 }
+bool Menu::ButtonBLock() const
+{
+  return (m_ButtonBLock);
+}
 
 //----------------------------------------------------------------------
 //                        Setters methods
@@ -66,6 +71,11 @@ void Menu::Cost(uint8_t ChangeCost)
 {
   m_Cost = ChangeCost;
 }
+void Menu::ButtonBLock(bool ChangeButtonBLock)
+{
+  m_ButtonBLock = ChangeButtonBLock;
+}
+
 
 void Menu::Display()
 {
@@ -76,6 +86,8 @@ void Menu::Display()
   SquareSelection();
   m_TileMenu[0]->Display();
   m_TileMenu[1]->Display();
+  m_TileMenu[2]->Display();
+  m_TileMenu[3]->Display();
 }
 
 void Menu::SquareSelection()
@@ -84,7 +96,7 @@ void Menu::SquareSelection()
   gb.display.fillRect(57, (10 * (m_Choice - 3)) - 1  , 18, 10);
   if (gb.buttons.pressed(BUTTON_A))
   {
-    if ( m_Choice < 5)
+    if ( m_Choice < 7 )
     {
       m_Choice++;
     }
@@ -92,22 +104,29 @@ void Menu::SquareSelection()
     {
       m_Choice = 4;
     }
-    gb.sound.fx(MENU_1);
+    gb.sound.fx(SOUND_MENU_1);
   }
   if (gb.buttons.pressed(BUTTON_B))
   {
     gb.sound.playOK();
     m_State = 0;
-    m_CursorState = 1;
+    m_CursorState = true;
+    m_ButtonBLock = true;
   }
-  switch(m_Choice)
+  switch (m_Choice)
   {
+    case BULL:
+      m_Cost = 10;
+      break;
     case ROAD_H:
+      m_Cost = 50;
+      break;
+    case ROAD_V:
       m_Cost = 50;
       break;
     case HOME_RED:
       m_Cost = 200;
-      break;  
+      break;
   }
   // Display Texte
   gb.display.setCursor(56, 2);
@@ -119,4 +138,3 @@ void Menu::SquareSelection()
   gb.display.print("$");
   gb.display.print(m_Cost);
 }
-
