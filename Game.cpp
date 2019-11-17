@@ -5,11 +5,15 @@
 //----------------------------------------------------------------------
 
 Game::Game () :
-  m_Money(4000)
+  m_Money(4000),
+  m_MoneyDay(0),
+  m_Citizen(0),
+  m_NbrDay(0)
 {
   m_City = new Grid(Map, MAP_LINE, MAP_COLUMN);
   m_Menu = new Menu();
   m_Cursor = new Cursor();
+  m_Time = new GBTime();
 }
 
 //----------------------------------------------------------------------
@@ -42,11 +46,14 @@ void Game::Display()
   {
     MoveCursor();
     ConstructCursor();
+    // Engine
+    m_City->CheckTheTile();
   }
   // Display the money
   DisplayMoney();
-  // Engine
-  m_City->CheckTheTile();
+  // Display time
+  DisplayTime();
+
 }
 
 void Game::ConstructCursor()
@@ -79,6 +86,12 @@ void Game::ConstructCursor()
         else
         {
           // destroyed and replaced by sand
+          if ( m_City->Type(i, j) == HOME_RED)
+          {
+            m_Citizen = m_Citizen - 4;
+            m_MoneyDay = m_MoneyDay - 50;
+          }
+          
           if ( Choise == BULL )
           {
             m_City->Type(i, j, SAND );
@@ -86,11 +99,16 @@ void Game::ConstructCursor()
             gb.sound.fx(SOUND_BULL);
           }
           else
-            // Construct the new tile
+          // Construct the new tile
           {
             m_City->Type(i, j, Choise );
             m_Money = m_Money - m_Menu->Cost();
             gb.sound.fx(SOUND_CONST);
+            if ( Choise == HOME_RED)
+            {
+              m_Citizen = m_Citizen + 4;
+              m_MoneyDay = m_MoneyDay + 50;
+            }
           }
         }
       }
@@ -320,10 +338,44 @@ void Game::DisplayMoney()
 {
   gb.display.setCursor(4, 2);
   gb.display.setColor(GRAY);
-  gb.display.print("$");
+  gb.display.print("$ ");
   gb.display.print(m_Money);
+  
+  gb.display.setCursor(4, 9);
+  gb.display.print("CIT ");
+  gb.display.print(m_Citizen);
+  
+  gb.display.setCursor(4, 16);
+  gb.display.print("DY ");
+  gb.display.print(m_NbrDay);
+  
   gb.display.setCursor(3, 1);
   gb.display.setColor(WHITE);
-  gb.display.print("$");
+  gb.display.print("$ ");
   gb.display.print(m_Money);
+
+  gb.display.setCursor(3, 8);
+  gb.display.print("CIT ");
+  gb.display.print(m_Citizen);
+
+  gb.display.setCursor(3, 15);
+  gb.display.print("DY ");
+  gb.display.print(m_NbrDay);
+}
+
+//----------------------------------------------------------------------
+//                     management of time
+//----------------------------------------------------------------------
+
+void Game::DisplayTime()
+{
+  m_Time->InitBeginTime();
+  m_Time->IncrementTime();
+  // add a day after the delay
+  if ( m_Time->TempTime() > ( DELAY_MONEY * 1000 ) )
+  {
+    m_NbrDay++;
+    m_Time->Reset();
+    m_Money = m_Money + m_MoneyDay;
+  }
 }

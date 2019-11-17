@@ -78,7 +78,7 @@ void Grid::Display()
   {
     for (int j = 0; j < NBR_TILES_WIDTH  ; j++)
     {
-      // Calculate the tile at the top right
+      // Calculate the tile at the top left
       float GridColumn = m_CameraX / TILE_WIDTH;
       float GridLine = m_CameraY / TILE_HEIGHT;
       float GridTileColumn = (floor(GridColumn) - GridColumn) * TILE_WIDTH;
@@ -89,8 +89,8 @@ void Grid::Display()
       // Modify tile coordinates for displayed in the view
       m_Grid[TileY][TileX].CartX((GridTileColumn + (j * TILE_WIDTH)));
       m_Grid[TileY][TileX].CartY((GridTileLine + (i * TILE_HEIGHT)) - 35);
-      m_Grid[TileY][TileX].TwoDToIso();
-      m_Grid[TileY][TileX].Display();
+      //m_Grid[TileY][TileX].TwoDToIso();
+      m_Grid[TileY][TileX].Display(1);
     }
   }
 }
@@ -119,30 +119,29 @@ void Grid::CheckTheTile()
       //
       //-------------------------------------
       // init variables
-      uint8_t TileUpLeft = SEA;
+      //uint8_t TileUpLeft = SEA;
       uint8_t TileUp = SEA;
-      uint8_t TileUpRight = SEA;
+      //uint8_t TileUpRight = SEA;
 
       uint8_t TileLeft = SEA;      
       uint8_t TileCenter = SEA;
       uint8_t TileRight = SEA;
       
-      uint8_t TileDownLeft = SEA;
+      //uint8_t TileDownLeft = SEA;
       uint8_t TileDown = SEA;
-      uint8_t TileDownRight = SEA;
+      //uint8_t TileDownRight = SEA;
       
-      TileUpLeft = CheckPresenceRoad(m_Grid[i - 1][j - 1].Type());
+      //TileUpLeft = CheckPresenceRoad(m_Grid[i - 1][j - 1].Type());
       TileUp = CheckPresenceRoad(m_Grid[i - 1][j].Type());
-      TileUpRight = CheckPresenceRoad(m_Grid[i - 1][j + 1].Type());
-      TileUpUp = CheckPresenceRoad(m_Grid[i - 2][j].Type());
-
+      //TileUpRight = CheckPresenceRoad(m_Grid[i - 1][j + 1].Type());
+      
       TileLeft = CheckPresenceRoad(m_Grid[i][j - 1].Type());
       TileCenter = CheckPresenceRoad(m_Grid[i][j].Type());
       TileRight = CheckPresenceRoad(m_Grid[i][j + 1].Type());
 
-      TileDownLeft = CheckPresenceRoad(m_Grid[i + 1][j - 1].Type());      
+      //TileDownLeft = CheckPresenceRoad(m_Grid[i + 1][j - 1].Type());      
       TileDown = CheckPresenceRoad(m_Grid[i + 1][j].Type());
-      TileDownRight = CheckPresenceRoad(m_Grid[i + 1][j + 1].Type());
+      //TileDownRight = CheckPresenceRoad(m_Grid[i + 1][j + 1].Type());
 
       //-----------------------------------------
       // check if there is a road near the house

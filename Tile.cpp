@@ -8,23 +8,23 @@
 Tile::Tile() :
   m_Line(0),
   m_Column(0),
-  m_IsoX(0),
-  m_IsoY(0),
   m_Type(GRASS),
   m_Error(false)
+  //m_Value(0) 
 {
   InitCoordCartesian();
-  TwoDToIso();
+  //TwoDToIso();
 }
 
-Tile::Tile (int8_t Line, int8_t Column, int16_t IsoX, int16_t IsoY, uint8_t Type)
+Tile::Tile (int8_t Line, int8_t Column, int16_t CartX, int16_t CartY, uint8_t Type)
 {
-  m_IsoX = IsoX;
-  m_IsoY = IsoY;
   m_Line = Line;
   m_Column = Column;
+  m_CartX = CartX;
+  m_CartY = CartY;
   m_Type = Type;
   m_Error = false;
+  //m_Value = 0;
 }
 //----------------------------------------------------------------------
 //                           DESTRUCTOR
@@ -54,6 +54,7 @@ int16_t Tile::CartY() const
 {
   return (m_CartY);
 }
+/*
 int16_t Tile::IsoX() const
 {
   return (m_IsoX);
@@ -62,6 +63,7 @@ int16_t Tile::IsoY() const
 {
   return (m_IsoY);
 }
+*/ 
 uint8_t Tile::Type() const
 {
   return (m_Type);
@@ -90,6 +92,7 @@ void Tile::CartY(int16_t ChangeCartY)
 {
   m_CartY = ChangeCartY;
 }
+/*
 void Tile::IsoX(int16_t ChangeIsoX)
 {
   m_IsoX = ChangeIsoX;
@@ -98,10 +101,12 @@ void Tile::IsoY(int16_t ChangeIsoY)
 {
   m_IsoY = ChangeIsoY;
 }
+*/
 void Tile::Type(uint8_t ChangeType)
 {
   m_Type = ChangeType;
 }
+ 
 void Tile::Error(bool ChangeError)
 {
   m_Error = ChangeError;
@@ -111,66 +116,74 @@ void Tile::Error(bool ChangeError)
 //----------------------------------------------------------------------
 //                        method draw tile
 //----------------------------------------------------------------------
-void Tile::Display()
+void Tile::Display(bool Cart_OR_iso)
 {
-
+  int16_t IsoX = 0;
+  int16_t IsoY = 0;
+  if ( Cart_OR_iso )
+  {
+  IsoX = m_CartX - m_CartY;
+  IsoY = (m_CartX + m_CartY) / 2;
+  }
+  else
+  {
+  IsoX = m_CartX;
+  IsoY = m_CartY;
+  }
   switch (m_Type)
   {
     case GRASS:
-      gb.display.drawImage(m_IsoX, m_IsoY, IMG_GRASS);
-      m_Error = false;
+      gb.display.drawImage(IsoX, IsoY, IMG_GRASS);
       break;
     case SAND:
-      gb.display.drawImage(m_IsoX, m_IsoY, IMG_SAND);
-      m_Error = false;
+      gb.display.drawImage(IsoX, IsoY, IMG_SAND);
       break;
     case SEA:
-      gb.display.drawImage(m_IsoX, m_IsoY, IMG_SEA);
-      m_Error = false;
+      gb.display.drawImage(IsoX, IsoY, IMG_SEA);
       break;
     case ROAD_H:
-      gb.display.drawImage(m_IsoX, m_IsoY, IMG_ROAD_H);
+      gb.display.drawImage(IsoX, IsoY, IMG_ROAD_H);
       break;
     case ROAD_V:
-      gb.display.drawImage(m_IsoX, m_IsoY, IMG_ROAD_V);
+      gb.display.drawImage(IsoX, IsoY, IMG_ROAD_V);
       break;
     case ROAD_DR:
-      gb.display.drawImage(m_IsoX, m_IsoY, IMG_ROAD_DR);
+      gb.display.drawImage(IsoX, IsoY, IMG_ROAD_DR);
       break;
     case ROAD_DL:
-      gb.display.drawImage(m_IsoX, m_IsoY, IMG_ROAD_DL);
+      gb.display.drawImage(IsoX, IsoY, IMG_ROAD_DL);
       break;
     case ROAD_UR:
-      gb.display.drawImage(m_IsoX, m_IsoY, IMG_ROAD_UR);
+      gb.display.drawImage(IsoX, IsoY, IMG_ROAD_UR);
       break;
     case ROAD_UL:
-      gb.display.drawImage(m_IsoX, m_IsoY, IMG_ROAD_UL);
+      gb.display.drawImage(IsoX, IsoY, IMG_ROAD_UL);
       break;
     case ROAD_INT_DOWN:
-      gb.display.drawImage(m_IsoX, m_IsoY, IMG_ROAD_INT_DOWN);
+      gb.display.drawImage(IsoX, IsoY, IMG_ROAD_INT_DOWN);
       break;
     case ROAD_INT_UP:
-      gb.display.drawImage(m_IsoX, m_IsoY, IMG_ROAD_INT_UP);
+      gb.display.drawImage(IsoX, IsoY, IMG_ROAD_INT_UP);
       break;
     case ROAD_INT_RIGHT:
-      gb.display.drawImage(m_IsoX, m_IsoY, IMG_ROAD_INT_RIGHT);
+      gb.display.drawImage(IsoX, IsoY, IMG_ROAD_INT_RIGHT);
       break;
     case ROAD_INT_LEFT:
-      gb.display.drawImage(m_IsoX, m_IsoY, IMG_ROAD_INT_LEFT);
+      gb.display.drawImage(IsoX, IsoY, IMG_ROAD_INT_LEFT);
       break;
     case ROAD_INT:
-      gb.display.drawImage(m_IsoX, m_IsoY, IMG_ROAD_INT);
+      gb.display.drawImage(IsoX, IsoY, IMG_ROAD_INT);
       break;
     case HOME_RED:
-      gb.display.drawImage(m_IsoX, m_IsoY, IMG_HOME_RED);
+      gb.display.drawImage(IsoX, IsoY, IMG_HOME_RED);
       break;
     case BULL:
-      gb.display.drawImage(m_IsoX, m_IsoY, IMG_BULL);
+      gb.display.drawImage(IsoX, IsoY, IMG_BULL);
       break;
   }
   if ( m_Error == true)
   {
-    gb.display.drawImage(m_IsoX, m_IsoY, IMG_ERROR);
+    gb.display.drawImage(IsoX, IsoY, IMG_ERROR);
   }
 }
 
@@ -185,8 +198,10 @@ void Tile::InitCoordCartesian()
 //----------------------------------------------------------------------
 //        method converts Cartesian coordinates to isometric
 //----------------------------------------------------------------------
+/*
 void Tile::TwoDToIso()
 {
   m_IsoX = m_CartX - m_CartY;
   m_IsoY = (m_CartX + m_CartY) / 2;
 }
+*/ 

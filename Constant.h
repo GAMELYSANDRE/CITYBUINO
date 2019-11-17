@@ -3,9 +3,8 @@
 
 #include <Gamebuino-Meta.h>
 
-// dimension of the tiles 2D not isometric
-const float TILE_WIDTH = 8;
-const float TILE_HEIGHT = 8;
+// variable for the game
+const uint8_t DELAY_MONEY = 10; // seconds before recovering the money
 
 // type of tile
 const uint8_t GRASS = 1;
@@ -26,13 +25,16 @@ const uint8_t ROAD_INT_RIGHT = 26;
 const uint8_t ROAD_INT_LEFT = 27;
 const uint8_t ROAD_INT = 28;
 
-// variable test road
+// variable grouping all roads
 const uint8_t ROAD = 100;
 
 // camera dimension
 const uint8_t NBR_TILES_WIDTH = 14;
 const uint8_t NBR_TILES_HEIGHT = 14;
 
+// dimension of the tiles 2D not isometric
+const float TILE_WIDTH = 8;
+const float TILE_HEIGHT = 8;
 
 // MAP
 const uint8_t MAP_LINE = 30;

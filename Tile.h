@@ -26,8 +26,6 @@ class Tile
     int8_t Column() const;
     int16_t CartX() const;
     int16_t CartY() const;
-    int16_t IsoX() const;
-    int16_t IsoY() const;
     uint8_t Type() const;
     bool Error() const;
 
@@ -37,15 +35,13 @@ class Tile
     void Column(int8_t ChangeColumn);
     void CartX(int16_t ChangeCartX);
     void CartY(int16_t ChangeCartY);
-    void IsoX(int16_t ChangeIsoX);
-    void IsoY(int16_t ChangeIsoY);
     void Type(uint8_t ChangeType);
     void Error(bool ChangeError);
 
     // method other
-    void Display();
+    void Display(bool Cart_OR_iso);
     void InitCoordCartesian();
-    void TwoDToIso();
+    //void TwoDToIso();
 
 
   private:
@@ -55,8 +51,8 @@ class Tile
     int16_t m_CartX;           // acoordinate iso of the x axis
     int16_t m_CartY;           // acoordinate iso of the Y axis
     //isometric
-    int16_t m_IsoX;            // acoordinate iso of the x axis
-    int16_t m_IsoY;            // acoordinate iso of the Y axis
+    //int16_t m_IsoX;            // acoordinate iso of the x axis
+    //int16_t m_IsoY;            // acoordinate iso of the Y axis
     uint8_t m_Type;            // see file : constant.h
     bool m_Error;              // active(0) inactive (1) error
 };

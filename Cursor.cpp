@@ -112,9 +112,9 @@ void Cursor::Display()
   // Modify tile coordinates for displayed in the view
   m_TileCursor->CartX((GridTileColumn + (m_ViewColumn * TILE_WIDTH)));
   m_TileCursor->CartY((GridTileLine + (m_ViewLine * TILE_HEIGHT)) - 35);
-  m_TileCursor->TwoDToIso();
+  //m_TileCursor->TwoDToIso();
   m_TileCursor->Type(m_Choice);
-  m_TileCursor->Display();
+  m_TileCursor->Display(1);
   // save position cursor
   m_GridLine = GridLine + m_ViewLine;
   m_GridColumn = GridColumn + m_ViewColumn;

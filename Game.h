@@ -5,6 +5,7 @@
 #include "Grid.h"
 #include "Menu.h"
 #include "Cursor.h"
+#include "GBTime.h"
 
 class Game
 {
@@ -20,7 +21,11 @@ class Game
     Grid *m_City;
     Menu *m_Menu;
     Cursor *m_Cursor;
+    GBTime *m_Time;
     uint16_t m_Money;
+    uint16_t m_MoneyDay;
+    uint16_t m_Citizen;
+    uint16_t m_NbrDay;
 
     // method of use
     void DisplayMenu();
@@ -29,6 +34,7 @@ class Game
     void ErrorCursor();
     void ConstructCursor();
     void DisplayMoney();
+    void DisplayTime();
 
 
 };

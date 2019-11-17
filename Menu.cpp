@@ -84,10 +84,10 @@ void Menu::Display()
   gb.display.setColor(BLACK);
   gb.display.drawRect(55, 8, 22, 55);
   SquareSelection();
-  m_TileMenu[0]->Display();
-  m_TileMenu[1]->Display();
-  m_TileMenu[2]->Display();
-  m_TileMenu[3]->Display();
+  m_TileMenu[0]->Display(0);
+  m_TileMenu[1]->Display(0);
+  m_TileMenu[2]->Display(0);
+  m_TileMenu[3]->Display(0);
 }
 
 void Menu::SquareSelection()
