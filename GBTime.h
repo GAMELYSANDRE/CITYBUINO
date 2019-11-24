@@ -3,23 +3,23 @@
 
 #include <Gamebuino-Meta.h>
 
-class GBTime 
+class GBTime
 {
-   
+
   public:
-    // constructor 
+    // constructor
     GBTime();
-    
+
     // getters methods
     unsigned long BeginTime() const;
     unsigned long TempTime() const;
-    
+
     // others methods
     void IncrementTime();
     void Reset();
     void InitBeginTime();
 
-    
+
   private:
     unsigned long m_BeginTime;
     unsigned long m_TempTime;
@@ -28,4 +28,3 @@ class GBTime
 };
 
 #endif
-

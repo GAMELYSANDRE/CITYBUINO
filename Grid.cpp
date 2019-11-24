@@ -97,9 +97,9 @@ void Grid::Display()
 
 void Grid::CheckTheTile()
 {
-  for (int i = 1; i < m_NumberLine-1 ; i++)// prevents segmentation fault
+  for (int i = 1; i < m_NumberLine - 1 ; i++) // prevents segmentation fault
   {
-    for (int j = 1; j < m_NumberColumn-1  ; j++)
+    for (int j = 1; j < m_NumberColumn - 1  ; j++)
     {
       //-------------------------------------
       //
@@ -123,23 +123,23 @@ void Grid::CheckTheTile()
       uint8_t TileUp = SEA;
       //uint8_t TileUpRight = SEA;
 
-      uint8_t TileLeft = SEA;      
+      uint8_t TileLeft = SEA;
       uint8_t TileCenter = SEA;
       uint8_t TileRight = SEA;
-      
+
       //uint8_t TileDownLeft = SEA;
       uint8_t TileDown = SEA;
       //uint8_t TileDownRight = SEA;
-      
+
       //TileUpLeft = CheckPresenceRoad(m_Grid[i - 1][j - 1].Type());
       TileUp = CheckPresenceRoad(m_Grid[i - 1][j].Type());
       //TileUpRight = CheckPresenceRoad(m_Grid[i - 1][j + 1].Type());
-      
+
       TileLeft = CheckPresenceRoad(m_Grid[i][j - 1].Type());
       TileCenter = CheckPresenceRoad(m_Grid[i][j].Type());
       TileRight = CheckPresenceRoad(m_Grid[i][j + 1].Type());
 
-      //TileDownLeft = CheckPresenceRoad(m_Grid[i + 1][j - 1].Type());      
+      //TileDownLeft = CheckPresenceRoad(m_Grid[i + 1][j - 1].Type());
       TileDown = CheckPresenceRoad(m_Grid[i + 1][j].Type());
       //TileDownRight = CheckPresenceRoad(m_Grid[i + 1][j + 1].Type());
 
@@ -150,14 +150,14 @@ void Grid::CheckTheTile()
       {
         if
         ( TileUp == ROAD or TileDown == ROAD or
-          TileLeft == ROAD or TileRight == ROAD
+            TileLeft == ROAD or TileRight == ROAD
         )
         {
-          m_Grid[i][j].Error(0);
+          m_Grid[i][j].Error( 0 );
         }
         else
         {
-          m_Grid[i][j].Error(1);
+          m_Grid[i][j].Error( ERROR_ROAD );
         }
       }
 
@@ -168,7 +168,7 @@ void Grid::CheckTheTile()
       {
         // turn up right
         if ( TileDown == ROAD and TileCenter == ROAD
-             and TileRight == ROAD and TileUp != ROAD 
+             and TileRight == ROAD and TileUp != ROAD
              and TileLeft != ROAD )
         {
           m_Grid[i][j + 1].Type(ROAD_V);
@@ -176,8 +176,8 @@ void Grid::CheckTheTile()
           m_Grid[i + 1][j].Type(ROAD_H);
         }
         // turn up left
-        if ( TileDown == ROAD and TileCenter == ROAD 
-             and TileLeft == ROAD and TileUp != ROAD 
+        if ( TileDown == ROAD and TileCenter == ROAD
+             and TileLeft == ROAD and TileUp != ROAD
              and TileRight != ROAD )
         {
           m_Grid[i][j - 1].Type(ROAD_V);
@@ -185,26 +185,26 @@ void Grid::CheckTheTile()
           m_Grid[i + 1][j].Type(ROAD_H);
         }
         // turn down right
-        if ( TileUp == ROAD and TileCenter == ROAD 
-             and TileRight == ROAD and TileDown != ROAD 
-             and TileLeft !=ROAD )
+        if ( TileUp == ROAD and TileCenter == ROAD
+             and TileRight == ROAD and TileDown != ROAD
+             and TileLeft != ROAD )
         {
           m_Grid[i - 1][j].Type(ROAD_H);
           m_Grid[i][j].Type(ROAD_DR);
           m_Grid[i][j + 1].Type(ROAD_V);
         }
         // turn down left
-        if ( TileUp == ROAD and TileCenter == ROAD 
-             and TileLeft == ROAD and TileDown != ROAD 
-             and TileRight !=ROAD )
+        if ( TileUp == ROAD and TileCenter == ROAD
+             and TileLeft == ROAD and TileDown != ROAD
+             and TileRight != ROAD )
         {
           m_Grid[i - 1][j].Type(ROAD_H);
           m_Grid[i][j].Type(ROAD_DL);
           m_Grid[i][j - 1].Type(ROAD_V);
         }
         // intersection up
-        if ( TileCenter == ROAD and TileRight == ROAD  
-             and TileLeft == ROAD and TileDown == ROAD 
+        if ( TileCenter == ROAD and TileRight == ROAD
+             and TileLeft == ROAD and TileDown == ROAD
              and TileUp != ROAD )
         {
           m_Grid[i][j - 1].Type(ROAD_V);
@@ -213,8 +213,8 @@ void Grid::CheckTheTile()
           m_Grid[i + 1][j].Type(ROAD_H);
         }
         // intersection down
-        if ( TileCenter == ROAD and TileRight == ROAD  
-             and TileLeft == ROAD and TileUp == ROAD 
+        if ( TileCenter == ROAD and TileRight == ROAD
+             and TileLeft == ROAD and TileUp == ROAD
              and TileDown != ROAD )
         {
           m_Grid[i][j - 1].Type(ROAD_V);
@@ -223,8 +223,8 @@ void Grid::CheckTheTile()
           m_Grid[i - 1][j].Type(ROAD_H);
         }
         // intersection right
-        if ( TileCenter == ROAD and TileUp == ROAD  
-             and TileDown == ROAD and TileRight == ROAD 
+        if ( TileCenter == ROAD and TileUp == ROAD
+             and TileDown == ROAD and TileRight == ROAD
              and TileLeft != ROAD )
         {
           m_Grid[i - 1][j].Type(ROAD_H);
@@ -233,8 +233,8 @@ void Grid::CheckTheTile()
           m_Grid[i][j + 1].Type(ROAD_V);
         }
         // intersection left
-        if ( TileCenter == ROAD and TileUp == ROAD  
-             and TileDown == ROAD and TileLeft == ROAD 
+        if ( TileCenter == ROAD and TileUp == ROAD
+             and TileDown == ROAD and TileLeft == ROAD
              and TileRight != ROAD )
         {
           m_Grid[i - 1][j].Type(ROAD_H);
@@ -243,8 +243,8 @@ void Grid::CheckTheTile()
           m_Grid[i][j - 1].Type(ROAD_V);
         }
         // intersection center
-        if ( TileCenter == ROAD and TileUp == ROAD  
-             and TileDown == ROAD and TileLeft == ROAD 
+        if ( TileCenter == ROAD and TileUp == ROAD
+             and TileDown == ROAD and TileLeft == ROAD
              and TileRight == ROAD )
         {
           m_Grid[i - 1][j].Type(ROAD_V);
@@ -371,4 +371,9 @@ void Grid::Move()
       gb.display.fillRect(7, 54, 6, 3);
     }
   }
+}
+
+void Grid::ResetError(uint8_t I, uint8_t J)
+{
+  m_Grid[I][J].Error(0);
 }

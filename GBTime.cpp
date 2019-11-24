@@ -4,12 +4,12 @@
 //                      Constructors
 //----------------------------------------------------------------------
 
-GBTime::GBTime() : 
-  m_BeginTime(0), 
-  m_TempTime(0) , 
+GBTime::GBTime() :
+  m_BeginTime(0),
+  m_TempTime(0) ,
   m_Activate(0)
 {
-  
+
 }
 
 //----------------------------------------------------------------------
@@ -29,13 +29,13 @@ unsigned long GBTime::TempTime() const
 //                     Time management methods
 //----------------------------------------------------------------------
 
-void GBTime::Reset() 
+void GBTime::Reset()
 {
   m_TempTime = 0;
   m_BeginTime = millis();
 }
 
-void GBTime::InitBeginTime() 
+void GBTime::InitBeginTime()
 {
   if ( m_Activate == false )
   {
@@ -44,9 +44,7 @@ void GBTime::InitBeginTime()
   }
 }
 
-void GBTime::IncrementTime() 
+void GBTime::IncrementTime()
 {
   m_TempTime = millis() - m_BeginTime;
 }
-
-

@@ -27,7 +27,7 @@ class Tile
     int16_t CartX() const;
     int16_t CartY() const;
     uint8_t Type() const;
-    bool Error() const;
+    uint8_t Error() const;
 
 
     // setters methods
@@ -36,7 +36,7 @@ class Tile
     void CartX(int16_t ChangeCartX);
     void CartY(int16_t ChangeCartY);
     void Type(uint8_t ChangeType);
-    void Error(bool ChangeError);
+    void Error(uint8_t ChangeError);
 
     // method other
     void Display(bool Cart_OR_iso);
@@ -54,7 +54,7 @@ class Tile
     //int16_t m_IsoX;            // acoordinate iso of the x axis
     //int16_t m_IsoY;            // acoordinate iso of the Y axis
     uint8_t m_Type;            // see file : constant.h
-    bool m_Error;              // active(0) inactive (1) error
+    uint8_t m_Error;              // active(0) inactive (1) error
 };
 
 

@@ -22,8 +22,9 @@ class Game
     Menu *m_Menu;
     Cursor *m_Cursor;
     GBTime *m_Time;
-    uint16_t m_Money;
-    uint16_t m_MoneyDay;
+    int16_t m_Money;
+    uint16_t m_Credit;
+    uint16_t m_Debit;
     uint16_t m_Citizen;
     uint16_t m_NbrDay;
 

@@ -30,6 +30,7 @@ class Grid
     void Move();
     void CheckTheTile();
     uint8_t CheckPresenceRoad(uint8_t VerifTile );
+    void ResetError(uint8_t I, uint8_t J);
 
   private:
     // Grid dimension

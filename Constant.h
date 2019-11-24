@@ -10,10 +10,12 @@ const uint8_t DELAY_MONEY = 10; // seconds before recovering the money
 const uint8_t GRASS = 1;
 const uint8_t SAND = 2;
 const uint8_t SEA = 3;
-const uint8_t BULL = 4;
-const uint8_t ROAD_H = 5;
-const uint8_t ROAD_V = 6;
-const uint8_t HOME_RED = 7;
+const uint8_t INFO = 4;
+const uint8_t BULL = 5;
+const uint8_t ROAD_H = 6;
+const uint8_t ROAD_V = 7;
+const uint8_t HOME_RED = 8;
+const uint8_t POWER_STATION = 9;
 
 const uint8_t ROAD_DR = 20;
 const uint8_t ROAD_DL = 21;
@@ -27,6 +29,9 @@ const uint8_t ROAD_INT = 28;
 
 // variable grouping all roads
 const uint8_t ROAD = 100;
+
+// variable type error
+const uint8_t ERROR_ROAD = 200;
 
 // camera dimension
 const uint8_t NBR_TILES_WIDTH = 14;

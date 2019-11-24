@@ -6,7 +6,8 @@
 
 Game::Game () :
   m_Money(4000),
-  m_MoneyDay(0),
+  m_Credit(0),
+  m_Debit(0),
   m_Citizen(0),
   m_NbrDay(0)
 {
@@ -61,6 +62,7 @@ void Game::ConstructCursor()
   uint8_t i = m_Cursor->GridLine();
   uint8_t j = m_Cursor->GridColumn();
   uint8_t Choise = m_Cursor->Choice();
+  uint8_t CityTile = m_City->Type(i, j);
   // disable the a button if the menu is visible
   if (m_Menu->State() == false)
   {
@@ -70,14 +72,19 @@ void Game::ConstructCursor()
       if ( m_Money > 0)
       {
         // check if there are not already constructions
-        if ( ( m_City->Type(i, j) == SEA ) or
-             ( m_City->Type(i, j) == ROAD_H and Choise != BULL ) or
-             ( m_City->Type(i, j) == ROAD_V and Choise != BULL ) or
-             ( m_City->Type(i, j) == ROAD_DR  and Choise != BULL ) or
-             ( m_City->Type(i, j) == ROAD_DL  and Choise != BULL ) or
-             ( m_City->Type(i, j) == ROAD_UL  and Choise != BULL ) or
-             ( m_City->Type(i, j) == ROAD_UR  and Choise != BULL ) or
-             ( m_City->Type(i, j) == HOME_RED  and Choise != BULL )
+        if ( ( CityTile == SEA ) or
+             ( CityTile == ROAD_H and Choise != BULL ) or
+             ( CityTile == ROAD_V and Choise != BULL ) or
+             ( CityTile == ROAD_DR  and Choise != BULL ) or
+             ( CityTile == ROAD_DL  and Choise != BULL ) or
+             ( CityTile == ROAD_UL  and Choise != BULL ) or
+             ( CityTile == ROAD_UR  and Choise != BULL ) or
+             ( CityTile == ROAD_INT  and Choise != BULL ) or
+             ( CityTile == ROAD_INT_DOWN  and Choise != BULL ) or
+             ( CityTile == ROAD_INT_LEFT  and Choise != BULL ) or
+             ( CityTile == ROAD_INT_RIGHT  and Choise != BULL ) or
+             ( CityTile == ROAD_INT_UP  and Choise != BULL ) or
+             ( CityTile == HOME_RED  and Choise != BULL )
 
            )
         {
@@ -86,28 +93,41 @@ void Game::ConstructCursor()
         else
         {
           // destroyed and replaced by sand
-          if ( m_City->Type(i, j) == HOME_RED)
-          {
-            m_Citizen = m_Citizen - 4;
-            m_MoneyDay = m_MoneyDay - 50;
-          }
-          
           if ( Choise == BULL )
           {
             m_City->Type(i, j, SAND );
+            m_City->ResetError(i, j);
             m_Money = m_Money - m_Menu->Cost();
             gb.sound.fx(SOUND_BULL);
+            switch ( CityTile )
+            {
+              case HOME_RED:
+                m_Citizen = m_Citizen - 4;
+                m_Credit = m_Credit - 50;
+                break;
+              case ROAD_H:
+                m_Debit = m_Debit - 5;
+                break;
+            }
           }
           else
-          // Construct the new tile
+            // Construct the new tile
           {
             m_City->Type(i, j, Choise );
             m_Money = m_Money - m_Menu->Cost();
             gb.sound.fx(SOUND_CONST);
-            if ( Choise == HOME_RED)
+            switch ( Choise )
             {
-              m_Citizen = m_Citizen + 4;
-              m_MoneyDay = m_MoneyDay + 50;
+              case HOME_RED:
+                m_Citizen = m_Citizen + 4;
+                m_Credit = m_Credit + 50;
+                break;
+              case ROAD_H:
+              case ROAD_V:
+                m_Debit = m_Debit + 5;
+                break;
+              case POWER_STATION:
+                m_Debit = m_Debit + 100;
             }
           }
         }
@@ -148,7 +168,7 @@ void Game::DisplayCursor()
     m_Cursor->CameraY(m_City->CameraY());
     m_Cursor->Choice(m_Menu->Choice());
   }
-  if (m_Cursor->State() == true)
+  if (m_Cursor->State() == true and m_Cursor->Choice() != INFO )
   {
     m_Cursor->Display();
   }
@@ -340,27 +360,21 @@ void Game::DisplayMoney()
   gb.display.setColor(GRAY);
   gb.display.print("$ ");
   gb.display.print(m_Money);
-  
-  gb.display.setCursor(4, 9);
-  gb.display.print("CIT ");
-  gb.display.print(m_Citizen);
-  
-  gb.display.setCursor(4, 16);
-  gb.display.print("DY ");
+
+  gb.display.print(" DY ");
   gb.display.print(m_NbrDay);
-  
+
   gb.display.setCursor(3, 1);
   gb.display.setColor(WHITE);
   gb.display.print("$ ");
   gb.display.print(m_Money);
 
-  gb.display.setCursor(3, 8);
-  gb.display.print("CIT ");
-  gb.display.print(m_Citizen);
-
-  gb.display.setCursor(3, 15);
-  gb.display.print("DY ");
+  gb.display.print(" DY ");
   gb.display.print(m_NbrDay);
+
+  m_Menu->Citizen(m_Citizen);
+  m_Menu->Credit(m_Credit);
+  m_Menu->Debit(m_Debit);
 }
 
 //----------------------------------------------------------------------
@@ -376,6 +390,6 @@ void Game::DisplayTime()
   {
     m_NbrDay++;
     m_Time->Reset();
-    m_Money = m_Money + m_MoneyDay;
+    m_Money = m_Money + m_Credit - m_Debit;
   }
 }
