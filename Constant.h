@@ -32,6 +32,7 @@ const uint8_t ROAD = 100;
 
 // variable type error
 const uint8_t ERROR_ROAD = 200;
+const uint8_t ERROR_ELEC = 201;
 
 // camera dimension
 const uint8_t NBR_TILES_WIDTH = 14;

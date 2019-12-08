@@ -4,26 +4,26 @@
 //                      Constructors
 //----------------------------------------------------------------------
 
-Grid::Grid (const uint8_t Map[], int NumberLine, int NumberColumn) :
+Grid::Grid (const uint8_t Map[], uint8_t NumberLine, uint8_t NumberColumn) :
   m_CameraX(0),
-  m_CameraY(0)
+  m_CameraY(0),
+  m_CameraTileX(0),
+  m_CameraTileY(0)
 {
-  m_NumberLine = NumberLine;
-  m_NumberColumn = NumberColumn;
   // Create Line
-  m_Grid = new Tile*[m_NumberLine];
+  m_Grid = new Tile*[NumberLine];
   // create column
-  for (int i = 0; i < m_NumberLine ; i++)
+  for (uint8_t X = 0; X < NumberLine ; X++)
   {
-    m_Grid[i] = new Tile[NumberColumn];
+    m_Grid[X] = new Tile[NumberColumn];
   }
-  for (int i = 0; i < m_NumberLine ; i++)
+  for (uint8_t X = 0; X < NumberLine ; X++)
   {
-    for (int j = 0; j < m_NumberColumn ; j++)
+    for (uint8_t Y = 0; Y < NumberColumn ; Y++)
     {
-      m_Grid[i][j].Line(i);
-      m_Grid[i][j].Column(j);
-      m_Grid[i][j].Type(Map[j + (m_NumberColumn * i)]);
+      m_Grid[X][Y].Line(X);
+      m_Grid[X][Y].Column(Y);
+      m_Grid[X][Y].Type(Map[X + (NumberColumn * Y)]);
     }
   }
 }
@@ -39,16 +39,11 @@ Grid::~Grid()
 //----------------------------------------------------------------------
 //                       Getters methods
 //----------------------------------------------------------------------
-int Grid::NumberLine() const
-{
-  return (m_NumberLine);
-}
-
-int16_t Grid::CameraX() const
+uint8_t Grid::CameraX() const
 {
   return (m_CameraX);
 }
-int16_t Grid::CameraY() const
+uint8_t Grid::CameraY() const
 {
   return (m_CameraY);
 }
@@ -86,20 +81,22 @@ void Grid::Display()
       // find the tile to display in the view
       uint8_t TileY = GridLine + i;
       uint8_t TileX = GridColumn + j;
+      m_CameraTileY = GridLine;
+      m_CameraTileX = GridColumn;
       // Modify tile coordinates for displayed in the view
       m_Grid[TileY][TileX].CartX((GridTileColumn + (j * TILE_WIDTH)));
       m_Grid[TileY][TileX].CartY((GridTileLine + (i * TILE_HEIGHT)) - 35);
-      //m_Grid[TileY][TileX].TwoDToIso();
       m_Grid[TileY][TileX].Display(1);
     }
   }
+  TestGame();
 }
 
 void Grid::CheckTheTile()
 {
-  for (int i = 1; i < m_NumberLine - 1 ; i++) // prevents segmentation fault
+  for (int i = m_CameraTileY; i < m_CameraTileY + NBR_TILES_HEIGHT  ; i++) // prevents segmentation fault
   {
-    for (int j = 1; j < m_NumberColumn - 1  ; j++)
+    for (int j = m_CameraTileX; j < m_CameraTileX + NBR_TILES_WIDTH ; j++)
     {
       //-------------------------------------
       //
@@ -146,7 +143,7 @@ void Grid::CheckTheTile()
       //-----------------------------------------
       // check if there is a road near the house
       //-----------------------------------------
-      if ( TileCenter == HOME_RED )
+      if ( TileCenter == HOME_RED or TileCenter == POWER_STATION )
       {
         if
         ( TileUp == ROAD or TileDown == ROAD or
@@ -160,10 +157,65 @@ void Grid::CheckTheTile()
           m_Grid[i][j].Error( ERROR_ROAD );
         }
       }
+      //-----------------------------------------------------
+      // check if there is a station power near the house
+      //-----------------------------------------------------
+      if ( TileCenter == HOME_RED and m_Grid[i][j].Error() == 0 )
+      {
+        uint8_t DetectXPowStat = 0;
+        uint8_t DetectYPowStat = 0;
+        bool DetectPowStat = false;
+        // limite Screen X 
+        if ( m_Grid[i][j].Column() < 5 )
+        { 
+          DetectXPowStat = m_CameraTileX;
+        }
+        else
+        {
+          DetectXPowStat = m_Grid[i][j].Column()-5;
+        }
+        // limite Screen Y 
+        if ( m_Grid[i][j].Line() < 5 )
+        { 
+          DetectYPowStat = m_CameraTileY;
+        }
+        else
+        {
+          DetectYPowStat = m_Grid[i][j].Line()-5;
+        }
+        SerialUSB.printf("Pos X: %i\n", DetectXPowStat );
+        SerialUSB.printf("Pos Y: %i\n", DetectYPowStat );
+        SerialUSB.printf("Line: %i\n", m_Grid[i][j].Line() );
+        SerialUSB.printf("Column: %i\n", m_Grid[i][j].Column() );
+        for ( uint8_t X = DetectXPowStat; X < DetectXPowStat + 10; X++)
+        {
+          for (uint8_t Y = DetectYPowStat; Y < DetectYPowStat + 10; Y++)
+          {
+            if ( m_Grid[Y][X].Type() == POWER_STATION )
+            {
+              SerialUSB.printf("Station detected");
+              DetectPowStat = true;
+            }
+          }  
+        }
+        if ( DetectPowStat == true )
+        {
+          m_Grid[i][j].Error( 0 );
+        }
+        else
+        {
+          m_Grid[i][j].Error( ERROR_ELEC );
+        }
+      }
 
-      //-----------------------------------------
-      //    create turns following the roads
-      //-----------------------------------------
+      
+
+         
+      
+       
+      //-----------------------------------------------------
+      //    create turns et crossing following the roads
+      //-----------------------------------------------------
       if ( TileCenter == ROAD )
       {
         // turn up right
@@ -376,4 +428,13 @@ void Grid::Move()
 void Grid::ResetError(uint8_t I, uint8_t J)
 {
   m_Grid[I][J].Error(0);
+}
+void Grid::TestGame()
+{
+  SerialUSB.printf("-----------------------------------------------\n");
+  SerialUSB.printf("CPU: %i ,RAM: %i  \n",gb.getCpuLoad(),gb.getFreeRam());
+  SerialUSB.printf("-----------------------------------------------\n");
+  SerialUSB.printf("CameraX: %i ,CameraY: %i  \n",m_CameraX,m_CameraY);
+  SerialUSB.printf("CameraTileX: %i ,CameraTileY: %i  \n",m_CameraTileX,m_CameraTileY);
+   
 }

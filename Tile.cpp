@@ -12,10 +12,8 @@ Tile::Tile() :
   m_CartY(0),
   m_Type(GRASS),
   m_Error(0)
-  //m_Value(0)
 {
   InitCoordCartesian();
-  //TwoDToIso();
 }
 
 Tile::Tile (int8_t Line, int8_t Column, int16_t CartX, int16_t CartY, uint8_t Type)
@@ -26,7 +24,6 @@ Tile::Tile (int8_t Line, int8_t Column, int16_t CartX, int16_t CartY, uint8_t Ty
   m_CartY = CartY;
   m_Type = Type;
   m_Error = 0;
-  //m_Value = 0;
 }
 //----------------------------------------------------------------------
 //                           DESTRUCTOR
@@ -56,16 +53,6 @@ int16_t Tile::CartY() const
 {
   return (m_CartY);
 }
-/*
-  int16_t Tile::IsoX() const
-  {
-  return (m_IsoX);
-  }
-  int16_t Tile::IsoY() const
-  {
-  return (m_IsoY);
-  }
-*/
 uint8_t Tile::Type() const
 {
   return (m_Type);
@@ -94,16 +81,6 @@ void Tile::CartY(int16_t ChangeCartY)
 {
   m_CartY = ChangeCartY;
 }
-/*
-  void Tile::IsoX(int16_t ChangeIsoX)
-  {
-  m_IsoX = ChangeIsoX;
-  }
-  void Tile::IsoY(int16_t ChangeIsoY)
-  {
-  m_IsoY = ChangeIsoY;
-  }
-*/
 void Tile::Type(uint8_t ChangeType)
 {
   m_Type = ChangeType;
@@ -194,6 +171,9 @@ void Tile::Display(bool Cart_OR_iso)
     case ERROR_ROAD:
       gb.display.drawImage(IsoX, IsoY, IMG_ERROR_ROAD);
       break;
+    case ERROR_ELEC:
+      gb.display.drawImage(IsoX, IsoY, IMG_ERROR_ELEC);
+      break;  
   }
 }
 
@@ -205,13 +185,4 @@ void Tile::InitCoordCartesian()
   m_CartX = m_Column * TILE_WIDTH;
   m_CartY = m_Line * TILE_HEIGHT;
 }
-//----------------------------------------------------------------------
-//        method converts Cartesian coordinates to isometric
-//----------------------------------------------------------------------
-/*
-  void Tile::TwoDToIso()
-  {
-  m_IsoX = m_CartX - m_CartY;
-  m_IsoY = (m_CartX + m_CartY) / 2;
-  }
-*/
+

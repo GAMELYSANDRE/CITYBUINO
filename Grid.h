@@ -11,14 +11,13 @@ class Grid
 {
   public:
     // constructor
-    Grid (const uint8_t Map[], int NumberLine, int NumberColumn);
+    Grid (const uint8_t Map[], uint8_t NumberLine, uint8_t NumberColumn);
     // Destructor
     ~Grid();
 
     // getters methods
-    int NumberLine() const;
-    int16_t CameraX() const;
-    int16_t CameraY() const;
+    uint8_t CameraX() const;
+    uint8_t CameraY() const;
     int8_t Type(uint8_t I, uint8_t J ) const;
 
     // setters methods
@@ -34,12 +33,16 @@ class Grid
 
   private:
     // Grid dimension
-    int m_NumberLine;
-    int m_NumberColumn;
     Tile **m_Grid;     // table 2 dimensions
     // Position Camera
-    int16_t m_CameraX;
-    int16_t m_CameraY;
+    uint8_t m_CameraX;
+    uint8_t m_CameraY;
+    // save tile position following the camera
+    uint8_t m_CameraTileX;
+    uint8_t m_CameraTileY;
+    
+    // others methods
+    void TestGame();
 
 };
 
