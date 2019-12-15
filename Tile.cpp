@@ -173,7 +173,7 @@ void Tile::Display(bool Cart_OR_iso)
       break;
     case ERROR_ELEC:
       gb.display.drawImage(IsoX, IsoY, IMG_ERROR_ELEC);
-      break;  
+      break;
   }
 }
 
@@ -185,4 +185,3 @@ void Tile::InitCoordCartesian()
   m_CartX = m_Column * TILE_WIDTH;
   m_CartY = m_Line * TILE_HEIGHT;
 }
-

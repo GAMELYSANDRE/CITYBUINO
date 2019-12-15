@@ -162,7 +162,7 @@ void Menu::SquareSelection()
       m_State = 1;
       break;
     case BULL:
-      m_Cost = 10;
+      m_Cost = 0;
       break;
     case ROAD_H:
       m_Cost = 50;

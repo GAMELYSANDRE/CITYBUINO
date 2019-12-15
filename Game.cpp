@@ -62,6 +62,7 @@ void Game::ConstructCursor()
   uint8_t i = m_Cursor->GridLine();
   uint8_t j = m_Cursor->GridColumn();
   uint8_t Choise = m_Cursor->Choice();
+  uint8_t Cost = m_Menu->Cost();
   uint8_t CityTile = m_City->Type(i, j);
   // disable the a button if the menu is visible
   if (m_Menu->State() == false)
@@ -69,52 +70,15 @@ void Game::ConstructCursor()
     if (gb.buttons.pressed(BUTTON_A) )
     {
       // check the money
-      if ( m_Money > 0)
+      if ( m_Money > Cost)
       {
         // check if there are not already constructions
-        if ( ( CityTile == SEA ) or
-             ( CityTile == ROAD_H and Choise != BULL ) or
-             ( CityTile == ROAD_V and Choise != BULL ) or
-             ( CityTile == ROAD_DR  and Choise != BULL ) or
-             ( CityTile == ROAD_DL  and Choise != BULL ) or
-             ( CityTile == ROAD_UL  and Choise != BULL ) or
-             ( CityTile == ROAD_UR  and Choise != BULL ) or
-             ( CityTile == ROAD_INT  and Choise != BULL ) or
-             ( CityTile == ROAD_INT_DOWN  and Choise != BULL ) or
-             ( CityTile == ROAD_INT_LEFT  and Choise != BULL ) or
-             ( CityTile == ROAD_INT_RIGHT  and Choise != BULL ) or
-             ( CityTile == ROAD_INT_UP  and Choise != BULL ) or
-             ( CityTile == HOME_RED  and Choise != BULL )
-
-           )
+        if ( (CityTile == SAND and Choise != BULL ) or 
+             (CityTile == GRASS and Choise != BULL ) )
         {
-          gb.sound.fx(SOUND_ERROR);
-        }
-        else
-        {
-          // destroyed and replaced by sand
-          if ( Choise == BULL )
-          {
-            m_City->Type(i, j, SAND );
-            m_City->ResetError(i, j);
-            m_Money = m_Money - m_Menu->Cost();
-            gb.sound.fx(SOUND_BULL);
-            switch ( CityTile )
-            {
-              case HOME_RED:
-                m_Citizen = m_Citizen - 4;
-                m_Credit = m_Credit - 50;
-                break;
-              case ROAD_H:
-                m_Debit = m_Debit - 5;
-                break;
-            }
-          }
-          else
-            // Construct the new tile
-          {
+          // Construct the new tile
             m_City->Type(i, j, Choise );
-            m_Money = m_Money - m_Menu->Cost();
+            m_Money = m_Money - Cost;
             gb.sound.fx(SOUND_CONST);
             switch ( Choise )
             {
@@ -129,14 +93,43 @@ void Game::ConstructCursor()
               case POWER_STATION:
                 m_Debit = m_Debit + 100;
             }
+        }
+        else
+        {
+          if ( CityTile == SEA )
+          {
+            Message("NOT IN TNE WATER");
+          }
+          else
+          {
+            Message("PRESENT CONSTRUCT.");
           }
         }
+        
       }
       else
       {
-        gb.sound.fx(SOUND_ERROR);
+        Message("    NO MONEY");
       }
-
+      // destroyed and replaced by sand
+      if ( CityTile != SEA and Choise == BULL )
+      {
+            m_City->Type(i, j, SAND );
+            m_City->ResetError(i, j);
+            gb.sound.fx(SOUND_BULL);
+            switch ( CityTile )
+            {
+              case HOME_RED:
+                m_Citizen = m_Citizen - 4;
+                m_Credit = m_Credit - 50;
+                break;
+              case ROAD_H:
+                m_Debit = m_Debit - 5;
+                break;
+              case POWER_STATION:
+                m_Debit = m_Debit - 100;  
+            }
+      }
     }
   }
 
@@ -159,6 +152,30 @@ void Game::DisplayMenu()
   }
 }
 
+//----------------------------------------------------------------------
+//                          display a message
+//----------------------------------------------------------------------
+
+void Game::Message( char TextMessage[18] )
+{
+  gb.sound.fx(SOUND_ERROR);
+  gb.display.setColor(RED);
+  gb.display.fillRect(2, 20, 76, 20);
+  gb.display.setColor(BLACK);
+  gb.display.drawRect(2, 20, 76, 20);
+  gb.display.setColor(WHITE);
+  gb.display.setCursor(30, 23);
+  gb.display.print("ERROR !");
+  gb.display.setCursor(6, 30);
+  gb.display.print(TextMessage);
+  delay(1000);
+}
+
+
+//----------------------------------------------------------------------
+//                        show cursor
+//----------------------------------------------------------------------
+
 void Game::DisplayCursor()
 {
   if (m_Menu->CursorState())
@@ -173,6 +190,10 @@ void Game::DisplayCursor()
     m_Cursor->Display();
   }
 }
+
+//----------------------------------------------------------------------
+//        move the cursor and limit it to the screen edges
+//----------------------------------------------------------------------
 
 void Game::MoveCursor()
 {
@@ -376,6 +397,15 @@ void Game::DisplayMoney()
   m_Menu->Credit(m_Credit);
   m_Menu->Debit(m_Debit);
 }
+
+//----------------------------------------------------------------------
+//                    manage city information
+//----------------------------------------------------------------------
+void Game::ManageInfo()
+{
+
+}  
+
 
 //----------------------------------------------------------------------
 //                     management of time

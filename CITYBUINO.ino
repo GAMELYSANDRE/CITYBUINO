@@ -18,6 +18,6 @@ void loop()
 {
   gb.waitForUpdate();
   gb.display.clear();
-  
+
   CityBuino->Display();
 }

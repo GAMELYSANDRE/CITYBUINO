@@ -19,6 +19,7 @@ class Grid
     uint8_t CameraX() const;
     uint8_t CameraY() const;
     int8_t Type(uint8_t I, uint8_t J ) const;
+    bool Error(uint8_t I, uint8_t J ) const;
 
     // setters methods
     void Type(uint8_t I, uint8_t J, uint8_t ChangeType);
@@ -40,7 +41,7 @@ class Grid
     // save tile position following the camera
     uint8_t m_CameraTileX;
     uint8_t m_CameraTileY;
-    
+
     // others methods
     void TestGame();
 
