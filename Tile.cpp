@@ -101,8 +101,8 @@ void Tile::Display(bool Cart_OR_iso)
   int16_t IsoY = 0;
   if ( Cart_OR_iso )
   {
-    IsoX = m_CartX - m_CartY;
-    IsoY = (m_CartX + m_CartY) / 2;
+      IsoX = m_CartX - m_CartY;
+      IsoY = (m_CartX + m_CartY) / 2;       
   }
   else
   {
@@ -111,6 +111,7 @@ void Tile::Display(bool Cart_OR_iso)
   }
   switch (m_Type)
   {
+    // basic tile for map
     case GRASS:
       gb.display.drawImage(IsoX, IsoY, IMG_GRASS);
       break;
@@ -120,12 +121,26 @@ void Tile::Display(bool Cart_OR_iso)
     case SEA:
       gb.display.drawImage(IsoX, IsoY, IMG_SEA);
       break;
+    // menu tile  
     case INFO:
       gb.display.drawImage(IsoX, IsoY, IMG_INFO);
+      break;
+    case BULL:
+      gb.display.drawImage(IsoX, IsoY, IMG_BULL);
       break;
     case ROAD_H:
       gb.display.drawImage(IsoX, IsoY, IMG_ROAD_H);
       break;
+    case HOME_RED:
+      gb.display.drawImage(IsoX, IsoY, IMG_HOME_RED );
+      break; 
+    case POWER_STATION:
+      gb.display.drawImage(IsoX, IsoY, IMG_POWER_STATION );
+      break;
+    case WATER_TOWER:
+      gb.display.drawImage(IsoX, IsoY-2, IMG_WATER_TOWER );
+      break;
+    // road turn intersection      
     case ROAD_V:
       gb.display.drawImage(IsoX, IsoY, IMG_ROAD_V);
       break;
@@ -156,15 +171,6 @@ void Tile::Display(bool Cart_OR_iso)
     case ROAD_INT:
       gb.display.drawImage(IsoX, IsoY, IMG_ROAD_INT);
       break;
-    case HOME_RED:
-      gb.display.drawImage(IsoX, IsoY, IMG_HOME_RED );
-      break;
-    case POWER_STATION:
-      gb.display.drawImage(IsoX, IsoY, IMG_POWER_STATION );
-      break;
-    case BULL:
-      gb.display.drawImage(IsoX, IsoY, IMG_BULL);
-      break;
   }
   switch (m_Error)
   {
@@ -174,6 +180,9 @@ void Tile::Display(bool Cart_OR_iso)
     case ERROR_ELEC:
       gb.display.drawImage(IsoX, IsoY, IMG_ERROR_ELEC);
       break;
+    case ERROR_WATER:
+      gb.display.drawImage(IsoX, IsoY, IMG_ERROR_WATER);
+      break;  
   }
 }
 

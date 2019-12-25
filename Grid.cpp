@@ -54,7 +54,7 @@ int8_t Grid::Type(uint8_t I, uint8_t J ) const
   return (m_Grid[I][J].Type());
 }
 // Method return error tile
-bool Grid::Error(uint8_t I, uint8_t J ) const
+uint8_t Grid::Error(uint8_t I, uint8_t J ) const
 {
   return (m_Grid[I][J].Error());
 }
@@ -95,7 +95,6 @@ void Grid::Display()
       m_Grid[TileY][TileX].Display(1);
     }
   }
-  TestGame();
 }
 
 
@@ -121,6 +120,7 @@ void Grid::Move()
       gb.display.setColor(WHITE);
       gb.display.fillRect(67, 54, 6, 3);
     }
+    //DebugGame();
   }
   if (gb.buttons.repeat(BUTTON_LEFT, 0))
   {
@@ -137,6 +137,7 @@ void Grid::Move()
       gb.display.setColor(WHITE);
       gb.display.fillRect(7, 9, 6, 3);
     }
+    //DebugGame();
   }
   if (gb.buttons.repeat(BUTTON_UP, 0))
   {
@@ -153,6 +154,7 @@ void Grid::Move()
       gb.display.setColor(WHITE);
       gb.display.fillRect(67, 9, 6, 3);
     }
+    //DebugGame();
   }
   if (gb.buttons.repeat(BUTTON_DOWN, 0))
   {
@@ -169,6 +171,7 @@ void Grid::Move()
       gb.display.setColor(WHITE);
       gb.display.fillRect(7, 54, 6, 3);
     }
+    //DebugGame();
   }
 }
 
@@ -176,12 +179,12 @@ void Grid::ResetError(uint8_t I, uint8_t J)
 {
   m_Grid[I][J].Error(0);
 }
-void Grid::TestGame()
+void Grid::DebugGrid()
 {
   SerialUSB.printf("-----------------------------------------------\n");
   SerialUSB.printf("CPU: %i ,RAM: %i  \n", gb.getCpuLoad(), gb.getFreeRam());
   SerialUSB.printf("-----------------------------------------------\n");
   SerialUSB.printf("CameraX: %i ,CameraY: %i  \n", m_CameraX, m_CameraY);
   SerialUSB.printf("CameraTileX: %i ,CameraTileY: %i  \n", m_CameraTileX, m_CameraTileY);
-
+  SerialUSB.printf("-----------------------------------------------\n");
 }

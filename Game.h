@@ -36,7 +36,7 @@ class Game
     void ConstructCursor();
     void DisplayMoney();
     void DisplayTime();
-    void ManageInfo();
+    void UpdateInfo();
     void Message( char TextMessage[18] );
 
 

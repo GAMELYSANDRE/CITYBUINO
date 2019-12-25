@@ -34,6 +34,8 @@ Game::~Game()
 void Game::Display()
 {
   m_City->Display();
+  // Display the money
+  DisplayMoney();
   // show or not the cursor
   DisplayCursor();
   // show or not the menu
@@ -49,9 +51,9 @@ void Game::Display()
     ConstructCursor();
     // Engine
     m_City->CheckTheTile();
+    UpdateInfo();
   }
-  // Display the money
-  DisplayMoney();
+
   // Display time
   DisplayTime();
 
@@ -70,29 +72,16 @@ void Game::ConstructCursor()
     if (gb.buttons.pressed(BUTTON_A) )
     {
       // check the money
-      if ( m_Money > Cost)
+      if ( m_Money > Cost and Choise != BULL )
       {
         // check if there are not already constructions
-        if ( (CityTile == SAND and Choise != BULL ) or 
-             (CityTile == GRASS and Choise != BULL ) )
+        if ( (CityTile == SAND  ) or
+             (CityTile == GRASS  ) )
         {
           // Construct the new tile
-            m_City->Type(i, j, Choise );
-            m_Money = m_Money - Cost;
-            gb.sound.fx(SOUND_CONST);
-            switch ( Choise )
-            {
-              case HOME_RED:
-                m_Citizen = m_Citizen + 4;
-                m_Credit = m_Credit + 50;
-                break;
-              case ROAD_H:
-              case ROAD_V:
-                m_Debit = m_Debit + 5;
-                break;
-              case POWER_STATION:
-                m_Debit = m_Debit + 100;
-            }
+          m_City->Type(i, j, Choise );
+          m_Money = m_Money - Cost;
+          gb.sound.fx(SOUND_CONST);
         }
         else
         {
@@ -105,36 +94,78 @@ void Game::ConstructCursor()
             Message("PRESENT CONSTRUCT.");
           }
         }
-        
+
       }
       else
       {
-        Message("    NO MONEY");
+        if ( Choise != BULL )
+        {
+          Message("    NO MONEY");
+        }
       }
       // destroyed and replaced by sand
       if ( CityTile != SEA and Choise == BULL )
       {
-            m_City->Type(i, j, SAND );
-            m_City->ResetError(i, j);
-            gb.sound.fx(SOUND_BULL);
-            switch ( CityTile )
-            {
-              case HOME_RED:
-                m_Citizen = m_Citizen - 4;
-                m_Credit = m_Credit - 50;
-                break;
-              case ROAD_H:
-                m_Debit = m_Debit - 5;
-                break;
-              case POWER_STATION:
-                m_Debit = m_Debit - 100;  
-            }
+        m_City->Type(i, j, SAND );
+        m_City->ResetError(i, j);
+        gb.sound.fx(SOUND_BULL);
       }
     }
   }
-
-
 }
+//----------------------------------------------------------------------
+//                   update city information
+//----------------------------------------------------------------------
+void Game::UpdateInfo()
+{
+  // reset information variables
+  m_Citizen = 0;
+  m_Credit = 0;
+  m_Debit =0;
+  uint8_t CityTile = m_City->Type(0, 0);
+  for ( uint8_t Y = 0 ; Y < MAP_LINE; Y++)
+  {
+    for ( uint8_t X = 0 ; X < MAP_COLUMN; X++)
+    {
+      CityTile = m_City->Type(X, Y);
+      switch ( CityTile )
+      {
+        case HOME_RED:
+          SerialUSB.printf("HOME RED X = %i - Y = %i \n", X , Y);
+          if ( m_City->Error(X, Y) == 0 )
+          {
+            m_Citizen = m_Citizen + 4;
+            m_Credit = m_Credit + 50;
+          }
+          break;
+        case ROAD:
+        case ROAD_DL:
+        case ROAD_DR:
+        case ROAD_H:
+        case ROAD_INT:
+        case ROAD_INT_DOWN:
+        case ROAD_INT_LEFT:
+        case ROAD_INT_RIGHT:
+        case ROAD_INT_UP:
+        case ROAD_UL:
+        case ROAD_UR:
+        case ROAD_V:
+          SerialUSB.printf("ROAD X = %i - Y = %i \n", X , Y);
+          m_Debit = m_Debit + 5;
+          break;
+        case POWER_STATION:
+          SerialUSB.printf("POWER STATION X = %i - Y = %i \n", X , Y);
+          m_Debit = m_Debit + 200;
+          break;    
+      }
+    }
+  }
+  // forward to menu
+  m_Menu->Citizen(m_Citizen);
+  m_Menu->Credit(m_Credit);
+  m_Menu->Debit(m_Debit);
+}
+
 
 //----------------------------------------------------------------------
 //                 make appear and disappear the menu
@@ -375,6 +406,11 @@ void Game::ErrorCursor()
 
 }
 
+//----------------------------------------------------------------------
+//         displays the currency and the days at the top left
+//----------------------------------------------------------------------
+
+
 void Game::DisplayMoney()
 {
   gb.display.setCursor(4, 2);
@@ -393,18 +429,10 @@ void Game::DisplayMoney()
   gb.display.print(" DY ");
   gb.display.print(m_NbrDay);
 
-  m_Menu->Citizen(m_Citizen);
-  m_Menu->Credit(m_Credit);
-  m_Menu->Debit(m_Debit);
+
 }
 
-//----------------------------------------------------------------------
-//                    manage city information
-//----------------------------------------------------------------------
-void Game::ManageInfo()
-{
 
-}  
 
 
 //----------------------------------------------------------------------

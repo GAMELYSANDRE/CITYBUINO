@@ -5,8 +5,6 @@
 #include "Constant.h"
 #include <Gamebuino-Meta.h>
 
-#define NBR_ITEM_MENU 6
-
 class Menu
 {
   public:
@@ -46,7 +44,9 @@ class Menu
     uint16_t m_Cost;        // cost of construction
     bool m_ButtonBLock;    // LockButtonB
     uint16_t m_Info[3];    // save game information
-
+    
+    // others methods
+    void DebugMenu();
     void SquareSelection();
     void DisplayInfo();
 

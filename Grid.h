@@ -19,17 +19,19 @@ class Grid
     uint8_t CameraX() const;
     uint8_t CameraY() const;
     int8_t Type(uint8_t I, uint8_t J ) const;
-    bool Error(uint8_t I, uint8_t J ) const;
+    uint8_t Error(uint8_t I, uint8_t J ) const;
 
     // setters methods
     void Type(uint8_t I, uint8_t J, uint8_t ChangeType);
 
 
-    // others methods
+    // methods
     void Display();
     void Move();
-    void CheckTheTile();
-    uint8_t CheckPresenceRoad(uint8_t VerifTile );
+    
+    // methods file Engine.h$
+    void CheckTheTile();    
+    
     void ResetError(uint8_t I, uint8_t J);
 
   private:
@@ -41,9 +43,15 @@ class Grid
     // save tile position following the camera
     uint8_t m_CameraTileX;
     uint8_t m_CameraTileY;
-
-    // others methods
-    void TestGame();
+    
+    // methods
+    void DebugGrid();
+    
+    // methods file Engine.h$
+    uint8_t CheckPresenceRoad(uint8_t VerifTile );
+    bool DetectionArea (uint8_t TileX, uint8_t TileY, 
+						            uint8_t SizeArea, uint8_t TileToDetect,
+                        uint8_t TypeError); 
 
 };
 

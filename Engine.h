@@ -52,12 +52,11 @@ void Grid::CheckTheTile()
       //-----------------------------------------
       // check if there is a road near the house
       //-----------------------------------------
-      if ( TileCenter == HOME_RED or TileCenter == POWER_STATION )
+      if ( TileCenter == HOME_RED or TileCenter == POWER_STATION or
+           TileCenter == WATER_TOWER )
       {
-        if
-        ( TileUp == ROAD or TileDown == ROAD or
-            TileLeft == ROAD or TileRight == ROAD
-        )
+        if ( TileUp == ROAD or TileDown == ROAD or
+             TileLeft == ROAD or TileRight == ROAD )
         {
           m_Grid[i][j].Error( 0 );
         }
@@ -69,54 +68,20 @@ void Grid::CheckTheTile()
       //-----------------------------------------------------
       // check if there is a station power near the house
       //-----------------------------------------------------
+      if ( ( TileCenter == HOME_RED and m_Grid[i][j].Error() == 0 ) or
+           ( TileCenter == WATER_TOWER and m_Grid[i][j].Error() == 0 )
+         )
+      {
+        DetectionArea(i, j, 10, POWER_STATION, ERROR_ELEC);
+      }
+      
+      //-----------------------------------------------------
+      // check if there is a water tower near the house
+      //-----------------------------------------------------
       if ( TileCenter == HOME_RED and m_Grid[i][j].Error() == 0 )
       {
-        uint8_t DetectXPowStat = 0;
-        uint8_t DetectYPowStat = 0;
-        bool DetectPowStat = false;
-        // limite Screen X
-        if ( m_Grid[i][j].Column() < 5 )
-        {
-          DetectXPowStat = m_CameraTileX;
-        }
-        else
-        {
-          DetectXPowStat = m_Grid[i][j].Column() - 5;
-        }
-        // limite Screen Y
-        if ( m_Grid[i][j].Line() < 5 )
-        {
-          DetectYPowStat = m_CameraTileY;
-        }
-        else
-        {
-          DetectYPowStat = m_Grid[i][j].Line() - 5;
-        }
-        SerialUSB.printf("Pos X: %i\n", DetectXPowStat );
-        SerialUSB.printf("Pos Y: %i\n", DetectYPowStat );
-        SerialUSB.printf("Line: %i\n", m_Grid[i][j].Line() );
-        SerialUSB.printf("Column: %i\n", m_Grid[i][j].Column() );
-        for ( uint8_t X = DetectXPowStat; X < DetectXPowStat + 10; X++)
-        {
-          for (uint8_t Y = DetectYPowStat; Y < DetectYPowStat + 10; Y++)
-          {
-            if ( m_Grid[Y][X].Type() == POWER_STATION )
-            {
-              SerialUSB.printf("Station detected");
-              DetectPowStat = true;
-            }
-          }
-        }
-        if ( DetectPowStat == true )
-        {
-          m_Grid[i][j].Error( 0 );
-        }
-        else
-        {
-          m_Grid[i][j].Error( ERROR_ELEC );
-        }
+        DetectionArea(i, j, 10, WATER_TOWER, ERROR_WATER );
       }
-
 
 
 
@@ -240,16 +205,11 @@ void Grid::CheckTheTile()
 
 uint8_t Grid::CheckPresenceRoad(uint8_t VerifTile )
 {
-  if ( VerifTile == ROAD_H or
-       VerifTile == ROAD_V or
-       VerifTile == ROAD_UL or
-       VerifTile == ROAD_UR or
-       VerifTile == ROAD_DL or
-       VerifTile == ROAD_DR or
-       VerifTile == ROAD_INT_DOWN or
-       VerifTile == ROAD_INT_UP or
-       VerifTile == ROAD_INT_RIGHT or
-       VerifTile == ROAD_INT_LEFT or
+  if ( VerifTile == ROAD_H or VerifTile == ROAD_V or
+       VerifTile == ROAD_UL or VerifTile == ROAD_UR or
+       VerifTile == ROAD_DL or VerifTile == ROAD_DR or
+       VerifTile == ROAD_INT_DOWN or VerifTile == ROAD_INT_UP or
+       VerifTile == ROAD_INT_RIGHT or VerifTile == ROAD_INT_LEFT or
        VerifTile == ROAD_INT
      )
   {
@@ -260,6 +220,70 @@ uint8_t Grid::CheckPresenceRoad(uint8_t VerifTile )
     return (VerifTile);
   }
 }
-
+//----------------------------------------------------------------------
+//                 detect the tile in a square area
+//----------------------------------------------------------------------
+//
+// TileX = x coordinate of the tile
+// TileY = y coordinate of the tile
+// SizeArea = detection size ex = square of 10 by 10 around the tile
+// TileToDetect = Tile detected
+// TypeError = Type Error 
+//
+//----------------------------------------------------------------------
+bool Grid::DetectionArea (uint8_t TileX, uint8_t TileY,
+                          uint8_t SizeArea, uint8_t TileToDetect,
+                          uint8_t TypeError )
+{
+  uint8_t DetectX = 0;
+  uint8_t DetectY = 0;
+  bool DetectTile = false;
+  // limite Screen X
+  if ( m_Grid[TileX][TileY].Column() < (SizeArea / 2) )
+  {
+    DetectX = m_CameraTileX;
+  }
+  else
+  {
+    DetectX = m_Grid[TileX][TileY].Column() - (SizeArea / 2);
+  }
+  // limite Screen Y
+  if ( m_Grid[TileX][TileY].Line() < (SizeArea / 2)  )
+  {
+    DetectY = m_CameraTileY;
+  }
+  else
+  {
+    DetectY = m_Grid[TileX][TileY].Line() - (SizeArea / 2) ;
+  }
+  for ( uint8_t X = DetectX; X < DetectX + SizeArea ; X++)
+  {
+    for (uint8_t Y = DetectY; Y < DetectY + SizeArea ; Y++)
+    {
+      if ( m_Grid[Y][X].Type() == TileToDetect )
+      {
+        SerialUSB.printf("POWER STATION ");
+        SerialUSB.printf("X = %i - ", DetectX );
+        SerialUSB.printf("Y = %i\n", DetectY );
+        SerialUSB.printf("HOME ");
+        SerialUSB.printf("Line = %i", m_Grid[TileX][TileY].Line());
+        SerialUSB.printf("Column = %i\n", m_Grid[TileX][TileY].Column());
+        if (m_Grid[Y][X].Error() == 0)
+        {
+          DetectTile = true;
+        }
+      }
+    }
+  }
+  if ( DetectTile == true )
+  {
+    m_Grid[TileX][TileY].Error(false);
+  }
+  else
+  {
+    m_Grid[TileX][TileY].Error( TypeError );
+  }
+  return (DetectTile);
+}
 
 #endif

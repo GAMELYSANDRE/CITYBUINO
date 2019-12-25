@@ -5,7 +5,7 @@
 //----------------------------------------------------------------------
 Menu::Menu() :
   m_State(0),
-  m_Choice(4),
+  m_Choice(1),
   m_Position(0),
   m_CursorState(0),
   m_Cost(0),
@@ -13,7 +13,7 @@ Menu::Menu() :
 {
   for (uint8_t x = 1; x < NBR_ITEM_MENU + 1; x++)
   {
-    m_TileMenu[x - 1] = new Tile(x, 1, 58, ( x * 10 ) + 1, x + 3);
+    m_TileMenu[x - 1] = new Tile(x, 1, 58, ( x * 10 ) + 1, x);
   }
   for (uint8_t x = 0; x < 3; x++)
   {
@@ -127,27 +127,28 @@ void Menu::Display()
 void Menu::SquareSelection()
 {
   gb.display.setColor(LIGHTBLUE);
-  gb.display.fillRect(57, (10 * (m_Choice - 3 - m_Position)), 18, 10);
+  gb.display.fillRect(57, (10 * (m_Choice - m_Position)), 18, 10);
   if ( m_Choice == INFO )
   {
     DisplayInfo();
   }
   if (gb.buttons.pressed(BUTTON_A))
   {
-    if ( m_Choice < NBR_ITEM_MENU + 3 )
+    if ( m_Choice < NBR_ITEM_MENU )
     {
       m_Choice++;
     }
     else
     {
-      m_Choice = 4;
+      m_Choice = 1;
       m_Position = 0;
     }
-    if ( m_Choice > 8 and m_Choice < NBR_ITEM_MENU + 4 )
+    if ( m_Choice > 5 and m_Choice < NBR_ITEM_MENU + 1 )
     {
       m_Position++;
     }
     gb.sound.fx(SOUND_MENU_1);
+    DebugMenu();
   }
   if (gb.buttons.pressed(BUTTON_B))
   {
@@ -189,6 +190,7 @@ void Menu::SquareSelection()
     gb.display.print("$");
     gb.display.print(m_Cost);
   }
+
 }
 
 void Menu::DisplayInfo()
@@ -217,5 +219,12 @@ void Menu::DisplayInfo()
   gb.display.setColor(BLUE);
   gb.display.print(m_Info[2]);
   gb.display.print("$");
+}
 
+void Menu::DebugMenu()
+{
+  SerialUSB.printf("-----------------------------------------------\n");
+  SerialUSB.printf("Nombre d'item: %i ,Choix: %i  \n", NBR_ITEM_MENU, m_Choice);
+  SerialUSB.printf("Position: %i \n", m_Position);
+  SerialUSB.printf("-----------------------------------------------\n");
 }
