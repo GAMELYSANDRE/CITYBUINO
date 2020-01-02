@@ -22,6 +22,7 @@ class Game
     Menu *m_Menu;
     Cursor *m_Cursor;
     GBTime *m_Time;
+    bool m_Data; //avoid unnecessary loops
     int16_t m_Money;
     uint16_t m_Credit;
     uint16_t m_Debit;

@@ -62,6 +62,14 @@ uint8_t Grid::Error(uint8_t I, uint8_t J ) const
 //----------------------------------------------------------------------
 //                        Setters methods
 //----------------------------------------------------------------------
+void Grid::CameraX( uint8_t ChangeCameraX)
+{
+  m_CameraX = ChangeCameraX;
+}
+void Grid::CameraY( uint8_t ChangeCameraY)
+{
+  m_CameraY = ChangeCameraY;
+}
 //  Method change tile on the map
 void Grid::Type(uint8_t I, uint8_t J, uint8_t ChangeType)
 {
@@ -104,74 +112,54 @@ void Grid::Display()
 
 void Grid::Move()
 {
-  Color SUPERRED = gb.createColor(255, 0, 0);
   if (gb.buttons.repeat(BUTTON_RIGHT, 0))
   {
-    if ( m_CameraX < (MAP_COLUMN * TILE_WIDTH ) - (NBR_TILES_WIDTH * TILE_WIDTH ))
+    if ( m_CameraX < LIMIT_RIGHT )
     {
       m_CameraX = m_CameraX + MAP_SPEED;
-      gb.display.setColor(SUPERRED);
-      gb.display.fillTriangle(65, 60, 75, 50, 75, 60);
+      IMG_ARROW_RIGHT_DOWN();
     }
     else
     {
-      gb.display.setColor(SUPERRED);
-      gb.display.fillCircle(70, 55, 6);
-      gb.display.setColor(WHITE);
-      gb.display.fillRect(67, 54, 6, 3);
+      IMG_NO_ENTRY(70,55);
     }
     //DebugGame();
   }
   if (gb.buttons.repeat(BUTTON_LEFT, 0))
   {
-    if (m_CameraX != 0)
+    if (m_CameraX != LIMIT_LEFT )
     {
       m_CameraX = m_CameraX - MAP_SPEED;
-      gb.display.setColor(SUPERRED);
-      gb.display.fillTriangle(5, 5, 15, 5, 5, 15);
+      IMG_ARROW_LEFT_UP();
     }
     else
     {
-      gb.display.setColor(SUPERRED);
-      gb.display.fillCircle(10, 10, 6);
-      gb.display.setColor(WHITE);
-      gb.display.fillRect(7, 9, 6, 3);
+      IMG_NO_ENTRY(10,10);
     }
-    //DebugGame();
   }
   if (gb.buttons.repeat(BUTTON_UP, 0))
   {
-    if ( m_CameraY > 0)
+    if ( m_CameraY > LIMIT_UP )
     {
       m_CameraY = m_CameraY - MAP_SPEED;
-      gb.display.setColor(SUPERRED);
-      gb.display.fillTriangle(65, 5, 75, 5, 75, 15);
+      IMG_ARROW_RIGHT_UP();
     }
     else
     {
-      gb.display.setColor(SUPERRED);
-      gb.display.fillCircle(70, 10, 6);
-      gb.display.setColor(WHITE);
-      gb.display.fillRect(67, 9, 6, 3);
+      IMG_NO_ENTRY(70,10);
     }
-    //DebugGame();
   }
   if (gb.buttons.repeat(BUTTON_DOWN, 0))
   {
-    if ( m_CameraY < (MAP_LINE * TILE_HEIGHT ) - (NBR_TILES_HEIGHT * TILE_HEIGHT ))
+    if ( m_CameraY < LIMIT_DOWN )
     {
       m_CameraY = m_CameraY + MAP_SPEED;
-      gb.display.setColor(SUPERRED);
-      gb.display.fillTriangle(5, 50, 5, 60, 15, 60);
+      IMG_ARROW_LEFT_DOWN();
     }
     else
     {
-      gb.display.setColor(SUPERRED);
-      gb.display.fillCircle(10, 55, 6);
-      gb.display.setColor(WHITE);
-      gb.display.fillRect(7, 54, 6, 3);
+      IMG_NO_ENTRY(10,55);
     }
-    //DebugGame();
   }
 }
 
@@ -179,6 +167,7 @@ void Grid::ResetError(uint8_t I, uint8_t J)
 {
   m_Grid[I][J].Error(0);
 }
+
 void Grid::DebugGrid()
 {
   SerialUSB.printf("-----------------------------------------------\n");

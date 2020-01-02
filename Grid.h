@@ -22,6 +22,8 @@ class Grid
     uint8_t Error(uint8_t I, uint8_t J ) const;
 
     // setters methods
+    void CameraX( uint8_t ChangeCameraX);
+    void CameraY( uint8_t ChangeCameraY);
     void Type(uint8_t I, uint8_t J, uint8_t ChangeType);
 
 
@@ -29,7 +31,7 @@ class Grid
     void Display();
     void Move();
     
-    // methods file Engine.h$
+    // methods file Engine.h
     void CheckTheTile();    
     
     void ResetError(uint8_t I, uint8_t J);
@@ -50,7 +52,7 @@ class Grid
     // methods file Engine.h$
     uint8_t CheckPresenceRoad(uint8_t VerifTile );
     bool DetectionArea (uint8_t TileX, uint8_t TileY, 
-						            uint8_t SizeArea, uint8_t TileToDetect,
+                        uint8_t SizeArea, uint8_t TileToDetect,
                         uint8_t TypeError); 
 
 };

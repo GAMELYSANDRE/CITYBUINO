@@ -117,10 +117,10 @@ void Menu::Display()
   gb.display.setColor(BLACK);
   gb.display.drawRect(55, 8, 22, 54);
   SquareSelection();
-  for (uint8_t x = 0 + m_Position; x < 5 + m_Position ; x++)
+  for (uint8_t x = 1 + m_Position; x < 6 + m_Position ; x++)
   {
-    m_TileMenu[x]->CartY( ((x + 1 - m_Position ) * 10 ) + 1);
-    m_TileMenu[x]->Display(0);
+    m_TileMenu[x - 1]->CartY( ((x - m_Position ) * 10 ) + 1);
+    m_TileMenu[x - 1]->Display(0);
   }
 }
 

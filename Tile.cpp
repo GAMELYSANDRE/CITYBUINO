@@ -134,11 +134,11 @@ void Tile::Display(bool Cart_OR_iso)
     case HOME_RED:
       gb.display.drawImage(IsoX, IsoY, IMG_HOME_RED );
       break; 
-    case POWER_STATION:
-      gb.display.drawImage(IsoX, IsoY, IMG_POWER_STATION );
+    case POWER_STATION: // Delta in X +4
+      gb.display.drawImage(IsoX, IsoY-4, IMG_POWER_STATION );
       break;
-    case WATER_TOWER:
-      gb.display.drawImage(IsoX, IsoY-2, IMG_WATER_TOWER );
+    case WATER_TOWER: // Delta in X +4
+      gb.display.drawImage(IsoX, IsoY-4, IMG_WATER_TOWER );
       break;
     // road turn intersection      
     case ROAD_V:

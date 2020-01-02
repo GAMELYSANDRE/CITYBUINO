@@ -55,6 +55,13 @@ const float TILE_HEIGHT = 8;
 const uint8_t MAP_LINE = 30;
 const uint8_t MAP_COLUMN = 30;
 const uint8_t MAP_SPEED = 3;
+const uint8_t LIMIT_LEFT = 0;
+const uint8_t LIMIT_RIGHT = (MAP_COLUMN * TILE_WIDTH ) - 
+                            (NBR_TILES_WIDTH * TILE_WIDTH );
+const uint8_t LIMIT_UP = 0;
+const uint8_t LIMIT_DOWN = (MAP_LINE * TILE_HEIGHT ) - 
+                            (NBR_TILES_HEIGHT * TILE_HEIGHT );
+
 
 const uint8_t Map[900] =
 {
@@ -109,4 +116,18 @@ const Gamebuino_Meta::Sound_FX SOUND_BULL[] =
   {Gamebuino_Meta::Sound_FX_Wave::SQUARE, 0, 212, 57, -64, 477, 5},
 };
 
+// Logo
+// new color
+const void IMG_ARROW_RIGHT();
+const void IMG_ARROW_RIGHT_UP();
+const void IMG_ARROW_RIGHT_DOWN();
+
+const void IMG_ARROW_LEFT();
+const void IMG_ARROW_LEFT_UP();
+const void IMG_ARROW_LEFT_DOWN();
+
+const void IMG_ARROW_UP();
+const void IMG_ARROW_DOWN();
+
+void IMG_NO_ENTRY(uint8_t PosX,uint8_t PosY);
 #endif
