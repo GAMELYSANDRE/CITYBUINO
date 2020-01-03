@@ -273,21 +273,15 @@ void Game::MoveCursor()
       ( Line == Line and Column == (5 - Line ) )
     )
     {
-      if ( MoveCameraX < LIMIT_RIGHT )
+      if ( MoveCameraX < LIMIT_RIGHT and  MoveCameraY > LIMIT_UP )
       {
-        if ( MoveCameraY > LIMIT_UP )
-        {
-          m_City->CameraX( MoveCameraX - 8 );
-        }
+        m_City->CameraY( MoveCameraY - 8 );
         IMG_ARROW_RIGHT_UP();
       }
       else
       {
-        IMG_NO_ENTRY(70,5);
+        IMG_NO_ENTRY(70,10);
       }
-      SerialUSB.printf(" - TILE MOVE - \n");
-      SerialUSB.printf(" - PRESSED RIGHT + UP - \n");
-      SerialUSB.printf("X = %i - Y = %i \n", MoveCameraX, MoveCameraY );
     }
     else
     {
@@ -297,6 +291,11 @@ void Game::MoveCursor()
       RightButtonState = 0;
       UpButtonState = 0;
     }
+    SerialUSB.printf("____________________________________\n");
+    SerialUSB.printf("TILE MOVE : PRESSED RIGHT AND UP \n");
+    SerialUSB.printf("____________________________________\n");
+    SerialUSB.printf("CAMERA : X = %i - Y = %i \n", MoveCameraX, MoveCameraY );
+    SerialUSB.printf("TILE : Line = %i - Column = %i \n", Line, Column );
   }
   if (gb.buttons.pressed(BUTTON_LEFT) and gb.buttons.pressed(BUTTON_UP))
   {
@@ -311,21 +310,15 @@ void Game::MoveCursor()
       ( Line == Line and Column == (5 - Line ) )
     )
     {
-      if (MoveCameraX > LIMIT_LEFT )
+      if (MoveCameraX > LIMIT_LEFT and MoveCameraY > LIMIT_UP )
       {
-        if ( MoveCameraY > LIMIT_UP )
-        {
-          m_City->CameraY( MoveCameraY - 8);
-        }
+        m_City->CameraX( MoveCameraX - 8);
         IMG_ARROW_LEFT_UP();
       }
       else
       {
-        IMG_NO_ENTRY(10,5);
+        IMG_NO_ENTRY(10,10);
       }
-      SerialUSB.printf(" - TILE MOVE - \n");
-      SerialUSB.printf(" - PRESSED LEFT + UP - \n");
-      SerialUSB.printf("X = %i - Y = %i \n", MoveCameraX, MoveCameraY );
     }  
     else
     {    
@@ -335,6 +328,11 @@ void Game::MoveCursor()
       LeftButtonState = 0;
       UpButtonState = 0;
     }
+    SerialUSB.printf("____________________________________\n");
+    SerialUSB.printf("TILE MOVE : PRESSED LEFT AND UP \n");
+    SerialUSB.printf("____________________________________\n");
+    SerialUSB.printf("CAMERA : X = %i - Y = %i \n", MoveCameraX, MoveCameraY );
+    SerialUSB.printf("TILE : Line = %i - Column = %i \n", Line, Column );
   }
   if (gb.buttons.pressed(BUTTON_RIGHT) and gb.buttons.pressed(BUTTON_DOWN))
   {
@@ -358,21 +356,15 @@ void Game::MoveCursor()
       ( Line == 7 and Column == 12 )
     )
     {
-      if (MoveCameraX < LIMIT_RIGHT )
+      if (MoveCameraX < LIMIT_RIGHT and MoveCameraY < LIMIT_DOWN )
       {
-        if ( MoveCameraY < LIMIT_DOWN )
-        {
-          m_City->CameraY( MoveCameraY + 8);
-        }
+        m_City->CameraX( MoveCameraX + 8);
         IMG_ARROW_RIGHT_DOWN();
       }
       else
       {
-        IMG_NO_ENTRY(10,55);
+        IMG_NO_ENTRY(70,55);
       }
-      SerialUSB.printf(" - TILE MOVE - \n");
-      SerialUSB.printf(" - PRESSED RIGHT + DOWN - \n");
-      SerialUSB.printf("X = %i - Y = %i \n", MoveCameraX, MoveCameraY );
     }
     else
     {
@@ -382,6 +374,11 @@ void Game::MoveCursor()
       RightButtonState = 0;
       DownButtonState = 0;
     }
+    SerialUSB.printf("____________________________________\n");
+    SerialUSB.printf("TILE MOVE : PRESSED RIGHT AND DOWN \n");
+    SerialUSB.printf("____________________________________\n");
+    SerialUSB.printf("CAMERA : X = %i - Y = %i \n", MoveCameraX, MoveCameraY );
+    SerialUSB.printf("TILE : Line = %i - Column = %i \n", Line, Column );
   }
   if (gb.buttons.pressed(BUTTON_LEFT) and gb.buttons.pressed(BUTTON_DOWN))
   {
@@ -405,32 +402,33 @@ void Game::MoveCursor()
       ( Line == 7 and Column == 12 ) 
     )
     {
-      if (MoveCameraX > LIMIT_LEFT )
+      if (MoveCameraX > LIMIT_LEFT and MoveCameraY < LIMIT_DOWN )
       {
-        if ( MoveCameraY < LIMIT_DOWN )
-        {
-          m_City->CameraX( MoveCameraX + 8);
-        }
+        m_City->CameraY( MoveCameraY + 8);
         IMG_ARROW_LEFT_DOWN();
       }
       else
       {
-        IMG_NO_ENTRY(40,5);
+        IMG_NO_ENTRY(10,55);
       }
-      SerialUSB.printf(" - TILE MOVE - \n");
-      SerialUSB.printf(" - PRESSED UP - \n");
-      SerialUSB.printf("X = %i - Y = %i \n", MoveCameraX, MoveCameraY );
     }
-    IMG_ARROW_LEFT_DOWN();
-    m_Cursor->ViewLine(Line + 1);
-    // deactivates movements to avoid repetition
-    LeftButtonState = 0;
-    DownButtonState = 0;
+    else
+    {
+      IMG_ARROW_LEFT_DOWN();
+      m_Cursor->ViewLine(Line + 1);
+      // deactivates movements to avoid repetition
+      LeftButtonState = 0;
+      DownButtonState = 0;
+    }
+    SerialUSB.printf("____________________________________\n");
+    SerialUSB.printf("TILE MOVE : PRESSED LEFT AND DOWN \n");
+    SerialUSB.printf("____________________________________\n");
+    SerialUSB.printf("CAMERA : X = %i - Y = %i \n", MoveCameraX, MoveCameraY );
+    SerialUSB.printf("TILE : Line = %i - Column = %i \n", Line, Column );
   }
   //--------------------------------------------------------------------
   // classic movements and control
   //--------------------------------------------------------------------
-
   //
   // right move cartesian -->
   //
@@ -460,12 +458,15 @@ void Game::MoveCursor()
     // move inside the screen
     else
     {
+      IMG_ARROW_RIGHT();
       m_Cursor->ViewColumn(Column + 1);
       m_Cursor->ViewLine(Line - 1);
     }
-    SerialUSB.printf(" - TILE MOVE - \n");
-    SerialUSB.printf(" - PRESSED RIGHT - \n");
-    SerialUSB.printf("X = %i - Y = %i \n", MoveCameraX, MoveCameraY );
+    SerialUSB.printf("______________________________\n");
+    SerialUSB.printf("TILE MOVE : PRESSED RIGHT  \n");
+    SerialUSB.printf("______________________________\n");
+    SerialUSB.printf("CAMERA : X = %i - Y = %i \n", MoveCameraX, MoveCameraY );
+    SerialUSB.printf("TILE : Line = %i - Column = %i \n", Line, Column );
   }
   //
   // left move cartesian <--
@@ -492,15 +493,18 @@ void Game::MoveCursor()
       {
         IMG_NO_ENTRY(10,30);
       }
-      SerialUSB.printf(" - TILE MOVE - \n");
-      SerialUSB.printf(" - PRESSED LEFT - \n");
-      SerialUSB.printf("X = %i - Y = %i \n", MoveCameraX, MoveCameraY );
     }
     else
     {
+      IMG_ARROW_LEFT();
       m_Cursor->ViewColumn(Column - 1);
       m_Cursor->ViewLine(Line + 1);
     }
+    SerialUSB.printf("______________________________\n");
+    SerialUSB.printf("TILE MOVE : PRESSED LEFT  \n");
+    SerialUSB.printf("______________________________\n");
+    SerialUSB.printf("CAMERA : X = %i - Y = %i \n", MoveCameraX, MoveCameraY );
+    SerialUSB.printf("TILE : Line = %i - Column = %i \n", Line, Column );
   }
   //
   // up move cartesian
@@ -526,16 +530,18 @@ void Game::MoveCursor()
       {
         IMG_NO_ENTRY(40,5);
       }
-      SerialUSB.printf(" - TILE MOVE - \n");
-      SerialUSB.printf(" - PRESSED UP - \n");
-      SerialUSB.printf("X = %i - Y = %i \n", MoveCameraX, MoveCameraY );
     }
     else
     {
+      IMG_ARROW_UP();
       m_Cursor->ViewColumn(Column - 1);
       m_Cursor->ViewLine(Line - 1);
     }
-
+    SerialUSB.printf("______________________________\n");
+    SerialUSB.printf("TILE MOVE : PRESSED UP  \n");
+    SerialUSB.printf("______________________________\n");
+    SerialUSB.printf("CAMERA : X = %i - Y = %i \n", MoveCameraX, MoveCameraY );
+    SerialUSB.printf("TILE : Line = %i - Column = %i \n", Line, Column );
   }
   //                        I
   // down move cartesian    I
@@ -571,18 +577,20 @@ void Game::MoveCursor()
       {
         IMG_NO_ENTRY(40,55);
       }
-      SerialUSB.printf(" - TILE MOVE - \n");
-      SerialUSB.printf(" - PRESSED DOWN - \n");
-      SerialUSB.printf("X = %i - Y = %i \n", MoveCameraX, MoveCameraY );
+
     }
     else
     {
+      IMG_ARROW_DOWN();
       m_Cursor->ViewColumn(Column + 1);
       m_Cursor->ViewLine(Line + 1);
     }
+    SerialUSB.printf("______________________________\n");
+    SerialUSB.printf("TILE MOVE : PRESSED DOWN  \n");
+    SerialUSB.printf("______________________________\n");
+    SerialUSB.printf("CAMERA : X = %i - Y = %i \n", MoveCameraX, MoveCameraY );
+    SerialUSB.printf("TILE : Line = %i - Column = %i \n", Line, Column );
   }
-  SerialUSB.printf("Line = %i - Column = %i \n", Line, Column );
-
 }
 
 //----------------------------------------------------------------------

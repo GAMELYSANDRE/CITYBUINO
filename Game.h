@@ -39,6 +39,7 @@ class Game
     void DisplayTime();
     void UpdateInfo();
     void Message( char TextMessage[18] );
+    
 
 
 };

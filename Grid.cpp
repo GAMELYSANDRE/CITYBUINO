@@ -127,7 +127,7 @@ void Grid::Move()
   }
   if (gb.buttons.repeat(BUTTON_LEFT, 0))
   {
-    if (m_CameraX != LIMIT_LEFT )
+    if (m_CameraX > LIMIT_LEFT )
     {
       m_CameraX = m_CameraX - MAP_SPEED;
       IMG_ARROW_LEFT_UP();
