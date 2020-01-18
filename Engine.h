@@ -74,7 +74,7 @@ void Grid::CheckTheTile()
       {
         DetectionArea(i, j, 10, POWER_STATION, ERROR_ELEC);
       }
-      
+
       //-----------------------------------------------------
       // check if there is a water tower near the house
       //-----------------------------------------------------
@@ -228,7 +228,7 @@ uint8_t Grid::CheckPresenceRoad(uint8_t VerifTile )
 // TileY = y coordinate of the tile
 // SizeArea = detection size ex = square of 10 by 10 around the tile
 // TileToDetect = Tile detected
-// TypeError = Type Error 
+// TypeError = Type Error
 //
 //----------------------------------------------------------------------
 bool Grid::DetectionArea (uint8_t TileX, uint8_t TileY,

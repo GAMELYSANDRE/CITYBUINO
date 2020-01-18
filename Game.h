@@ -23,9 +23,9 @@ class Game
     Cursor *m_Cursor;
     GBTime *m_Time;
     bool m_Data; //avoid unnecessary loops
-    int16_t m_Money;
-    uint16_t m_Credit;
-    uint16_t m_Debit;
+    int32_t m_Money;
+    uint32_t m_Credit;
+    uint32_t m_Debit;
     uint16_t m_Citizen;
     uint16_t m_NbrDay;
 
@@ -39,7 +39,7 @@ class Game
     void DisplayTime();
     void UpdateInfo();
     void Message( char TextMessage[18] );
-    
+    void Memory(uint8_t Memory_Action);
 
 
 };

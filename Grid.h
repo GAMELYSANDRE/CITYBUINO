@@ -30,10 +30,10 @@ class Grid
     // methods
     void Display();
     void Move();
-    
+
     // methods file Engine.h
-    void CheckTheTile();    
-    
+    void CheckTheTile();
+
     void ResetError(uint8_t I, uint8_t J);
 
   private:
@@ -45,15 +45,15 @@ class Grid
     // save tile position following the camera
     uint8_t m_CameraTileX;
     uint8_t m_CameraTileY;
-    
+
     // methods
     void DebugGrid();
-    
+
     // methods file Engine.h$
     uint8_t CheckPresenceRoad(uint8_t VerifTile );
-    bool DetectionArea (uint8_t TileX, uint8_t TileY, 
+    bool DetectionArea (uint8_t TileX, uint8_t TileY,
                         uint8_t SizeArea, uint8_t TileToDetect,
-                        uint8_t TypeError); 
+                        uint8_t TypeError);
 
 };
 

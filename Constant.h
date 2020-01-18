@@ -4,7 +4,7 @@
 #include <Gamebuino-Meta.h>
 
 // variable for the menu
-const uint8_t NBR_ITEM_MENU = 7; 
+const uint8_t NBR_ITEM_MENU = 8;
 
 // variable for the game
 const uint8_t DELAY_MONEY = 10; // seconds before recovering the money
@@ -12,13 +12,13 @@ const uint8_t DELAY_MONEY = 10; // seconds before recovering the money
 
 // Menu
 const uint8_t INFO = 1;
-const uint8_t BULL = 2;
-const uint8_t ROAD_H = 3;
-const uint8_t ROAD_V = 4;
-const uint8_t HOME_RED = 5;
-const uint8_t POWER_STATION = 6;
-const uint8_t WATER_TOWER = 7;
-
+const uint8_t SAVE = 2;
+const uint8_t READ = 3;
+const uint8_t BULL = 4;
+const uint8_t ROAD_H = 5;
+const uint8_t HOME_RED = 6;
+const uint8_t POWER_STATION = 7;
+const uint8_t WATER_TOWER = 8;
 
 // tile map
 const uint8_t GRASS = 20;
@@ -34,6 +34,7 @@ const uint8_t ROAD_INT_DOWN = 28;
 const uint8_t ROAD_INT_RIGHT = 29;
 const uint8_t ROAD_INT_LEFT = 30;
 const uint8_t ROAD_INT = 31;
+const uint8_t ROAD_V = 32;
 
 // variable grouping all roads
 const uint8_t ROAD = 100;
@@ -56,14 +57,14 @@ const uint8_t MAP_LINE = 30;
 const uint8_t MAP_COLUMN = 30;
 const uint8_t MAP_SPEED = 3;
 const uint8_t LIMIT_LEFT = 0;
-const uint8_t LIMIT_RIGHT = (MAP_COLUMN * TILE_WIDTH ) - 
+const uint8_t LIMIT_RIGHT = (MAP_COLUMN * TILE_WIDTH ) -
                             (NBR_TILES_WIDTH * TILE_WIDTH );
 const uint8_t LIMIT_UP = 0;
-const uint8_t LIMIT_DOWN = (MAP_LINE * TILE_HEIGHT ) - 
-                            (NBR_TILES_HEIGHT * TILE_HEIGHT );
+const uint8_t LIMIT_DOWN = (MAP_LINE * TILE_HEIGHT ) -
+                           (NBR_TILES_HEIGHT * TILE_HEIGHT );
 
 
-const uint8_t Map[900] =
+const uint8_t MAP[900] =
 {
   22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22,
   22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22,
@@ -129,5 +130,11 @@ const void IMG_ARROW_LEFT_DOWN();
 const void IMG_ARROW_UP();
 const void IMG_ARROW_DOWN();
 
-void IMG_NO_ENTRY(uint8_t PosX,uint8_t PosY);
+void IMG_NO_ENTRY(uint8_t PosX, uint8_t PosY);
+
+// Save game
+const uint8_t MEM_READ = 0;
+const uint8_t MEM_SAVE = 1;
+const uint8_t MEM_DEL = 2;
+
 #endif

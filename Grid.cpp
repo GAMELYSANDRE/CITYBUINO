@@ -121,7 +121,7 @@ void Grid::Move()
     }
     else
     {
-      IMG_NO_ENTRY(70,55);
+      IMG_NO_ENTRY(70, 55);
     }
     //DebugGame();
   }
@@ -134,7 +134,7 @@ void Grid::Move()
     }
     else
     {
-      IMG_NO_ENTRY(10,10);
+      IMG_NO_ENTRY(10, 10);
     }
   }
   if (gb.buttons.repeat(BUTTON_UP, 0))
@@ -146,7 +146,7 @@ void Grid::Move()
     }
     else
     {
-      IMG_NO_ENTRY(70,10);
+      IMG_NO_ENTRY(70, 10);
     }
   }
   if (gb.buttons.repeat(BUTTON_DOWN, 0))
@@ -158,7 +158,7 @@ void Grid::Move()
     }
     else
     {
-      IMG_NO_ENTRY(10,55);
+      IMG_NO_ENTRY(10, 55);
     }
   }
 }

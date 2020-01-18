@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "Image.h"
 
 //----------------------------------------------------------------------
 //                      Constructors
@@ -12,7 +13,7 @@ Game::Game () :
   m_Citizen(0),
   m_NbrDay(0)
 {
-  m_City = new Grid(Map, MAP_LINE, MAP_COLUMN);
+  m_City = new Grid(MAP, MAP_LINE, MAP_COLUMN);
   m_Menu = new Menu();
   m_Cursor = new Cursor();
   m_Time = new GBTime();
@@ -27,6 +28,7 @@ Game::~Game()
   delete m_City;
   delete m_Menu;
   delete m_Cursor;
+  delete m_Time;
 }
 //----------------------------------------------------------------------
 //                       method display Game
@@ -35,10 +37,10 @@ Game::~Game()
 void Game::Display()
 {
   m_City->Display();
-  // Display the money
-  DisplayMoney();
   // show or not the cursor
   DisplayCursor();
+  // Display the money
+  DisplayMoney();
   // show or not the menu
   DisplayMenu();
   // inactive cursor move map
@@ -52,13 +54,87 @@ void Game::Display()
     ConstructCursor();
     if ( m_Data )
     {
-      // Engine and info
+      // Engine
       m_City->CheckTheTile();
+      // information
       UpdateInfo();
+      // Desactive
       m_Data = false;
     }
   }
-
+  if ( m_Menu->Choice() == SAVE and m_Menu->State() == false )
+  {
+    gb.display.setColor(WHITE);
+    gb.display.fillRect(2, 20, 76, 20);
+    gb.display.setColor(BLACK);
+    gb.display.drawRect(2, 20, 76, 20);
+    gb.display.setCursor(10, 22);
+    gb.display.print("Save the city ?");
+    gb.display.setCursor(28, 31);
+    gb.display.print("YES");
+    gb.display.drawImage(16, 28, IMG_BUTTON_A);
+    gb.display.setCursor(58, 31);
+    gb.display.print("NO");
+    gb.display.drawImage(46, 28, IMG_BUTTON_B);
+    if (gb.buttons.pressed(BUTTON_A))
+    {
+      m_Cursor->State(false);
+      m_Menu->CursorState(false);
+      m_Menu->State(false);
+      // Save game
+      Memory(MEM_SAVE);
+      m_Menu->Choice(BULL);
+    }
+    if (gb.buttons.pressed(BUTTON_B))
+    {
+      if (m_Menu->ButtonBLock() == false)
+      {
+        m_Menu->Choice(BULL);
+        m_Cursor->State(false);
+        m_Menu->CursorState(false);
+        m_Menu->State(false);
+      }
+      m_Menu->ButtonBLock(false);
+    }
+  }
+  if ( m_Menu->Choice() == READ and m_Menu->State() == false )
+  {
+    gb.display.setColor(WHITE);
+    gb.display.fillRect(2, 14, 76, 30);
+    gb.display.setColor(BLACK);
+    gb.display.drawRect(2, 14, 76, 30);
+    gb.display.setCursor(4, 17);
+    gb.display.print("Use the city save?");
+    gb.display.setCursor(28, 27);
+    gb.display.print("YES");
+    gb.display.drawImage(16, 24, IMG_BUTTON_A);
+    gb.display.setCursor(58, 27);
+    gb.display.print("NO");
+    gb.display.drawImage(46, 24, IMG_BUTTON_B);
+    if (gb.buttons.pressed(BUTTON_A))
+    {
+      m_Cursor->State(false);
+      m_Menu->CursorState(false);
+      m_Menu->State(false);
+      // Read game
+      Memory(MEM_READ);
+      // Engine
+      m_City->CheckTheTile();
+      // information
+      UpdateInfo();
+    }
+    if (gb.buttons.released(BUTTON_B))
+    {
+      if (m_Menu->ButtonBLock() == false)
+      {
+        m_Menu->Choice(BULL);
+        m_Cursor->State(false);
+        m_Menu->CursorState(false);
+        m_Menu->State(false);
+      }
+      m_Menu->ButtonBLock(false);
+    }
+  }
   // Display time
   DisplayTime();
 
@@ -127,7 +203,7 @@ void Game::UpdateInfo()
   // reset information variables
   m_Citizen = 0;
   m_Credit = 0;
-  m_Debit =0;
+  m_Debit = 0;
   uint8_t CityTile = m_City->Type(0, 0);
   for ( uint8_t Y = 0 ; Y < MAP_LINE; Y++)
   {
@@ -162,7 +238,7 @@ void Game::UpdateInfo()
         case POWER_STATION:
           SerialUSB.printf("POWER STATION X = %i - Y = %i \n", X , Y);
           m_Debit = m_Debit + 200;
-          break;    
+          break;
       }
     }
   }
@@ -215,14 +291,17 @@ void Game::Message( char TextMessage[18] )
 
 void Game::DisplayCursor()
 {
-  if (m_Menu->CursorState())
+  if (m_Menu->CursorState() == true )
   {
-    m_Cursor->State(true);
     m_Cursor->CameraX(m_City->CameraX());
     m_Cursor->CameraY(m_City->CameraY());
     m_Cursor->Choice(m_Menu->Choice());
+    if ( m_Cursor->Choice() != SAVE )
+    {
+      m_Cursor->State(true);
+    }
   }
-  if (m_Cursor->State() == true and m_Cursor->Choice() != INFO )
+  if (m_Cursor->State() == true )
   {
     m_Cursor->Display();
   }
@@ -237,12 +316,8 @@ void Game::MoveCursor()
   // exit mode construction
   if (gb.buttons.pressed(BUTTON_B) )
   {
-    if (m_Menu->ButtonBLock() == false)
-    {
-      m_Menu->CursorState(false);
-      m_Cursor->State(false);
-    }
-    m_Menu->ButtonBLock(false);
+    m_Menu->CursorState(false);
+    m_Cursor->State(false);
   }
   // Movements
   uint16_t Column = m_Cursor->ViewColumn();
@@ -250,9 +325,9 @@ void Game::MoveCursor()
   uint8_t MoveCameraX = m_City->CameraX();
   uint8_t MoveCameraY = m_City->CameraY();
   // multiple of 8
-  MoveCameraX = MoveCameraX / TILE_WIDTH; 
+  MoveCameraX = MoveCameraX / TILE_WIDTH;
   MoveCameraY = MoveCameraY / TILE_HEIGHT;
-  MoveCameraX = MoveCameraX * TILE_WIDTH; 
+  MoveCameraX = MoveCameraX * TILE_WIDTH;
   MoveCameraY = MoveCameraY * TILE_HEIGHT;
   bool RightButtonState = 1;
   bool LeftButtonState = 1;
@@ -268,7 +343,7 @@ void Game::MoveCursor()
       // limit right
       ( Line == Line and Column == (Line + 4) ) or
       ( Line == Line and Column == (Line + 5) ) or
-      // limit up     
+      // limit up
       ( Line == Line and Column == (4 - Line ) ) or
       ( Line == Line and Column == (5 - Line ) )
     )
@@ -280,7 +355,7 @@ void Game::MoveCursor()
       }
       else
       {
-        IMG_NO_ENTRY(70,10);
+        IMG_NO_ENTRY(70, 10);
       }
     }
     else
@@ -305,7 +380,7 @@ void Game::MoveCursor()
       // limit left
       ( Line == Line and Column == (Line - 4) ) or
       ( Line == Line and Column == (Line - 5) ) or
-      // limit up     
+      // limit up
       ( Line == Line and Column == (4 - Line ) ) or
       ( Line == Line and Column == (5 - Line ) )
     )
@@ -317,11 +392,11 @@ void Game::MoveCursor()
       }
       else
       {
-        IMG_NO_ENTRY(10,10);
+        IMG_NO_ENTRY(10, 10);
       }
-    }  
+    }
     else
-    {    
+    {
       IMG_ARROW_LEFT_UP();
       m_Cursor->ViewColumn(Column - 1);
       // deactivates movements to avoid repetition
@@ -363,7 +438,7 @@ void Game::MoveCursor()
       }
       else
       {
-        IMG_NO_ENTRY(70,55);
+        IMG_NO_ENTRY(70, 55);
       }
     }
     else
@@ -399,7 +474,7 @@ void Game::MoveCursor()
       ( Line == 10 and Column == 9 ) or
       ( Line == 9 and Column == 10 ) or
       ( Line == 8 and Column == 11 ) or
-      ( Line == 7 and Column == 12 ) 
+      ( Line == 7 and Column == 12 )
     )
     {
       if (MoveCameraX > LIMIT_LEFT and MoveCameraY < LIMIT_DOWN )
@@ -409,7 +484,7 @@ void Game::MoveCursor()
       }
       else
       {
-        IMG_NO_ENTRY(10,55);
+        IMG_NO_ENTRY(10, 55);
       }
     }
     else
@@ -452,7 +527,7 @@ void Game::MoveCursor()
       }
       else
       {
-        IMG_NO_ENTRY(70,30);
+        IMG_NO_ENTRY(70, 30);
       }
     }
     // move inside the screen
@@ -491,7 +566,7 @@ void Game::MoveCursor()
       }
       else
       {
-        IMG_NO_ENTRY(10,30);
+        IMG_NO_ENTRY(10, 30);
       }
     }
     else
@@ -528,7 +603,7 @@ void Game::MoveCursor()
       }
       else
       {
-        IMG_NO_ENTRY(40,5);
+        IMG_NO_ENTRY(40, 5);
       }
     }
     else
@@ -575,7 +650,7 @@ void Game::MoveCursor()
       }
       else
       {
-        IMG_NO_ENTRY(40,55);
+        IMG_NO_ENTRY(40, 55);
       }
 
     }
@@ -605,7 +680,7 @@ void Game::DisplayMoney()
   gb.display.print("$ ");
   gb.display.print(m_Money);
 
-  gb.display.print(" DY ");
+  gb.display.print(" DAY ");
   gb.display.print(m_NbrDay);
 
   gb.display.setCursor(3, 1);
@@ -613,7 +688,7 @@ void Game::DisplayMoney()
   gb.display.print("$ ");
   gb.display.print(m_Money);
 
-  gb.display.print(" DY ");
+  gb.display.print(" DAY ");
   gb.display.print(m_NbrDay);
 
 
@@ -636,5 +711,68 @@ void Game::DisplayTime()
     m_NbrDay++;
     m_Time->Reset();
     m_Money = m_Money + m_Credit - m_Debit;
+  }
+}
+
+//----------------------------------------------------------------------
+//                     Save Data Game
+//----------------------------------------------------------------------
+
+void Game::Memory(uint8_t Memory_Action)
+{
+  uint8_t buffer[30] = { 0 };
+  switch (Memory_Action)
+  {
+    case MEM_SAVE:
+      gb.display.setColor(WHITE);
+      gb.display.fillRect(2, 20, 76, 20);
+      gb.display.setColor(BLACK);
+      gb.display.drawRect(2, 20, 76, 20);
+      gb.display.setCursor(4, 23);
+      gb.display.print("BACKUP IN PROGRESS");
+      SerialUSB.printf("______________________________\n");
+      SerialUSB.printf("GAME SAVE \n");
+      SerialUSB.printf("______________________________\n");
+      for (uint8_t Line = 0; Line < 30; Line++)
+      {
+        SerialUSB.printf("LINE %i : ", Line);
+        for (uint16_t Column = Line * 30; Column < 30 + (Line * 30); Column++)
+        {
+          //buffer[i-(y*30)]=MAP[i];
+          buffer[Column - (Line * 30)] = m_City->Type(Column - (Line * 30), Line);
+          SerialUSB.printf("%i ", buffer[Column - (Line * 30)]);
+        }
+        SerialUSB.printf("\n");
+        gb.save.del(Line);
+        gb.save.set(Line, buffer, 30);
+        gb.display.setColor(RED);
+        gb.display.fillRect(5, 30, 2.4 * Line, 6);
+        delay(1);
+      }
+      gb.save.del(30);
+      gb.save.set(30, m_Money);
+      gb.save.del(31);
+      gb.save.set(31, m_NbrDay);
+
+      break;
+    case MEM_READ:
+      SerialUSB.printf("______________________________\n");
+      SerialUSB.printf("GAME RESTORED  \n");
+      SerialUSB.printf("______________________________\n");
+      for (uint8_t Line = 0; Line < 30; Line++)
+      {
+        SerialUSB.printf("LINE %i : ", Line);
+        gb.save.get(Line, buffer, 30);
+        for (uint16_t Column = Line * 30; Column < 30 + (Line * 30); Column++)
+        {
+          m_City->Type(Column - (Line * 30), Line, buffer[Column - (Line * 30)]);
+        }
+        gb.display.setColor(RED);
+        gb.display.fillRect(5, 35, 2.4 * Line, 6);
+        delay(20);
+      }
+      m_Money = gb.save.get(30);
+      m_NbrDay = gb.save.get(31);
+      break;
   }
 }
