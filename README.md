@@ -1,5 +1,8 @@
+FR
+
 # CITYBUINO #
 **Un jeu vidéo pour la Gamebuino META (https://gamebuino.com/fr)**
+
 **A video game for Gamebuino META (https://gamebuino.com/fr)**
 
 **Tags:** #CITY #SIMCITY #CONSTRUCT #pixelart #arduino #cplusplus #gamebuino
@@ -7,10 +10,10 @@
 **Author:** Laurent MEURILLON
 
 **Release V0.70:** 03/01/2020
+**Release V0.80:** 18/01/2020
 
 __Pour l'instant' le jeu est en développement, il peut y avoir des bugs__
 
-FR
 
 ## Description du jeu ##
 
@@ -22,4 +25,6 @@ FR
 **Mouvements sur la carte:**
 
 - **Se déplacer:** flèches droite gauche haut et bas
+- **Bouton Menu:** Fait apparaitre ou disparaitre le menu de droite
 
+**Mouvements dans le menu:**
