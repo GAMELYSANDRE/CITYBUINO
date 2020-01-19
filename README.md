@@ -23,6 +23,7 @@ __Pour l'instant' le jeu est en développement, il peut y avoir des bugs__
 
 ## Commandes du jeu ##
 **Mouvements sur la carte:**
+![IMAGE GAME MENU](/VIDEOS/CITUBUINO_1.BMP)
 
 - **Se déplacer:** flèches droite gauche haut et bas
 - **Bouton Menu:** Fait apparaitre ou disparaitre le menu de droite
