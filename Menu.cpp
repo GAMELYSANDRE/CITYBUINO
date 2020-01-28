@@ -5,7 +5,7 @@
 //----------------------------------------------------------------------
 Menu::Menu() :
   m_State(0),
-  m_Choice(1),
+  m_Choice(0),
   m_Position(0),
   m_CursorState(0),
   m_Cost(0),
@@ -14,10 +14,6 @@ Menu::Menu() :
   for (uint8_t x = 1; x < NBR_ITEM_MENU + 1; x++)
   {
     m_TileMenu[x - 1] = new Tile(x, 1, 58, ( x * 10 ) + 1, x);
-  }
-  for (uint8_t x = 0; x < 3; x++)
-  {
-    m_Info[x] = 0;
   }
 }
 
@@ -56,18 +52,6 @@ bool Menu::ButtonBLock() const
 {
   return (m_ButtonBLock);
 }
-uint16_t Menu::Citizen() const
-{
-  return (m_Info[0]);
-}
-uint16_t Menu::Credit() const
-{
-  return (m_Info[1]);
-}
-uint16_t Menu::Debit() const
-{
-  return (m_Info[2]);
-}
 
 
 //----------------------------------------------------------------------
@@ -93,18 +77,6 @@ void Menu::ButtonBLock(bool ChangeButtonBLock)
 {
   m_ButtonBLock = ChangeButtonBLock;
 }
-void Menu::Citizen(uint16_t ChangeCitizen )
-{
-  m_Info[0] = ChangeCitizen;
-}
-void Menu::Credit(uint16_t ChangeCredit )
-{
-  m_Info[1] = ChangeCredit;
-}
-void Menu::Debit(uint16_t ChangeDebit )
-{
-  m_Info[2] = ChangeDebit;
-}
 
 //----------------------------------------------------------------------
 //                       Display menu methods
@@ -112,6 +84,10 @@ void Menu::Debit(uint16_t ChangeDebit )
 
 void Menu::Display()
 {
+  if (m_Choice == 0)
+  {
+    m_Choice = INFO;
+  }
   gb.display.setColor(WHITE);
   gb.display.fillRect(55, 8, 22, 54);
   gb.display.setColor(BLACK);
@@ -128,10 +104,6 @@ void Menu::SquareSelection()
 {
   gb.display.setColor(LIGHTBLUE);
   gb.display.fillRect(57, (10 * (m_Choice - m_Position)), 18, 10);
-  if ( m_Choice == INFO )
-  {
-    DisplayInfo();
-  }
   if (gb.buttons.pressed(BUTTON_A))
   {
     if ( m_Choice < NBR_ITEM_MENU )
@@ -159,16 +131,10 @@ void Menu::SquareSelection()
   }
   switch (m_Choice)
   {
-    case INFO:
-      m_State = 1;
-      break;
     case BULL:
       m_Cost = 0;
       break;
     case ROAD_H:
-      m_Cost = 50;
-      break;
-    case ROAD_V:
       m_Cost = 50;
       break;
     case HOME_RED:
@@ -177,54 +143,36 @@ void Menu::SquareSelection()
     case POWER_STATION:
       m_Cost = 1000;
       break;
+    case WATER_TOWER:
+      m_Cost = 500;
+      break;
+    default:
+      m_Cost = 0;
+      break;
   }
-  if ( m_Choice != INFO )
+  if ( m_Choice == BULL or m_Choice == ROAD_H or m_Choice == HOME_RED
+       or m_Choice == POWER_STATION or m_Choice == WATER_TOWER )
   {
     // Display Texte
-    gb.display.setCursor(56, 2);
+    gb.display.setCursor(56, 3);
     gb.display.setColor(GRAY);
     gb.display.print("$");
     gb.display.print(m_Cost);
-    gb.display.setCursor(55, 1);
-    gb.display.setColor(RED);
+    gb.display.setCursor(55, 2);
+    gb.display.setColor(BLACK);
     gb.display.print("$");
     gb.display.print(m_Cost);
   }
 
-}
-
-void Menu::DisplayInfo()
-{
-  // frame
-  gb.display.setColor(WHITE);
-  gb.display.fillRect(2, 8, 52, 54);
-  gb.display.setColor(BLACK);
-  gb.display.drawRect(2, 8, 52, 54);
-  // Text Citizen
-  gb.display.setCursor(4, 10);
-  gb.display.print("Citizen ");
-  gb.display.setColor(BLUE);
-  gb.display.print(m_Info[0]);
-  // Text Credit
-  gb.display.setCursor(4, 16);
-  gb.display.setColor(BLACK);
-  gb.display.print("Credit ");
-  gb.display.setColor(BLUE);
-  gb.display.print(m_Info[1]);
-  gb.display.print("$");
-  // Text Debit
-  gb.display.setCursor(4, 22);
-  gb.display.setColor(BLACK);
-  gb.display.print("Debit ");
-  gb.display.setColor(BLUE);
-  gb.display.print(m_Info[2]);
-  gb.display.print("$");
 }
 
 void Menu::DebugMenu()
 {
   SerialUSB.printf("-----------------------------------------------\n");
-  SerialUSB.printf("Nombre d'item: %i ,Choix: %i  \n", NBR_ITEM_MENU, m_Choice);
-  SerialUSB.printf("Position: %i \n", m_Position);
+  SerialUSB.printf("                 Menu : %i\n", m_State);
+  SerialUSB.printf("-----------------------------------------------\n");
+  SerialUSB.printf("Number item: %i ,Choice: %i  \n", NBR_ITEM_MENU, m_Choice);
+  SerialUSB.printf("Position : %i \n", m_Position);
+  SerialUSB.printf("Cursor : %i \n", m_CursorState);
   SerialUSB.printf("-----------------------------------------------\n");
 }

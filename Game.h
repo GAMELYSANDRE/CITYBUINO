@@ -40,6 +40,7 @@ class Game
     void UpdateInfo();
     void Message( char TextMessage[18] );
     void Memory(uint8_t Memory_Action);
+    void ChoiceManagement();
 
 
 };

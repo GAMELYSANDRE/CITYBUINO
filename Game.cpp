@@ -37,12 +37,14 @@ Game::~Game()
 void Game::Display()
 {
   m_City->Display();
-  // show or not the cursor
-  DisplayCursor();
   // Display the money
   DisplayMoney();
+  // show or not the cursor
+  DisplayCursor();
   // show or not the menu
   DisplayMenu();
+  // Action for info, save
+  ChoiceManagement();
   // inactive cursor move map
   if (m_Cursor->State() == false)
   {
@@ -62,6 +64,53 @@ void Game::Display()
       m_Data = false;
     }
   }
+  // Display time
+  DisplayTime();
+
+}
+void Game::ChoiceManagement()
+{
+  // Backup management window
+  if ( m_Menu->Choice() == INFO and m_Menu->State() == false )
+  {
+      // frame
+  gb.display.setColor(WHITE);
+  gb.display.fillRect(2, 8, 76, 54);
+  gb.display.setColor(BLACK);
+  gb.display.drawRect(2, 8, 76, 54);
+  // Text Citizen
+  gb.display.setCursor(4, 10);
+  gb.display.print("CITIZEN ");
+  gb.display.setColor(BLUE);
+  gb.display.print(m_Citizen);
+  // Text Credit
+  gb.display.setCursor(4, 16);
+  gb.display.setColor(BLACK);
+  gb.display.print(" CREDIT ");
+  gb.display.setColor(BLUE);
+  gb.display.print(m_Credit);
+  gb.display.print(" $");
+  // Text Debit
+  gb.display.setCursor(4, 22);
+  gb.display.setColor(BLACK);
+  gb.display.print("  DEBIT ");
+  gb.display.setColor(BLUE);
+  gb.display.print(m_Debit);
+  gb.display.print(" $");
+  // Button Exit
+  gb.display.setColor(BLACK);
+  gb.display.setCursor(28, 52);
+  gb.display.print("EXIT");
+  gb.display.drawImage(16, 49, IMG_BUTTON_A);
+  if (gb.buttons.pressed(BUTTON_A))
+  {
+    m_Menu->Choice(BULL);
+  }
+  m_Menu->State(false);
+  m_Cursor->State(false);
+  m_Menu->CursorState(false);
+  }  
+  // Backup management window
   if ( m_Menu->Choice() == SAVE and m_Menu->State() == false )
   {
     gb.display.setColor(WHITE);
@@ -78,7 +127,6 @@ void Game::Display()
     gb.display.drawImage(46, 28, IMG_BUTTON_B);
     if (gb.buttons.pressed(BUTTON_A))
     {
-      m_Cursor->State(false);
       m_Menu->CursorState(false);
       m_Menu->State(false);
       // Save game
@@ -90,13 +138,14 @@ void Game::Display()
       if (m_Menu->ButtonBLock() == false)
       {
         m_Menu->Choice(BULL);
-        m_Cursor->State(false);
         m_Menu->CursorState(false);
         m_Menu->State(false);
       }
       m_Menu->ButtonBLock(false);
     }
+    m_Cursor->State(false);
   }
+  // Backup playback management window
   if ( m_Menu->Choice() == READ and m_Menu->State() == false )
   {
     gb.display.setColor(WHITE);
@@ -113,7 +162,7 @@ void Game::Display()
     gb.display.drawImage(46, 24, IMG_BUTTON_B);
     if (gb.buttons.pressed(BUTTON_A))
     {
-      m_Cursor->State(false);
+      m_Menu->Choice(BULL);
       m_Menu->CursorState(false);
       m_Menu->State(false);
       // Read game
@@ -128,17 +177,16 @@ void Game::Display()
       if (m_Menu->ButtonBLock() == false)
       {
         m_Menu->Choice(BULL);
-        m_Cursor->State(false);
         m_Menu->CursorState(false);
         m_Menu->State(false);
       }
       m_Menu->ButtonBLock(false);
     }
+    m_Cursor->State(false);
   }
-  // Display time
-  DisplayTime();
-
 }
+
+
 
 void Game::ConstructCursor()
 {
@@ -242,10 +290,6 @@ void Game::UpdateInfo()
       }
     }
   }
-  // forward to menu
-  m_Menu->Citizen(m_Citizen);
-  m_Menu->Credit(m_Credit);
-  m_Menu->Debit(m_Debit);
 }
 
 
@@ -258,10 +302,15 @@ void Game::DisplayMenu()
   if (gb.buttons.pressed(BUTTON_MENU))
   {
     m_Menu->State(!m_Menu->State());
+    if (m_Menu->State() == false)
+    {
+      m_Menu->Choice(BULL);
+    }
   }
-  if (m_Menu->State())
+  if (m_Menu->State() == true)
   {
     m_Menu->Display();
+    m_Cursor->State(false);
   }
 }
 
@@ -291,18 +340,20 @@ void Game::Message( char TextMessage[18] )
 
 void Game::DisplayCursor()
 {
-  if (m_Menu->CursorState() == true )
+  if (m_Menu->CursorState() == true and m_Menu->State()==false )
+  {
+    m_Cursor->State(true);
+  }
+  else
+  {
+    m_Menu->CursorState() == false;
+    m_Cursor->State(false);
+  }
+  if (m_Cursor->State() == true )
   {
     m_Cursor->CameraX(m_City->CameraX());
     m_Cursor->CameraY(m_City->CameraY());
     m_Cursor->Choice(m_Menu->Choice());
-    if ( m_Cursor->Choice() != SAVE )
-    {
-      m_Cursor->State(true);
-    }
-  }
-  if (m_Cursor->State() == true )
-  {
     m_Cursor->Display();
   }
 }
@@ -316,8 +367,12 @@ void Game::MoveCursor()
   // exit mode construction
   if (gb.buttons.pressed(BUTTON_B) )
   {
-    m_Menu->CursorState(false);
-    m_Cursor->State(false);
+    if (m_Menu->ButtonBLock() == false)
+    {
+      m_Menu->CursorState(false);
+      m_Cursor->State(false);
+    }
+    m_Menu->ButtonBLock(false);  
   }
   // Movements
   uint16_t Column = m_Cursor->ViewColumn();

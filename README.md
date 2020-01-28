@@ -22,8 +22,10 @@ __Pour l'instant' le jeu est en développement, il peut y avoir des bugs__
 *Le but est de gérer et d'organiser votre ville sans perdre d'argent
 
 ## Commandes du jeu ##
+
+![IMAGE GAME MENU](/VIDEOS/CITYBUINO_1.GIF)
+
 **Mouvements sur la carte:**
-![IMAGE GAME MENU](/VIDEOS/CITUBUINO_1.BMP)
 
 - **Se déplacer:** flèches droite gauche haut et bas
 - **Bouton Menu:** Fait apparaitre ou disparaitre le menu de droite
