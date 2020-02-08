@@ -3,12 +3,23 @@
 
 #include <Gamebuino-Meta.h>
 
-// variable for the menu
+// variable for the main menu
+const char* const MainMenuText[] =
+{
+  "NEW GAME",
+  "CONTINUE GAME",
+  "TUTORIAL",
+  "OPTIONS",
+  "CREDITS"
+};
+const uint8_t MENU = 100;
+const uint8_t NEWGAME = 0;
+
+// variable for the menu game
 const uint8_t NBR_ITEM_MENU = 8;
 
 // variable for the game
 const uint8_t DELAY_MONEY = 10; // seconds before recovering the money
-
 
 // Menu
 const uint8_t INFO = 1;

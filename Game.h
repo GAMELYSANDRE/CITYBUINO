@@ -2,6 +2,7 @@
 #define __GAME__
 #include <Gamebuino-Meta.h>
 #include "Constant.h"
+#include "MainMenu.h"
 #include "Grid.h"
 #include "Menu.h"
 #include "Cursor.h"
@@ -18,11 +19,18 @@ class Game
     void Display();
 
   private:
+    MainMenu *m_MainMenu;
     Grid *m_City;
     Menu *m_Menu;
     Cursor *m_Cursor;
     GBTime *m_Time;
     bool m_Data; //avoid unnecessary loops
+    // Variable Menu
+    uint8_t m_Mode;
+    // activate or not the tutorial
+    bool m_Tutorial;
+    uint8_t m_TutorialLevel;
+    //--------------------------
     int32_t m_Money;
     uint32_t m_Credit;
     uint32_t m_Debit;

@@ -7,12 +7,16 @@
 
 Game::Game () :
   m_Data(true), //avoid unnecessary loops
+  m_Mode(MENU),
+  m_Tutorial(true),
+  m_TutorialLevel(1),
   m_Money(4000),
   m_Credit(0),
   m_Debit(0),
   m_Citizen(0),
   m_NbrDay(0)
 {
+  m_MainMenu = new MainMenu(MainMenuText, 5);
   m_City = new Grid(MAP, MAP_LINE, MAP_COLUMN);
   m_Menu = new Menu();
   m_Cursor = new Cursor();
@@ -36,36 +40,52 @@ Game::~Game()
 
 void Game::Display()
 {
-  m_City->Display();
-  // Display the money
-  DisplayMoney();
-  // show or not the cursor
-  DisplayCursor();
-  // show or not the menu
-  DisplayMenu();
-  // Action for info, save
-  ChoiceManagement();
-  // inactive cursor move map
-  if (m_Cursor->State() == false)
+  switch (m_Mode)
   {
-    m_City->Move();
+    case MENU:
+      m_Mode = m_MainMenu->GetMode();
+      m_MainMenu->Display();
+      break;
+    case NEWGAME:
+
+      m_City->Display();
+      // Display the money
+      DisplayMoney();
+      // show or not the cursor
+      DisplayCursor();
+      // show or not the menu
+      DisplayMenu();
+      // Action for info, save
+      ChoiceManagement();
+      // inactive cursor move map
+      if (m_Cursor->State() == false)
+      {
+        m_City->Move();
+      }
+      else
+      {
+        MoveCursor();
+        ConstructCursor();
+        if ( m_Data )
+        {
+          // Engine
+          m_City->CheckTheTile();
+          // information
+          UpdateInfo();
+          // Desactive
+          m_Data = false;
+        }
+      }
+
+      // Display time
+      DisplayTime();
+      break;
+    default:
+      gb.display.setCursor(10, 30);
+      gb.display.print("ERROR MENU");
+      break;
   }
-  else
-  {
-    MoveCursor();
-    ConstructCursor();
-    if ( m_Data )
-    {
-      // Engine
-      m_City->CheckTheTile();
-      // information
-      UpdateInfo();
-      // Desactive
-      m_Data = false;
-    }
-  }
-  // Display time
-  DisplayTime();
+
 
 }
 void Game::ChoiceManagement()
@@ -73,43 +93,43 @@ void Game::ChoiceManagement()
   // Backup management window
   if ( m_Menu->Choice() == INFO and m_Menu->State() == false )
   {
-      // frame
-  gb.display.setColor(WHITE);
-  gb.display.fillRect(2, 8, 76, 54);
-  gb.display.setColor(BLACK);
-  gb.display.drawRect(2, 8, 76, 54);
-  // Text Citizen
-  gb.display.setCursor(4, 10);
-  gb.display.print("CITIZEN ");
-  gb.display.setColor(BLUE);
-  gb.display.print(m_Citizen);
-  // Text Credit
-  gb.display.setCursor(4, 16);
-  gb.display.setColor(BLACK);
-  gb.display.print(" CREDIT ");
-  gb.display.setColor(BLUE);
-  gb.display.print(m_Credit);
-  gb.display.print(" $");
-  // Text Debit
-  gb.display.setCursor(4, 22);
-  gb.display.setColor(BLACK);
-  gb.display.print("  DEBIT ");
-  gb.display.setColor(BLUE);
-  gb.display.print(m_Debit);
-  gb.display.print(" $");
-  // Button Exit
-  gb.display.setColor(BLACK);
-  gb.display.setCursor(28, 52);
-  gb.display.print("EXIT");
-  gb.display.drawImage(16, 49, IMG_BUTTON_A);
-  if (gb.buttons.pressed(BUTTON_A))
-  {
-    m_Menu->Choice(BULL);
+    // frame
+    gb.display.setColor(WHITE);
+    gb.display.fillRect(2, 8, 76, 54);
+    gb.display.setColor(BLACK);
+    gb.display.drawRect(2, 8, 76, 54);
+    // Text Citizen
+    gb.display.setCursor(4, 10);
+    gb.display.print("CITIZEN ");
+    gb.display.setColor(BLUE);
+    gb.display.print(m_Citizen);
+    // Text Credit
+    gb.display.setCursor(4, 16);
+    gb.display.setColor(BLACK);
+    gb.display.print(" CREDIT ");
+    gb.display.setColor(BLUE);
+    gb.display.print(m_Credit);
+    gb.display.print(" $");
+    // Text Debit
+    gb.display.setCursor(4, 22);
+    gb.display.setColor(BLACK);
+    gb.display.print("  DEBIT ");
+    gb.display.setColor(BLUE);
+    gb.display.print(m_Debit);
+    gb.display.print(" $");
+    // Button Exit
+    gb.display.setColor(BLACK);
+    gb.display.setCursor(28, 52);
+    gb.display.print("EXIT");
+    gb.display.drawImage(16, 49, IMG_BUTTON_A);
+    if (gb.buttons.pressed(BUTTON_A))
+    {
+      m_Menu->Choice(BULL);
+    }
+    m_Menu->State(false);
+    m_Cursor->State(false);
+    m_Menu->CursorState(false);
   }
-  m_Menu->State(false);
-  m_Cursor->State(false);
-  m_Menu->CursorState(false);
-  }  
   // Backup management window
   if ( m_Menu->Choice() == SAVE and m_Menu->State() == false )
   {
@@ -340,7 +360,7 @@ void Game::Message( char TextMessage[18] )
 
 void Game::DisplayCursor()
 {
-  if (m_Menu->CursorState() == true and m_Menu->State()==false )
+  if (m_Menu->CursorState() == true and m_Menu->State() == false )
   {
     m_Cursor->State(true);
   }
@@ -372,7 +392,7 @@ void Game::MoveCursor()
       m_Menu->CursorState(false);
       m_Cursor->State(false);
     }
-    m_Menu->ButtonBLock(false);  
+    m_Menu->ButtonBLock(false);
   }
   // Movements
   uint16_t Column = m_Cursor->ViewColumn();
@@ -828,6 +848,7 @@ void Game::Memory(uint8_t Memory_Action)
       }
       m_Money = gb.save.get(30);
       m_NbrDay = gb.save.get(31);
+
       break;
   }
 }
