@@ -4,7 +4,7 @@
 //                        Constructors
 //----------------------------------------------------------------------
 
-MainMenu::MainMenu (const char *MenuTextList[], uint8_t MenuSize):
+MainMenu::MainMenu (const char* const MenuTextList[], uint8_t MenuSize):
   m_MenuPosition(0),
   m_Mode(MENU)
 {
@@ -28,7 +28,7 @@ MainMenu::MainMenu (const char *MenuTextList[], uint8_t MenuSize):
   // initialize building
   for (uint8_t i = 0; i < 5; i++)
   {
-      m_Building[i] = new Building();
+    m_Building[i] = new Building();
   }
 
 }
@@ -114,7 +114,7 @@ void MainMenu::Create()
   {
     DisplayText(i);
   }
-}  
+}
 
 void MainMenu::MoveText()
 {

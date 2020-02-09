@@ -19,14 +19,21 @@ class Game
     void Display();
 
   private:
-    MainMenu *m_MainMenu;
+    MainMenu *m_MainMenuEnglish;
+    MainMenu *m_MainMenuFrench;
+    MainMenu *m_SettingMenuEnglish;
+    MainMenu *m_SettingMenuFrench;
     Grid *m_City;
     Menu *m_Menu;
     Cursor *m_Cursor;
     GBTime *m_Time;
     bool m_Data; //avoid unnecessary loops
-    // Variable Menu
+    // main menu variable
+    uint8_t m_Language;
+    // main menu variable
     uint8_t m_Mode;
+    // Setting menu variable
+    uint8_t m_Setting;
     // activate or not the tutorial
     bool m_Tutorial;
     uint8_t m_TutorialLevel;

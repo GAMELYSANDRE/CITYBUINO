@@ -2,18 +2,48 @@
 #define __CONSTANTS__
 
 #include <Gamebuino-Meta.h>
-
 // variable for the main menu
-const char* const MainMenuText[] =
+const char* const MainMenuTextEnglish[] =
 {
   "NEW GAME",
-  "CONTINUE GAME",
+  "LOAD GAME",
   "TUTORIAL",
+  "SETTING",
+  "CREDITS"
+};
+const char* const MainMenuTextFrench[] =
+{
+  "NOUVEAU JEU",
+  "CONTINUER JEU",
+  "DIDACTICIEL",
   "OPTIONS",
   "CREDITS"
 };
 const uint8_t MENU = 100;
 const uint8_t NEWGAME = 0;
+const uint8_t CONTINUE = 1;
+const uint8_t TUTORIAL = 2;
+const uint8_t SETTING = 3;
+const uint8_t CREDITS = 4;
+// variable for the option menu
+const char* const SettingMenuTextEnglish[] =
+{
+  "ENGLISH",
+  "FRENCH",
+  "-EXIT-"
+};
+const char* const SettingMenuTextFrench[] =
+{
+  "ANGLAIS",
+  "FRANCAIS",
+  "SORTIR"
+};
+// Translate
+const uint8_t PAUSE = 100;
+const uint8_t ENGLISH = 0;
+const uint8_t FRENCH = 1;
+const uint8_t EXIT_SETTING = 2;
+
 
 // variable for the menu game
 const uint8_t NBR_ITEM_MENU = 8;

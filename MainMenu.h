@@ -9,7 +9,7 @@ class MainMenu
 
   public:
     // constructor
-    MainMenu (const char *MenuTextList[], uint8_t MenuSize);
+    MainMenu (const char* const MenuTextList[], uint8_t MenuSize);
     // Destructor
     ~MainMenu();
     // getters Methods

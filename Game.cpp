@@ -7,7 +7,9 @@
 
 Game::Game () :
   m_Data(true), //avoid unnecessary loops
+  m_Language(ENGLISH),
   m_Mode(MENU),
+  m_Setting(ENGLISH),
   m_Tutorial(true),
   m_TutorialLevel(1),
   m_Money(4000),
@@ -16,7 +18,10 @@ Game::Game () :
   m_Citizen(0),
   m_NbrDay(0)
 {
-  m_MainMenu = new MainMenu(MainMenuText, 5);
+  m_MainMenuEnglish = new MainMenu(MainMenuTextEnglish, 5);
+  m_MainMenuFrench = new MainMenu(MainMenuTextFrench, 5);
+  m_SettingMenuEnglish = new MainMenu(SettingMenuTextEnglish, 3);
+  m_SettingMenuFrench = new MainMenu(SettingMenuTextFrench, 3);
   m_City = new Grid(MAP, MAP_LINE, MAP_COLUMN);
   m_Menu = new Menu();
   m_Cursor = new Cursor();
@@ -43,11 +48,23 @@ void Game::Display()
   switch (m_Mode)
   {
     case MENU:
-      m_Mode = m_MainMenu->GetMode();
-      m_MainMenu->Display();
+      switch (m_Language)
+      {
+        case ENGLISH:
+          m_Mode = m_MainMenuEnglish->GetMode();
+          m_MainMenuEnglish->Display();
+          break;
+        case FRENCH:
+          m_Mode = m_MainMenuFrench->GetMode();
+          m_MainMenuFrench->Display();
+          break;
+        default:
+          gb.display.setCursor(10, 30);
+          gb.display.print("ERROR MAIN MENU");
+          break;
+      }
       break;
     case NEWGAME:
-
       m_City->Display();
       // Display the money
       DisplayMoney();
@@ -76,13 +93,62 @@ void Game::Display()
           m_Data = false;
         }
       }
-
       // Display time
       DisplayTime();
       break;
+    case CONTINUE:
+      m_Menu->Choice(READ);
+      m_Mode = NEWGAME;
+      break;
+    case TUTORIAL:
+      m_Mode = NEWGAME;
+      break;
+    case SETTING:
+      switch (m_Language)
+      {
+        case ENGLISH:
+          m_Setting = m_SettingMenuEnglish->GetMode();
+          m_SettingMenuEnglish->Display();
+          break;
+        case FRENCH:
+          m_Setting = m_SettingMenuFrench->GetMode();
+          m_SettingMenuFrench->Display();
+          break;
+        default:
+          gb.display.setCursor(10, 30);
+          gb.display.print("ERROR MENU SETTING");
+          break;
+      }
+      switch (m_Setting)
+      {
+        case PAUSE:
+          break;
+        case ENGLISH:
+          m_Language = ENGLISH;
+          break;
+        case FRENCH:
+          m_Language = FRENCH;
+          break;
+        case EXIT_SETTING:
+          // reset objet menu
+          m_MainMenuEnglish->SetMode(MENU);
+          m_SettingMenuEnglish->SetMode(PAUSE);
+          m_MainMenuFrench->SetMode(MENU);
+          m_SettingMenuFrench->SetMode(PAUSE);
+          m_Mode = MENU;
+          break;
+        default:
+          gb.display.setCursor(10, 30);
+          gb.display.print("ERROR MENU SETTING");
+          break;
+      }
+      break;
+    case CREDITS:
+      m_Mode = NEWGAME;
+      break;
     default:
       gb.display.setCursor(10, 30);
-      gb.display.print("ERROR MENU");
+      gb.display.print("ERROR MAIN MENU");
       break;
   }
 
@@ -750,23 +816,40 @@ void Game::MoveCursor()
 
 void Game::DisplayMoney()
 {
-  gb.display.setCursor(4, 2);
-  gb.display.setColor(GRAY);
-  gb.display.print("$ ");
-  gb.display.print(m_Money);
-
-  gb.display.print(" DAY ");
-  gb.display.print(m_NbrDay);
-
-  gb.display.setCursor(3, 1);
-  gb.display.setColor(WHITE);
-  gb.display.print("$ ");
-  gb.display.print(m_Money);
-
-  gb.display.print(" DAY ");
-  gb.display.print(m_NbrDay);
-
-
+  switch (m_Language)
+  {
+    case ENGLISH:
+      gb.display.setCursor(4, 2);
+      gb.display.setColor(GRAY);
+      gb.display.print("$ ");
+      gb.display.print(m_Money);
+      gb.display.print(" DAY ");
+      gb.display.print(m_NbrDay);
+      gb.display.setCursor(3, 1);
+      gb.display.setColor(WHITE);
+      gb.display.print("$ ");
+      gb.display.print(m_Money);
+      gb.display.print(" DAY ");
+      gb.display.print(m_NbrDay);
+      break;
+    case FRENCH:
+      gb.display.setCursor(4, 2);
+      gb.display.setColor(GRAY);
+      gb.display.print("E ");
+      gb.display.print(m_Money);
+      gb.display.print(" JOUR ");
+      gb.display.print(m_NbrDay);
+      gb.display.setCursor(3, 1);
+      gb.display.setColor(WHITE);
+      gb.display.print("E ");
+      gb.display.print(m_Money);
+      gb.display.print(" JOUR ");
+      gb.display.print(m_NbrDay);
+      break;
+    default:
+      gb.display.print("ERROR TEXT DAY");
+      break;
+  }
 }
 
 
