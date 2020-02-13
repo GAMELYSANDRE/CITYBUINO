@@ -23,7 +23,7 @@ __Pour l'instant' le jeu est en développement, il peut y avoir des bugs__
 
 ## Commandes du jeu ##
 
-![IMAGE GAME MENU](/VIDEOS/CITYBUINO_1.GIF)
+![IMAGE GAME MENU](/VIDEOS/CITYBUINO_1.gif)
 
 **Mouvements sur la carte:**
 
