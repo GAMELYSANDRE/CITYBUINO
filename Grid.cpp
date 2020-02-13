@@ -123,11 +123,11 @@ void Grid::Move()
     {
       IMG_NO_ENTRY(70, 55);
     }
-    //DebugGame();
+    DebugGrid();
   }
   if (gb.buttons.repeat(BUTTON_LEFT, 0))
   {
-    if (m_CameraX > LIMIT_LEFT )
+    if (m_CameraX > LIMIT_LEFT + MAP_SPEED )
     {
       m_CameraX = m_CameraX - MAP_SPEED;
       IMG_ARROW_LEFT_UP();
@@ -136,10 +136,11 @@ void Grid::Move()
     {
       IMG_NO_ENTRY(10, 10);
     }
+    DebugGrid();
   }
   if (gb.buttons.repeat(BUTTON_UP, 0))
   {
-    if ( m_CameraY > LIMIT_UP )
+    if ( m_CameraY > LIMIT_UP + MAP_SPEED )
     {
       m_CameraY = m_CameraY - MAP_SPEED;
       IMG_ARROW_RIGHT_UP();
@@ -148,6 +149,7 @@ void Grid::Move()
     {
       IMG_NO_ENTRY(70, 10);
     }
+    DebugGrid();
   }
   if (gb.buttons.repeat(BUTTON_DOWN, 0))
   {
@@ -160,6 +162,7 @@ void Grid::Move()
     {
       IMG_NO_ENTRY(10, 55);
     }
+    DebugGrid();
   }
 }
 
