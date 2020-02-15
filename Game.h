@@ -2,6 +2,7 @@
 #define __GAME__
 #include <Gamebuino-Meta.h>
 #include "Constant.h"
+#include "Language.hpp"
 #include "MainMenu.h"
 #include "Grid.h"
 #include "Menu.h"
@@ -53,7 +54,7 @@ class Game
     void DisplayMoney();
     void DisplayTime();
     void UpdateInfo();
-    void Message( char TextMessage[18] );
+    void Message(const char TextMessage[18] );
     void Memory(uint8_t Memory_Action);
     void ChoiceManagement();
 

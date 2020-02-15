@@ -72,7 +72,7 @@ void Game::Display()
       DisplayCursor();
       // show or not the menu
       DisplayMenu();
-      // Action for info, save
+      // Action for info, save, read
       ChoiceManagement();
       // inactive cursor move map
       if (m_Cursor->State() == false)
@@ -154,6 +154,32 @@ void Game::Display()
 
 
 }
+
+//----------------------------------------------------------------------
+//         displays the currency and the days at the top left
+//----------------------------------------------------------------------
+
+
+void Game::DisplayMoney()
+{
+  gb.display.setCursor(4, 2);
+  gb.display.setColor(GRAY);
+  gb.display.print(TranslateSymbMoney[m_Language]);
+  gb.display.print(m_Money);
+  gb.display.print(TranslateDay[m_Language]);
+  gb.display.print(m_NbrDay);
+  gb.display.setCursor(3, 1);
+  gb.display.setColor(WHITE);
+  gb.display.print(TranslateSymbMoney[m_Language]);
+  gb.display.print(m_Money);
+  gb.display.print(TranslateDay[m_Language]);
+  gb.display.print(m_NbrDay);
+}
+
+//----------------------------------------------------------------------
+//         management of specific menu actions
+//----------------------------------------------------------------------
+
 void Game::ChoiceManagement()
 {
   // Backup management window
@@ -166,7 +192,7 @@ void Game::ChoiceManagement()
     gb.display.drawRect(2, 8, 76, 54);
     // Text Citizen
     gb.display.setCursor(4, 10);
-    gb.display.print("CITIZEN ");
+    gb.display.print(TranslateCitizen[m_Language]);
     gb.display.setColor(BLUE);
     gb.display.print(m_Citizen);
     // Text Credit
@@ -185,9 +211,9 @@ void Game::ChoiceManagement()
     gb.display.print(" $");
     // Button Exit
     gb.display.setColor(BLACK);
-    gb.display.setCursor(28, 52);
-    gb.display.print("EXIT");
-    gb.display.drawImage(16, 49, IMG_BUTTON_A);
+    gb.display.setCursor(40, 51);
+    gb.display.print(TranslateMenuInfo[m_Language]);
+    gb.display.drawImage(28, 48, IMG_BUTTON_A);
     if (gb.buttons.pressed(BUTTON_A))
     {
       m_Menu->Choice(BULL);
@@ -203,13 +229,13 @@ void Game::ChoiceManagement()
     gb.display.fillRect(2, 20, 76, 20);
     gb.display.setColor(BLACK);
     gb.display.drawRect(2, 20, 76, 20);
-    gb.display.setCursor(10, 22);
-    gb.display.print("Save the city ?");
+    gb.display.setCursor(4, 22);
+    gb.display.print(TranslateBackupQuestion[m_Language]);
     gb.display.setCursor(28, 31);
-    gb.display.print("YES");
+    gb.display.print(TranslateYes[m_Language]);
     gb.display.drawImage(16, 28, IMG_BUTTON_A);
     gb.display.setCursor(58, 31);
-    gb.display.print("NO");
+    gb.display.print(TranslateNo[m_Language]);
     gb.display.drawImage(46, 28, IMG_BUTTON_B);
     if (gb.buttons.pressed(BUTTON_A))
     {
@@ -239,12 +265,12 @@ void Game::ChoiceManagement()
     gb.display.setColor(BLACK);
     gb.display.drawRect(2, 14, 76, 30);
     gb.display.setCursor(4, 17);
-    gb.display.print("Use the city save?");
+    gb.display.print(TranslateLoadQuestion[m_Language]);
     gb.display.setCursor(28, 27);
-    gb.display.print("YES");
+    gb.display.print(TranslateYes[m_Language]);
     gb.display.drawImage(16, 24, IMG_BUTTON_A);
     gb.display.setCursor(58, 27);
-    gb.display.print("NO");
+    gb.display.print(TranslateNo[m_Language]);
     gb.display.drawImage(46, 24, IMG_BUTTON_B);
     if (gb.buttons.pressed(BUTTON_A))
     {
@@ -302,11 +328,11 @@ void Game::ConstructCursor()
         {
           if ( CityTile == SEA )
           {
-            Message("NOT IN TNE WATER");
+            Message(TranslateErrorWater[m_Language]);
           }
           else
           {
-            Message("PRESENT CONSTRUCT.");
+            Message(TranslateErrorPresent[m_Language]);
           }
         }
 
@@ -315,7 +341,7 @@ void Game::ConstructCursor()
       {
         if ( Choise != BULL )
         {
-          Message("    NO MONEY");
+          Message(TranslateErrorNoMoney[m_Language]);
         }
       }
       // destroyed and replaced by sand
@@ -404,7 +430,7 @@ void Game::DisplayMenu()
 //                          display a message
 //----------------------------------------------------------------------
 
-void Game::Message( char TextMessage[18] )
+void Game::Message(const char TextMessage[18] )
 {
   gb.sound.fx(SOUND_ERROR);
   gb.display.setColor(RED);
@@ -413,7 +439,7 @@ void Game::Message( char TextMessage[18] )
   gb.display.drawRect(2, 20, 76, 20);
   gb.display.setColor(WHITE);
   gb.display.setCursor(30, 23);
-  gb.display.print("ERROR !");
+  gb.display.print(TranslateError[m_Language]);
   gb.display.setCursor(6, 30);
   gb.display.print(TextMessage);
   delay(1000);
@@ -810,52 +836,6 @@ void Game::MoveCursor()
 }
 
 //----------------------------------------------------------------------
-//         displays the currency and the days at the top left
-//----------------------------------------------------------------------
-
-
-void Game::DisplayMoney()
-{
-  switch (m_Language)
-  {
-    case ENGLISH:
-      gb.display.setCursor(4, 2);
-      gb.display.setColor(GRAY);
-      gb.display.print("$ ");
-      gb.display.print(m_Money);
-      gb.display.print(" DAY ");
-      gb.display.print(m_NbrDay);
-      gb.display.setCursor(3, 1);
-      gb.display.setColor(WHITE);
-      gb.display.print("$ ");
-      gb.display.print(m_Money);
-      gb.display.print(" DAY ");
-      gb.display.print(m_NbrDay);
-      break;
-    case FRENCH:
-      gb.display.setCursor(4, 2);
-      gb.display.setColor(GRAY);
-      gb.display.print("E ");
-      gb.display.print(m_Money);
-      gb.display.print(" JOUR ");
-      gb.display.print(m_NbrDay);
-      gb.display.setCursor(3, 1);
-      gb.display.setColor(WHITE);
-      gb.display.print("E ");
-      gb.display.print(m_Money);
-      gb.display.print(" JOUR ");
-      gb.display.print(m_NbrDay);
-      break;
-    default:
-      gb.display.print("ERROR TEXT DAY");
-      break;
-  }
-}
-
-
-
-
-//----------------------------------------------------------------------
 //                     management of time
 //----------------------------------------------------------------------
 
@@ -887,7 +867,7 @@ void Game::Memory(uint8_t Memory_Action)
       gb.display.setColor(BLACK);
       gb.display.drawRect(2, 20, 76, 20);
       gb.display.setCursor(4, 23);
-      gb.display.print("BACKUP IN PROGRESS");
+      gb.display.print(TranslateBackupAction[m_Language]);
       SerialUSB.printf("______________________________\n");
       SerialUSB.printf("GAME SAVE \n");
       SerialUSB.printf("______________________________\n");
