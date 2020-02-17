@@ -6,8 +6,8 @@
 //----------------------------------------------------------------------
 
 Grid::Grid (const uint8_t Map[], uint8_t NumberLine, uint8_t NumberColumn) :
-  m_CameraX(0),
-  m_CameraY(0),
+  m_CameraX(50),
+  m_CameraY(50),
   m_CameraTileX(0),
   m_CameraTileY(0)
 {
@@ -75,7 +75,11 @@ void Grid::Type(uint8_t I, uint8_t J, uint8_t ChangeType)
 {
   m_Grid[I][J].Type(ChangeType);
 }
-
+//  Method change error tile
+void Grid::Error(uint8_t I, uint8_t J, uint8_t ChangeError)
+{
+  m_Grid[I][J].Error(ChangeError);
+}
 
 //----------------------------------------------------------------------
 //                     Method draws the grid

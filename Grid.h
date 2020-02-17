@@ -25,7 +25,7 @@ class Grid
     void CameraX( uint8_t ChangeCameraX);
     void CameraY( uint8_t ChangeCameraY);
     void Type(uint8_t I, uint8_t J, uint8_t ChangeType);
-
+    void Error(uint8_t I, uint8_t J, uint8_t ChangeError);
 
     // methods
     void Display();

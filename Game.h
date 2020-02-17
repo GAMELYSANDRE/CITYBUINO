@@ -40,10 +40,11 @@ class Game
     uint8_t m_TutorialLevel;
     //--------------------------
     int32_t m_Money;
+    uint16_t m_NbrDay;
     uint32_t m_Credit;
     uint32_t m_Debit;
     uint16_t m_Citizen;
-    uint16_t m_NbrDay;
+    uint16_t m_Job;
 
     // method of use
     void DisplayMenu();

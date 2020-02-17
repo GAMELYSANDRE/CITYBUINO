@@ -120,6 +120,30 @@ void Menu::SquareSelection()
       m_Position++;
     }
     gb.sound.fx(SOUND_MENU_1);
+    switch (m_Choice)
+  {
+    case BULL:
+      m_Cost = 0;
+      break;
+    case ROAD_H:
+      m_Cost = 50;
+      break;
+    case HOME_RED:
+      m_Cost = 250;
+      break;
+    case POWER_STATION:
+      m_Cost = 1000;
+      break;
+    case WATER_TOWER:
+      m_Cost = 500;
+      break;
+    case FACTORY:
+      m_Cost = 2000;
+      break;  
+    default:
+      m_Cost = 0;
+      break;
+  }
     DebugMenu();
   }
   if (gb.buttons.pressed(BUTTON_B))
@@ -129,29 +153,9 @@ void Menu::SquareSelection()
     m_ButtonBLock = true;
     m_State = 0;
   }
-  switch (m_Choice)
-  {
-    case BULL:
-      m_Cost = 0;
-      break;
-    case ROAD_H:
-      m_Cost = 50;
-      break;
-    case HOME_RED:
-      m_Cost = 200;
-      break;
-    case POWER_STATION:
-      m_Cost = 1000;
-      break;
-    case WATER_TOWER:
-      m_Cost = 500;
-      break;
-    default:
-      m_Cost = 0;
-      break;
-  }
   if ( m_Choice == BULL or m_Choice == ROAD_H or m_Choice == HOME_RED
-       or m_Choice == POWER_STATION or m_Choice == WATER_TOWER )
+       or m_Choice == POWER_STATION or m_Choice == WATER_TOWER or
+       m_Choice == FACTORY )
   {
     // Display Texte
     gb.display.setCursor(56, 3);
@@ -163,7 +167,6 @@ void Menu::SquareSelection()
     gb.display.print("$");
     gb.display.print(m_Cost);
   }
-
 }
 
 void Menu::DebugMenu()
@@ -174,5 +177,6 @@ void Menu::DebugMenu()
   SerialUSB.printf("Number item: %i ,Choice: %i  \n", NBR_ITEM_MENU, m_Choice);
   SerialUSB.printf("Position : %i \n", m_Position);
   SerialUSB.printf("Cursor : %i \n", m_CursorState);
+  SerialUSB.printf("Cost : %i \n", m_Cost);
   SerialUSB.printf("-----------------------------------------------\n");
 }

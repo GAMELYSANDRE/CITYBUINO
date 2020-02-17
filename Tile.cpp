@@ -128,8 +128,8 @@ void Tile::Display(bool Cart_OR_iso)
     case SAVE:
       gb.display.drawImage(IsoX, IsoY, IMG_TEXT_SAVE);
       break;
-    case READ:
-      gb.display.drawImage(IsoX, IsoY, IMG_TEXT_READ);
+    case LOAD:
+      gb.display.drawImage(IsoX, IsoY, IMG_TEXT_LOAD);
       break;
     case BULL:
       gb.display.drawImage(IsoX, IsoY, IMG_BULL);
@@ -145,6 +145,12 @@ void Tile::Display(bool Cart_OR_iso)
       break;
     case WATER_TOWER: // Delta in X +4
       gb.display.drawImage(IsoX, IsoY - 4, IMG_WATER_TOWER );
+      break;
+    case FACTORY:
+      gb.display.drawImage(IsoX, IsoY, IMG_FACTORY );
+      break;
+    case UPDATE:
+      gb.display.drawImage(IsoX, IsoY, IMG_UPDATE );
       break;
     // road turn intersection
     case ROAD_V:
@@ -188,6 +194,9 @@ void Tile::Display(bool Cart_OR_iso)
       break;
     case ERROR_WATER:
       gb.display.drawImage(IsoX, IsoY, IMG_ERROR_WATER);
+      break;
+    case ERROR_JOB:
+      gb.display.drawImage(IsoX, IsoY, IMG_ERROR_JOB);
       break;
   }
 }

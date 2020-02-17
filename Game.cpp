@@ -1,5 +1,10 @@
 #include "Game.h"
 #include "Image.h"
+//----------------------------------------//
+//   external file to separate the code   //
+//----------------------------------------//
+#include "GameCursor.h"
+#include "GameDisplay.h"
 
 //----------------------------------------------------------------------
 //                      Constructors
@@ -12,11 +17,12 @@ Game::Game () :
   m_Setting(ENGLISH),
   m_Tutorial(true),
   m_TutorialLevel(1),
-  m_Money(4000),
+  m_Money(10000),
+  m_NbrDay(0),
   m_Credit(0),
   m_Debit(0),
   m_Citizen(0),
-  m_NbrDay(0)
+  m_Job(0)
 {
   m_MainMenuEnglish = new MainMenu(MainMenuTextEnglish, 5);
   m_MainMenuFrench = new MainMenu(MainMenuTextFrench, 5);
@@ -97,7 +103,7 @@ void Game::Display()
       DisplayTime();
       break;
     case CONTINUE:
-      m_Menu->Choice(READ);
+      m_Menu->Choice(LOAD);
       m_Mode = NEWGAME;
       break;
     case TUTORIAL:
@@ -156,27 +162,6 @@ void Game::Display()
 }
 
 //----------------------------------------------------------------------
-//         displays the currency and the days at the top left
-//----------------------------------------------------------------------
-
-
-void Game::DisplayMoney()
-{
-  gb.display.setCursor(4, 2);
-  gb.display.setColor(GRAY);
-  gb.display.print(TranslateSymbMoney[m_Language]);
-  gb.display.print(m_Money);
-  gb.display.print(TranslateDay[m_Language]);
-  gb.display.print(m_NbrDay);
-  gb.display.setCursor(3, 1);
-  gb.display.setColor(WHITE);
-  gb.display.print(TranslateSymbMoney[m_Language]);
-  gb.display.print(m_Money);
-  gb.display.print(TranslateDay[m_Language]);
-  gb.display.print(m_NbrDay);
-}
-
-//----------------------------------------------------------------------
 //         management of specific menu actions
 //----------------------------------------------------------------------
 
@@ -201,14 +186,20 @@ void Game::ChoiceManagement()
     gb.display.print(" CREDIT ");
     gb.display.setColor(BLUE);
     gb.display.print(m_Credit);
-    gb.display.print(" $");
+    gb.display.print(TranslateSymbMoney[m_Language]);
     // Text Debit
     gb.display.setCursor(4, 22);
     gb.display.setColor(BLACK);
     gb.display.print("  DEBIT ");
     gb.display.setColor(BLUE);
     gb.display.print(m_Debit);
-    gb.display.print(" $");
+    gb.display.print(TranslateSymbMoney[m_Language]);
+    // Text Job
+    gb.display.setCursor(4, 28);
+    gb.display.setColor(BLACK);
+    gb.display.print("    JOB ");
+    gb.display.setColor(BLUE);
+    gb.display.print(m_Job);
     // Button Exit
     gb.display.setColor(BLACK);
     gb.display.setCursor(40, 51);
@@ -258,7 +249,7 @@ void Game::ChoiceManagement()
     m_Cursor->State(false);
   }
   // Backup playback management window
-  if ( m_Menu->Choice() == READ and m_Menu->State() == false )
+  if ( m_Menu->Choice() == LOAD and m_Menu->State() == false )
   {
     gb.display.setColor(WHITE);
     gb.display.fillRect(2, 14, 76, 30);
@@ -298,63 +289,6 @@ void Game::ChoiceManagement()
   }
 }
 
-
-
-void Game::ConstructCursor()
-{
-  uint8_t i = m_Cursor->GridLine();
-  uint8_t j = m_Cursor->GridColumn();
-  uint8_t Choise = m_Cursor->Choice();
-  uint8_t Cost = m_Menu->Cost();
-  uint8_t CityTile = m_City->Type(i, j);
-  // disable the a button if the menu is visible
-  if (m_Menu->State() == false)
-  {
-    if (gb.buttons.pressed(BUTTON_A) )
-    {
-      // check the money
-      if ( m_Money > Cost and Choise != BULL )
-      {
-        // check if there are not already constructions
-        if ( (CityTile == SAND  ) or
-             (CityTile == GRASS  ) )
-        {
-          // Construct the new tile
-          m_City->Type(i, j, Choise );
-          m_Money = m_Money - Cost;
-          gb.sound.fx(SOUND_CONST);
-        }
-        else
-        {
-          if ( CityTile == SEA )
-          {
-            Message(TranslateErrorWater[m_Language]);
-          }
-          else
-          {
-            Message(TranslateErrorPresent[m_Language]);
-          }
-        }
-
-      }
-      else
-      {
-        if ( Choise != BULL )
-        {
-          Message(TranslateErrorNoMoney[m_Language]);
-        }
-      }
-      // destroyed and replaced by sand
-      if ( CityTile != SEA and Choise == BULL )
-      {
-        m_City->Type(i, j, SAND );
-        m_City->ResetError(i, j);
-        gb.sound.fx(SOUND_BULL);
-      }
-      m_Data = true;
-    }
-  }
-}
 //----------------------------------------------------------------------
 //                   update city information
 //----------------------------------------------------------------------
@@ -364,6 +298,7 @@ void Game::UpdateInfo()
   m_Citizen = 0;
   m_Credit = 0;
   m_Debit = 0;
+  m_Job = 0;
   uint8_t CityTile = m_City->Type(0, 0);
   for ( uint8_t Y = 0 ; Y < MAP_LINE; Y++)
   {
@@ -372,11 +307,14 @@ void Game::UpdateInfo()
       CityTile = m_City->Type(X, Y);
       switch ( CityTile )
       {
+        case FACTORY:
+          m_Job = m_Job + 20;
+          break;
         case HOME_RED:
           SerialUSB.printf("HOME RED X = %i - Y = %i \n", X , Y);
           if ( m_City->Error(X, Y) == 0 )
           {
-            m_Citizen = m_Citizen + 4;
+            m_Citizen = m_Citizen + 2;
             m_Credit = m_Credit + 50;
           }
           break;
@@ -393,447 +331,46 @@ void Game::UpdateInfo()
         case ROAD_UR:
         case ROAD_V:
           SerialUSB.printf("ROAD X = %i - Y = %i \n", X , Y);
-          m_Debit = m_Debit + 5;
+          m_Debit = m_Debit + 2;
           break;
         case POWER_STATION:
           SerialUSB.printf("POWER STATION X = %i - Y = %i \n", X , Y);
           m_Debit = m_Debit + 200;
           break;
+        case WATER_TOWER:
+          SerialUSB.printf("WATER_TOWER X = %i - Y = %i \n", X , Y);
+          m_Debit = m_Debit + 50;
+          break;
+        default:
+          break;
       }
     }
   }
-}
-
-
-//----------------------------------------------------------------------
-//                 make appear and disappear the menu
-//----------------------------------------------------------------------
-
-void Game::DisplayMenu()
-{
-  if (gb.buttons.pressed(BUTTON_MENU))
+  // compares citizens and work
+  uint16_t SaveJob = m_Job;
+  for ( uint8_t Y = 0 ; Y < MAP_LINE; Y++)
   {
-    m_Menu->State(!m_Menu->State());
-    if (m_Menu->State() == false)
+    for ( uint8_t X = 0 ; X < MAP_COLUMN; X++)
     {
-      m_Menu->Choice(BULL);
-    }
-  }
-  if (m_Menu->State() == true)
-  {
-    m_Menu->Display();
-    m_Cursor->State(false);
-  }
-}
-
-//----------------------------------------------------------------------
-//                          display a message
-//----------------------------------------------------------------------
-
-void Game::Message(const char TextMessage[18] )
-{
-  gb.sound.fx(SOUND_ERROR);
-  gb.display.setColor(RED);
-  gb.display.fillRect(2, 20, 76, 20);
-  gb.display.setColor(BLACK);
-  gb.display.drawRect(2, 20, 76, 20);
-  gb.display.setColor(WHITE);
-  gb.display.setCursor(30, 23);
-  gb.display.print(TranslateError[m_Language]);
-  gb.display.setCursor(6, 30);
-  gb.display.print(TextMessage);
-  delay(1000);
-}
-
-
-//----------------------------------------------------------------------
-//                        show cursor
-//----------------------------------------------------------------------
-
-void Game::DisplayCursor()
-{
-  if (m_Menu->CursorState() == true and m_Menu->State() == false )
-  {
-    m_Cursor->State(true);
-  }
-  else
-  {
-    m_Menu->CursorState() == false;
-    m_Cursor->State(false);
-  }
-  if (m_Cursor->State() == true )
-  {
-    m_Cursor->CameraX(m_City->CameraX());
-    m_Cursor->CameraY(m_City->CameraY());
-    m_Cursor->Choice(m_Menu->Choice());
-    m_Cursor->Display();
-  }
-}
-
-//----------------------------------------------------------------------
-//        move the cursor and limit it to the screen edges
-//----------------------------------------------------------------------
-
-void Game::MoveCursor()
-{
-  // exit mode construction
-  if (gb.buttons.pressed(BUTTON_B) )
-  {
-    if (m_Menu->ButtonBLock() == false)
-    {
-      m_Menu->CursorState(false);
-      m_Cursor->State(false);
-    }
-    m_Menu->ButtonBLock(false);
-  }
-  // Movements
-  uint16_t Column = m_Cursor->ViewColumn();
-  uint16_t Line = m_Cursor->ViewLine();
-  uint8_t MoveCameraX = m_City->CameraX();
-  uint8_t MoveCameraY = m_City->CameraY();
-  // multiple of 8
-  MoveCameraX = MoveCameraX / TILE_WIDTH;
-  MoveCameraY = MoveCameraY / TILE_HEIGHT;
-  MoveCameraX = MoveCameraX * TILE_WIDTH;
-  MoveCameraY = MoveCameraY * TILE_HEIGHT;
-  bool RightButtonState = 1;
-  bool LeftButtonState = 1;
-  bool UpButtonState = 1;
-  bool DownButtonState = 1;
-  //
-  // diagonal movements
-  //
-  if (gb.buttons.pressed(BUTTON_RIGHT) and gb.buttons.pressed(BUTTON_UP))
-  {
-    if
-    (
-      // limit right
-      ( Line == Line and Column == (Line + 4) ) or
-      ( Line == Line and Column == (Line + 5) ) or
-      // limit up
-      ( Line == Line and Column == (4 - Line ) ) or
-      ( Line == Line and Column == (5 - Line ) )
-    )
-    {
-      if ( MoveCameraX < LIMIT_RIGHT and  MoveCameraY > LIMIT_UP )
+      CityTile = m_City->Type(X, Y);
+      if ( CityTile == HOME_RED )
       {
-        m_City->CameraY( MoveCameraY - 8 );
-        IMG_ARROW_RIGHT_UP();
-      }
-      else
-      {
-        IMG_NO_ENTRY(70, 10);
-      }
-    }
-    else
-    {
-      IMG_ARROW_RIGHT_UP();
-      m_Cursor->ViewLine(Line - 1);
-      // deactivates movements to avoid repetition
-      RightButtonState = 0;
-      UpButtonState = 0;
-    }
-    SerialUSB.printf("____________________________________\n");
-    SerialUSB.printf("TILE MOVE : PRESSED RIGHT AND UP \n");
-    SerialUSB.printf("____________________________________\n");
-    SerialUSB.printf("CAMERA : X = %i - Y = %i \n", MoveCameraX, MoveCameraY );
-    SerialUSB.printf("TILE : Line = %i - Column = %i \n", Line, Column );
-  }
-  if (gb.buttons.pressed(BUTTON_LEFT) and gb.buttons.pressed(BUTTON_UP))
-  {
-    // control the left edge of the screen
-    if
-    (
-      // limit left
-      ( Line == Line and Column == (Line - 4) ) or
-      ( Line == Line and Column == (Line - 5) ) or
-      // limit up
-      ( Line == Line and Column == (4 - Line ) ) or
-      ( Line == Line and Column == (5 - Line ) )
-    )
-    {
-      if (MoveCameraX > LIMIT_LEFT and MoveCameraY > LIMIT_UP )
-      {
-        m_City->CameraX( MoveCameraX - 8);
-        IMG_ARROW_LEFT_UP();
-      }
-      else
-      {
-        IMG_NO_ENTRY(10, 10);
-      }
-    }
-    else
-    {
-      IMG_ARROW_LEFT_UP();
-      m_Cursor->ViewColumn(Column - 1);
-      // deactivates movements to avoid repetition
-      LeftButtonState = 0;
-      UpButtonState = 0;
-    }
-    SerialUSB.printf("____________________________________\n");
-    SerialUSB.printf("TILE MOVE : PRESSED LEFT AND UP \n");
-    SerialUSB.printf("____________________________________\n");
-    SerialUSB.printf("CAMERA : X = %i - Y = %i \n", MoveCameraX, MoveCameraY );
-    SerialUSB.printf("TILE : Line = %i - Column = %i \n", Line, Column );
-  }
-  if (gb.buttons.pressed(BUTTON_RIGHT) and gb.buttons.pressed(BUTTON_DOWN))
-  {
-    if
-    (
-      // limit right
-      ( Line == Line and Column == (Line + 4) ) or
-      ( Line == Line and Column == (Line + 5) ) or
-      // limit down
-      ( Line == 11 and Column == 7 ) or
-      ( Line == 10 and Column == 8 ) or
-      ( Line == 9 and Column == 9 ) or
-      ( Line == 8 and Column == 10 ) or
-      ( Line == 7 and Column == 11 ) or
-      // ----------------------------------
-      ( Line == 12 and Column == 7 ) or
-      ( Line == 11 and Column == 8 ) or
-      ( Line == 10 and Column == 9 ) or
-      ( Line == 9 and Column == 10 ) or
-      ( Line == 8 and Column == 11 ) or
-      ( Line == 7 and Column == 12 )
-    )
-    {
-      if (MoveCameraX < LIMIT_RIGHT and MoveCameraY < LIMIT_DOWN )
-      {
-        m_City->CameraX( MoveCameraX + 8);
-        IMG_ARROW_RIGHT_DOWN();
-      }
-      else
-      {
-        IMG_NO_ENTRY(70, 55);
-      }
-    }
-    else
-    {
-      IMG_ARROW_RIGHT_DOWN();
-      m_Cursor->ViewColumn(Column + 1);
-      // deactivates movements to avoid repetition
-      RightButtonState = 0;
-      DownButtonState = 0;
-    }
-    SerialUSB.printf("____________________________________\n");
-    SerialUSB.printf("TILE MOVE : PRESSED RIGHT AND DOWN \n");
-    SerialUSB.printf("____________________________________\n");
-    SerialUSB.printf("CAMERA : X = %i - Y = %i \n", MoveCameraX, MoveCameraY );
-    SerialUSB.printf("TILE : Line = %i - Column = %i \n", Line, Column );
-  }
-  if (gb.buttons.pressed(BUTTON_LEFT) and gb.buttons.pressed(BUTTON_DOWN))
-  {
-    if
-    (
-      // limit left
-      ( Line == Line and Column == (Line - 4) ) or
-      ( Line == Line and Column == (Line - 5) ) or
-      // limit down
-      ( Line == 11 and Column == 7 ) or
-      ( Line == 10 and Column == 8 ) or
-      ( Line == 9 and Column == 9 ) or
-      ( Line == 8 and Column == 10 ) or
-      ( Line == 7 and Column == 11 ) or
-      // ----------------------------------
-      ( Line == 12 and Column == 7 ) or
-      ( Line == 11 and Column == 8 ) or
-      ( Line == 10 and Column == 9 ) or
-      ( Line == 9 and Column == 10 ) or
-      ( Line == 8 and Column == 11 ) or
-      ( Line == 7 and Column == 12 )
-    )
-    {
-      if (MoveCameraX > LIMIT_LEFT and MoveCameraY < LIMIT_DOWN )
-      {
-        m_City->CameraY( MoveCameraY + 8);
-        IMG_ARROW_LEFT_DOWN();
-      }
-      else
-      {
-        IMG_NO_ENTRY(10, 55);
-      }
-    }
-    else
-    {
-      IMG_ARROW_LEFT_DOWN();
-      m_Cursor->ViewLine(Line + 1);
-      // deactivates movements to avoid repetition
-      LeftButtonState = 0;
-      DownButtonState = 0;
-    }
-    SerialUSB.printf("____________________________________\n");
-    SerialUSB.printf("TILE MOVE : PRESSED LEFT AND DOWN \n");
-    SerialUSB.printf("____________________________________\n");
-    SerialUSB.printf("CAMERA : X = %i - Y = %i \n", MoveCameraX, MoveCameraY );
-    SerialUSB.printf("TILE : Line = %i - Column = %i \n", Line, Column );
-  }
-  //--------------------------------------------------------------------
-  // classic movements and control
-  //--------------------------------------------------------------------
-  //
-  // right move cartesian -->
-  //
-  if (gb.buttons.pressed(BUTTON_RIGHT) and RightButtonState == 1 )
-  {
-    // right screen limit
-    if
-    (
-      ( Line == Line and Column == (Line + 4) ) or
-      ( Line == Line and Column == (Line + 5) )
-    )
-    {
-      if ( MoveCameraX < LIMIT_RIGHT )
-      {
-        m_City->CameraX( MoveCameraX + 8 );
-        if ( MoveCameraY > LIMIT_UP )
+        if ( m_Job == 0 )
         {
-          m_City->CameraY( MoveCameraY - 8 );
+          m_City->Error(X, Y, ERROR_JOB);
+          m_Citizen = m_Citizen - 2;
+          m_Credit = m_Credit - 50;
         }
-        IMG_ARROW_RIGHT();
-      }
-      else
-      {
-        IMG_NO_ENTRY(70, 30);
-      }
-    }
-    // move inside the screen
-    else
-    {
-      IMG_ARROW_RIGHT();
-      m_Cursor->ViewColumn(Column + 1);
-      m_Cursor->ViewLine(Line - 1);
-    }
-    SerialUSB.printf("______________________________\n");
-    SerialUSB.printf("TILE MOVE : PRESSED RIGHT  \n");
-    SerialUSB.printf("______________________________\n");
-    SerialUSB.printf("CAMERA : X = %i - Y = %i \n", MoveCameraX, MoveCameraY );
-    SerialUSB.printf("TILE : Line = %i - Column = %i \n", Line, Column );
-  }
-  //
-  // left move cartesian <--
-  //
-  if (gb.buttons.pressed(BUTTON_LEFT) and LeftButtonState == 1)
-  {
-    // control the left edge of the screen
-    if
-    (
-      ( Line == Line and Column == (Line - 4) ) or
-      ( Line == Line and Column == (Line - 5) )
-    )
-    {
-      if (MoveCameraX > LIMIT_LEFT )
-      {
-        m_City->CameraX( MoveCameraX - 8);
-        if ( MoveCameraY < LIMIT_DOWN )
+        else
         {
-          m_City->CameraY( MoveCameraY + 8);
+          m_Job = m_Job - 2;
         }
-        IMG_ARROW_LEFT();
-      }
-      else
-      {
-        IMG_NO_ENTRY(10, 30);
       }
     }
-    else
-    {
-      IMG_ARROW_LEFT();
-      m_Cursor->ViewColumn(Column - 1);
-      m_Cursor->ViewLine(Line + 1);
-    }
-    SerialUSB.printf("______________________________\n");
-    SerialUSB.printf("TILE MOVE : PRESSED LEFT  \n");
-    SerialUSB.printf("______________________________\n");
-    SerialUSB.printf("CAMERA : X = %i - Y = %i \n", MoveCameraX, MoveCameraY );
-    SerialUSB.printf("TILE : Line = %i - Column = %i \n", Line, Column );
   }
-  //
-  // up move cartesian
-  //
-  if (gb.buttons.pressed(BUTTON_UP) and UpButtonState == 1)
-  {
-    if
-    (
-      ( Line == Line and Column == (4 - Line ) ) or
-      ( Line == Line and Column == (5 - Line ) )
-    )
-    {
-      if (MoveCameraY > LIMIT_UP )
-      {
-        m_City->CameraY( MoveCameraY - 8);
-        if ( MoveCameraX > LIMIT_LEFT)
-        {
-          m_City->CameraX( MoveCameraX - 8);
-        }
-        IMG_ARROW_UP();
-      }
-      else
-      {
-        IMG_NO_ENTRY(40, 5);
-      }
-    }
-    else
-    {
-      IMG_ARROW_UP();
-      m_Cursor->ViewColumn(Column - 1);
-      m_Cursor->ViewLine(Line - 1);
-    }
-    SerialUSB.printf("______________________________\n");
-    SerialUSB.printf("TILE MOVE : PRESSED UP  \n");
-    SerialUSB.printf("______________________________\n");
-    SerialUSB.printf("CAMERA : X = %i - Y = %i \n", MoveCameraX, MoveCameraY );
-    SerialUSB.printf("TILE : Line = %i - Column = %i \n", Line, Column );
-  }
-  //                        I
-  // down move cartesian    I
-  //                        V
-  if (gb.buttons.pressed(BUTTON_DOWN) and DownButtonState == 1)
-  {
-    if
-    (
-      ( Line == 11 and Column == 7 ) or
-      ( Line == 10 and Column == 8 ) or
-      ( Line == 9 and Column == 9 ) or
-      ( Line == 8 and Column == 10 ) or
-      ( Line == 7 and Column == 11 ) or
-      // ----------------------------------
-      ( Line == 12 and Column == 7 ) or
-      ( Line == 11 and Column == 8 ) or
-      ( Line == 10 and Column == 9 ) or
-      ( Line == 9 and Column == 10 ) or
-      ( Line == 8 and Column == 11 ) or
-      ( Line == 7 and Column == 12 )
-    )
-    {
-      if (MoveCameraY < LIMIT_DOWN )
-      {
-        m_City->CameraY( MoveCameraY + 8);
-        if ( MoveCameraX < LIMIT_RIGHT)
-        {
-          m_City->CameraX( MoveCameraX + 8);
-        }
-        IMG_ARROW_DOWN();
-      }
-      else
-      {
-        IMG_NO_ENTRY(40, 55);
-      }
-
-    }
-    else
-    {
-      IMG_ARROW_DOWN();
-      m_Cursor->ViewColumn(Column + 1);
-      m_Cursor->ViewLine(Line + 1);
-    }
-    SerialUSB.printf("______________________________\n");
-    SerialUSB.printf("TILE MOVE : PRESSED DOWN  \n");
-    SerialUSB.printf("______________________________\n");
-    SerialUSB.printf("CAMERA : X = %i - Y = %i \n", MoveCameraX, MoveCameraY );
-    SerialUSB.printf("TILE : Line = %i - Column = %i \n", Line, Column );
-  }
+  m_Job = SaveJob;
 }
+
 
 //----------------------------------------------------------------------
 //                     management of time

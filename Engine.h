@@ -49,11 +49,11 @@ void Grid::CheckTheTile()
       TileDown = CheckPresenceRoad(m_Grid[i + 1][j].Type());
       TileDownRight = CheckPresenceRoad(m_Grid[i + 1][j + 1].Type());
 
-      //-----------------------------------------
+      //----------------------------------------------------------------
       // check if there is a road near the house
-      //-----------------------------------------
+      //----------------------------------------------------------------
       if ( TileCenter == HOME_RED or TileCenter == POWER_STATION or
-           TileCenter == WATER_TOWER )
+           TileCenter == WATER_TOWER or TileCenter == FACTORY)
       {
         if ( TileUp == ROAD or TileDown == ROAD or
              TileLeft == ROAD or TileRight == ROAD )
@@ -65,9 +65,9 @@ void Grid::CheckTheTile()
           m_Grid[i][j].Error( ERROR_ROAD );
         }
       }
-      //-----------------------------------------------------
-      // check if there is a station power near the house
-      //-----------------------------------------------------
+      //----------------------------------------------------------------
+      // check if there is a station power
+      //----------------------------------------------------------------
       if ( ( TileCenter == HOME_RED and m_Grid[i][j].Error() == 0 ) or
            ( TileCenter == WATER_TOWER and m_Grid[i][j].Error() == 0 )
          )
@@ -75,59 +75,27 @@ void Grid::CheckTheTile()
         DetectionArea(i, j, 10, POWER_STATION, ERROR_ELEC);
       }
 
-      //-----------------------------------------------------
-      // check if there is a water tower near the house
-      //-----------------------------------------------------
+      //----------------------------------------------------------------
+      // check if there is a water tower
+      //----------------------------------------------------------------
       if ( TileCenter == HOME_RED and m_Grid[i][j].Error() == 0 )
       {
         DetectionArea(i, j, 10, WATER_TOWER, ERROR_WATER );
       }
 
+      //----------------------------------------------------------------
+      // check if there is a factory
+      //----------------------------------------------------------------
+      if ( TileCenter == HOME_RED and m_Grid[i][j].Error() == 0 )
+      {
+        DetectionArea(i, j, 20, FACTORY, ERROR_JOB );
+      }
 
-
-
-
-      //-----------------------------------------------------
+      //----------------------------------------------------------------
       //    create turns et crossing following the roads
-      //-----------------------------------------------------
+      //----------------------------------------------------------------
       if ( TileCenter == ROAD )
       {
-        // turn up right
-        if ( TileDown == ROAD and TileCenter == ROAD
-             and TileRight == ROAD and TileUp != ROAD
-             and TileLeft != ROAD )
-        {
-          m_Grid[i][j + 1].Type(ROAD_V);
-          m_Grid[i][j].Type(ROAD_UR);
-          m_Grid[i + 1][j].Type(ROAD_H);
-        }
-        // turn up left
-        if ( TileDown == ROAD and TileCenter == ROAD
-             and TileLeft == ROAD and TileUp != ROAD
-             and TileRight != ROAD )
-        {
-          m_Grid[i][j - 1].Type(ROAD_V);
-          m_Grid[i][j].Type(ROAD_UL);
-          m_Grid[i + 1][j].Type(ROAD_H);
-        }
-        // turn down right
-        if ( TileUp == ROAD and TileCenter == ROAD
-             and TileRight == ROAD and TileDown != ROAD
-             and TileLeft != ROAD )
-        {
-          m_Grid[i - 1][j].Type(ROAD_H);
-          m_Grid[i][j].Type(ROAD_DR);
-          m_Grid[i][j + 1].Type(ROAD_V);
-        }
-        // turn down left
-        if ( TileUp == ROAD and TileCenter == ROAD
-             and TileLeft == ROAD and TileDown != ROAD
-             and TileRight != ROAD )
-        {
-          m_Grid[i - 1][j].Type(ROAD_H);
-          m_Grid[i][j].Type(ROAD_DL);
-          m_Grid[i][j - 1].Type(ROAD_V);
-        }
         // intersection up
         if ( TileCenter == ROAD and TileRight == ROAD
              and TileLeft == ROAD and TileDown == ROAD
@@ -179,6 +147,43 @@ void Grid::CheckTheTile()
           m_Grid[i][j - 1].Type(ROAD_V);
           m_Grid[i][j + 1].Type(ROAD_V);
         }
+        // turn up right
+        if ( TileDown == ROAD and TileCenter == ROAD
+             and TileRight == ROAD and TileUp != ROAD
+             and TileLeft != ROAD )
+        {
+          m_Grid[i][j + 1].Type(ROAD_V);
+          m_Grid[i][j].Type(ROAD_UR);
+          m_Grid[i + 1][j].Type(ROAD_H);
+        }
+        // turn up left
+        if ( TileDown == ROAD and TileCenter == ROAD
+             and TileLeft == ROAD and TileUp != ROAD
+             and TileRight != ROAD )
+        {
+          m_Grid[i][j - 1].Type(ROAD_V);
+          m_Grid[i][j].Type(ROAD_UL);
+          m_Grid[i + 1][j].Type(ROAD_H);
+        }
+        // turn down right
+        if ( TileUp == ROAD and TileCenter == ROAD
+             and TileRight == ROAD and TileDown != ROAD
+             and TileLeft != ROAD )
+        {
+          m_Grid[i - 1][j].Type(ROAD_H);
+          m_Grid[i][j].Type(ROAD_DR);
+          m_Grid[i][j + 1].Type(ROAD_V);
+        }
+        // turn down left
+        if ( TileUp == ROAD and TileCenter == ROAD
+             and TileLeft == ROAD and TileDown != ROAD
+             and TileRight != ROAD )
+        {
+          m_Grid[i - 1][j].Type(ROAD_H);
+          m_Grid[i][j].Type(ROAD_DL);
+          m_Grid[i][j - 1].Type(ROAD_V);
+        }
+
         // detects vertical roads
         if ( ( m_Grid[i][j].Type() == ROAD_H and
                m_Grid[i][j - 1].Type() == ROAD_V ) or
@@ -220,6 +225,7 @@ uint8_t Grid::CheckPresenceRoad(uint8_t VerifTile )
     return (VerifTile);
   }
 }
+
 //----------------------------------------------------------------------
 //                 detect the tile in a square area
 //----------------------------------------------------------------------
@@ -285,5 +291,4 @@ bool Grid::DetectionArea (uint8_t TileX, uint8_t TileY,
   }
   return (DetectTile);
 }
-
 #endif

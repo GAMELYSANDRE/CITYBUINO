@@ -11,13 +11,15 @@ extern Image IMG_SEA;
 // MENU TEXT
 extern Image IMG_TEXT_INFO;
 extern Image IMG_TEXT_SAVE;
-extern Image IMG_TEXT_READ;
+extern Image IMG_TEXT_LOAD;
 // MENU ICON
 extern Image IMG_BULL;
 extern Image IMG_ROAD_H;
 extern Image IMG_HOME_RED;
 extern Image IMG_POWER_STATION;
 extern Image IMG_WATER_TOWER;
+extern Image IMG_FACTORY;
+extern Image IMG_UPDATE;
 
 // ROAD
 extern Image IMG_ROAD_V;
@@ -37,9 +39,11 @@ extern Image IMG_ROAD_INT;
 extern Image IMG_ERROR_ROAD;
 extern Image IMG_ERROR_ELEC;
 extern Image IMG_ERROR_WATER;
+extern Image IMG_ERROR_JOB;
 
 // BOUTON
 extern Image IMG_BUTTON_A;
 extern Image IMG_BUTTON_B;
+
 
 #endif

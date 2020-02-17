@@ -46,7 +46,7 @@ const uint8_t EXIT_SETTING = 2;
 
 
 // variable for the menu game
-const uint8_t NBR_ITEM_MENU = 8;
+const uint8_t NBR_ITEM_MENU = 10;
 
 // variable for the game
 const uint8_t DELAY_MONEY = 10; // seconds before recovering the money
@@ -54,12 +54,14 @@ const uint8_t DELAY_MONEY = 10; // seconds before recovering the money
 // Menu
 const uint8_t INFO = 1;
 const uint8_t SAVE = 2;
-const uint8_t READ = 3;
+const uint8_t LOAD = 3;
 const uint8_t BULL = 4;
 const uint8_t ROAD_H = 5;
 const uint8_t HOME_RED = 6;
 const uint8_t POWER_STATION = 7;
 const uint8_t WATER_TOWER = 8;
+const uint8_t FACTORY = 9;
+const uint8_t UPDATE = 10;
 
 // tile map
 const uint8_t GRASS = 20;
@@ -84,6 +86,7 @@ const uint8_t ROAD = 100;
 const uint8_t ERROR_ROAD = 200;
 const uint8_t ERROR_ELEC = 201;
 const uint8_t ERROR_WATER = 202;
+const uint8_t ERROR_JOB = 203;
 
 // camera dimension
 const uint8_t NBR_TILES_WIDTH = 14;
