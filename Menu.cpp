@@ -32,7 +32,7 @@ Menu::~Menu()
 //----------------------------------------------------------------------
 //                       Getters methods
 //----------------------------------------------------------------------
-bool Menu::State() const
+bool Menu::GetState() const
 {
   return (m_State);
 }
@@ -48,11 +48,6 @@ uint16_t Menu::Cost() const
 {
   return (m_Cost);
 }
-bool Menu::ButtonBLock() const
-{
-  return (m_ButtonBLock);
-}
-
 
 //----------------------------------------------------------------------
 //                        Setters methods
@@ -72,10 +67,6 @@ void Menu::CursorState(bool ChangeCursorState)
 void Menu::Cost(uint16_t ChangeCost)
 {
   m_Cost = ChangeCost;
-}
-void Menu::ButtonBLock(bool ChangeButtonBLock)
-{
-  m_ButtonBLock = ChangeButtonBLock;
 }
 
 //----------------------------------------------------------------------
@@ -119,31 +110,35 @@ void Menu::SquareSelection()
     {
       m_Position++;
     }
+    else
+    {
+      m_Position = 0;
+    }
     gb.sound.fx(SOUND_MENU_1);
     switch (m_Choice)
-  {
-    case BULL:
-      m_Cost = 0;
-      break;
-    case ROAD_H:
-      m_Cost = 50;
-      break;
-    case HOME_RED:
-      m_Cost = 250;
-      break;
-    case POWER_STATION:
-      m_Cost = 1000;
-      break;
-    case WATER_TOWER:
-      m_Cost = 500;
-      break;
-    case FACTORY:
-      m_Cost = 2000;
-      break;  
-    default:
-      m_Cost = 0;
-      break;
-  }
+    {
+      case BULL:
+        m_Cost = 0;
+        break;
+      case ROAD_H:
+        m_Cost = 50;
+        break;
+      case HOME_RED:
+        m_Cost = 250;
+        break;
+      case POWER_STATION:
+        m_Cost = 1000;
+        break;
+      case WATER_TOWER:
+        m_Cost = 500;
+        break;
+      case FACTORY:
+        m_Cost = 2000;
+        break;  
+      default:
+        m_Cost = 0;
+        break;
+    }
     DebugMenu();
   }
   if (gb.buttons.pressed(BUTTON_B))

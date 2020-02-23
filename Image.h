@@ -35,6 +35,10 @@ extern Image IMG_ROAD_INT_RIGHT;
 extern Image IMG_ROAD_INT_LEFT;
 extern Image IMG_ROAD_INT;
 
+// UPDATE
+extern Image IMG_HOME_BLUE;
+extern Image IMG_BUILDING_1;
+
 // TYPE ERROR
 extern Image IMG_ERROR_ROAD;
 extern Image IMG_ERROR_ELEC;

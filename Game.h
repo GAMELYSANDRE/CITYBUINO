@@ -3,6 +3,7 @@
 #include <Gamebuino-Meta.h>
 #include "Constant.h"
 #include "Language.hpp"
+#include "Tile.h"
 #include "MainMenu.h"
 #include "Grid.h"
 #include "Menu.h"
@@ -28,23 +29,31 @@ class Game
     Menu *m_Menu;
     Cursor *m_Cursor;
     GBTime *m_Time;
-    bool m_Data; //avoid unnecessary loops
+    //avoid unnecessary loops
+    bool m_Data; 
     // main menu variable
     uint8_t m_Language;
     // main menu variable
     uint8_t m_Mode;
     // Setting menu variable
     uint8_t m_Setting;
+    // open update menu
+    bool m_Update;
+    Tile *m_TileUpdate;
+    // variable to block the buttons
+    bool m_ButtonA_Lock;
+    bool m_ButtonB_Lock;
     // activate or not the tutorial
     bool m_Tutorial;
     uint8_t m_TutorialLevel;
-    //--------------------------
+    // Variables Information
     int32_t m_Money;
     uint16_t m_NbrDay;
     uint32_t m_Credit;
     uint32_t m_Debit;
     uint16_t m_Citizen;
     uint16_t m_Job;
+
 
     // method of use
     void DisplayMenu();

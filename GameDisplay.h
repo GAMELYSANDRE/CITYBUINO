@@ -30,13 +30,13 @@ void Game::DisplayMenu()
 {
   if (gb.buttons.pressed(BUTTON_MENU))
   {
-    m_Menu->State(!m_Menu->State());
-    if (m_Menu->State() == false)
+    m_Menu->State(!m_Menu->GetState());
+    if (m_Menu->GetState() == false)
     {
       m_Menu->Choice(BULL);
     }
   }
-  if (m_Menu->State() == true)
+  if (m_Menu->GetState() == true)
   {
     m_Menu->Display();
     m_Cursor->State(false);

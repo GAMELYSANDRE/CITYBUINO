@@ -4,8 +4,8 @@
 // file : game.cpp method : DisplayMoney
 const char* const TranslateSymbMoney[] =
 {
-  "$ ",
-  "E "
+  " $ ",
+  " E "
 };
 
 const char* const TranslateDay[] =

@@ -14,11 +14,10 @@ class Menu
     ~Menu();
 
     // getters methods
-    bool State() const;
+    bool GetState() const;
     uint8_t Choice() const;
     bool CursorState() const;
     uint16_t Cost() const;
-    bool ButtonBLock() const;
     uint16_t Citizen() const;
     uint16_t Credit() const;
     uint16_t Debit() const;
@@ -28,7 +27,6 @@ class Menu
     void Choice(uint8_t ChangeChoice);
     void CursorState(bool ChangeCursorState);
     void Cost(uint16_t ChangeCost);
-    void ButtonBLock(bool ChangeButtonBLock);
     void Citizen(uint16_t ChangeCitizen);
     void Credit(uint16_t ChangeCredit);
     void Debit(uint16_t ChangeDebit);

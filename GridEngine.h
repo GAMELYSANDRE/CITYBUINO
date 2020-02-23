@@ -1,5 +1,5 @@
-#ifndef __ENGINE__
-#define __ENGINE__
+#ifndef __GRIDENGINE__
+#define __GRIDENGINE__
 
 void Grid::CheckTheTile()
 {
@@ -52,8 +52,12 @@ void Grid::CheckTheTile()
       //----------------------------------------------------------------
       // check if there is a road near the house
       //----------------------------------------------------------------
-      if ( TileCenter == HOME_RED or TileCenter == POWER_STATION or
-           TileCenter == WATER_TOWER or TileCenter == FACTORY)
+      if ( TileCenter == HOME_RED or 
+           TileCenter == HOME_BLUE or 
+           TileCenter == POWER_STATION or
+           TileCenter == WATER_TOWER or 
+           TileCenter == FACTORY
+        )
       {
         if ( TileUp == ROAD or TileDown == ROAD or
              TileLeft == ROAD or TileRight == ROAD )

@@ -140,6 +140,12 @@ void Tile::Display(bool Cart_OR_iso)
     case HOME_RED:
       gb.display.drawImage(IsoX, IsoY, IMG_HOME_RED );
       break;
+    case HOME_BLUE:
+      gb.display.drawImage(IsoX, IsoY, IMG_HOME_BLUE );
+      break;
+    case BUILDING_1: // Delta in X +2
+      gb.display.drawImage(IsoX, IsoY - 2, IMG_BUILDING_1 );
+      break;      
     case POWER_STATION: // Delta in X +4
       gb.display.drawImage(IsoX, IsoY - 4, IMG_POWER_STATION );
       break;

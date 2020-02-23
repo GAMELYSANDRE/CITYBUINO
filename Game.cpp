@@ -12,9 +12,12 @@
 
 Game::Game () :
   m_Data(true), //avoid unnecessary loops
-  m_Language(ENGLISH),
-  m_Mode(MENU),
+  m_Language(FRENCH),
+  m_Mode(NEWGAME),
   m_Setting(ENGLISH),
+  m_Update(false),
+  m_ButtonA_Lock(false),
+  m_ButtonB_Lock(false),
   m_Tutorial(true),
   m_TutorialLevel(1),
   m_Money(10000),
@@ -32,6 +35,7 @@ Game::Game () :
   m_Menu = new Menu();
   m_Cursor = new Cursor();
   m_Time = new GBTime();
+  m_TileUpdate = new Tile();
 }
 
 //----------------------------------------------------------------------
@@ -87,7 +91,10 @@ void Game::Display()
       }
       else
       {
-        MoveCursor();
+        if ( m_Update == false)
+        {
+          MoveCursor();
+        }  
         ConstructCursor();
         if ( m_Data )
         {
@@ -168,7 +175,7 @@ void Game::Display()
 void Game::ChoiceManagement()
 {
   // Backup management window
-  if ( m_Menu->Choice() == INFO and m_Menu->State() == false )
+  if ( m_Menu->Choice() == INFO and m_Menu->GetState() == false )
   {
     // frame
     gb.display.setColor(WHITE);
@@ -214,7 +221,7 @@ void Game::ChoiceManagement()
     m_Menu->CursorState(false);
   }
   // Backup management window
-  if ( m_Menu->Choice() == SAVE and m_Menu->State() == false )
+  if ( m_Menu->Choice() == SAVE and m_Menu->GetState() == false )
   {
     gb.display.setColor(WHITE);
     gb.display.fillRect(2, 20, 76, 20);
@@ -238,18 +245,22 @@ void Game::ChoiceManagement()
     }
     if (gb.buttons.pressed(BUTTON_B))
     {
-      if (m_Menu->ButtonBLock() == false)
+      if (m_ButtonB_Lock == true)
       {
         m_Menu->Choice(BULL);
         m_Menu->CursorState(false);
         m_Menu->State(false);
+        m_ButtonB_Lock = false;
       }
-      m_Menu->ButtonBLock(false);
+      else
+      {
+        m_ButtonB_Lock = true;
+      }
     }
     m_Cursor->State(false);
   }
   // Backup playback management window
-  if ( m_Menu->Choice() == LOAD and m_Menu->State() == false )
+  if ( m_Menu->Choice() == LOAD and m_Menu->GetState() == false )
   {
     gb.display.setColor(WHITE);
     gb.display.fillRect(2, 14, 76, 30);
@@ -275,17 +286,119 @@ void Game::ChoiceManagement()
       // information
       UpdateInfo();
     }
-    if (gb.buttons.released(BUTTON_B))
+    if (gb.buttons.pressed(BUTTON_B))
     {
-      if (m_Menu->ButtonBLock() == false)
+      if (m_ButtonB_Lock == true)
       {
         m_Menu->Choice(BULL);
         m_Menu->CursorState(false);
         m_Menu->State(false);
+        m_ButtonB_Lock = false;
       }
-      m_Menu->ButtonBLock(false);
+      else
+      {
+        m_ButtonB_Lock = true;
+      }
     }
-    m_Cursor->State(false);
+  }
+  // Update playback management window
+  if ( m_Menu->Choice() == UPDATE and m_Menu->GetState() == false and 
+  m_Menu->CursorState() == true)
+  {
+    uint8_t Y = m_Cursor->GridLine();
+    uint8_t X = m_Cursor->GridColumn();
+    uint8_t CityUpdate = m_City->Type(Y, X);
+    if (gb.buttons.pressed(BUTTON_A) and m_Update == false)
+    {
+      if ( CityUpdate == HOME_RED or CityUpdate == HOME_BLUE )
+      {
+        m_Update = true;
+      }  
+      gb.sound.fx(SOUND_UPDATE);
+    }
+    if( m_Update == true)
+    {
+      gb.display.setColor(WHITE);
+      gb.display.fillRect(2, 8, 76, 54);
+      gb.display.setColor(BLACK);
+      gb.display.drawRect(2, 8, 76, 54);
+      gb.display.drawImage(14,50, IMG_BUTTON_A);
+      gb.display.setCursor(26,52);
+      gb.display.print("OUI");
+      gb.display.drawImage(44,50, IMG_BUTTON_B);
+      gb.display.setCursor(56,52);
+      gb.display.print("NON");
+      m_TileUpdate->Type(CityUpdate);
+      m_TileUpdate->CartX(14);
+      m_TileUpdate->CartY(21);
+      m_TileUpdate->Display(0);
+      gb.display.setColor(RED);
+      gb.display.fillRect(34, 23, 8, 4);
+      gb.display.fillTriangle(42, 20, 46, 24, 42, 29);
+      switch ( CityUpdate )
+      {
+        case HOME_RED:
+          gb.display.setColor(BLACK);
+          gb.display.setCursor(4, 11);
+          gb.display.print("AMELIORER LOGEMENT");
+          m_TileUpdate->Type(HOME_BLUE);
+          m_TileUpdate->CartX(50);
+          m_TileUpdate->CartY(21);
+          m_TileUpdate->Display(0);
+          gb.display.setColor(BLACK);
+          gb.display.setCursor(10, 32);
+          gb.display.print(" COUT : 1000 $");
+          gb.display.setCursor(10, 40);
+          gb.display.print(" 4 CITOYENS ");
+          break;
+        case HOME_BLUE:
+          gb.display.setColor(BLACK);
+          gb.display.setCursor(4, 11);
+          gb.display.print("AMELIORER LOGEMENT");
+          m_TileUpdate->Type(BUILDING_1);
+          m_TileUpdate->CartX(50);
+          m_TileUpdate->CartY(21);
+          m_TileUpdate->Display(0);
+          gb.display.setColor(BLACK);
+          gb.display.setCursor(10, 32);
+          gb.display.print(" COUT : 3000 $");
+          gb.display.setCursor(10, 40);
+          gb.display.print(" 10 CITOYENS ");
+          break;  
+        default:
+          break;  
+      }
+      if (gb.buttons.released(BUTTON_A) )
+      {
+        if ( m_ButtonA_Lock == true)
+        {
+          switch ( CityUpdate )
+          {
+            case HOME_RED:
+              m_City->Type(Y, X, HOME_BLUE );
+              m_Money = m_Money - 1000;
+              break;
+            case HOME_BLUE:
+              m_City->Type(Y, X, BUILDING_1 );
+              m_Money = m_Money - 3000;
+              break;  
+            default:
+              break;  
+          }
+          m_Update = false;
+          m_ButtonA_Lock = false;
+        }
+        else
+        {
+          m_ButtonA_Lock = true;  
+        }  
+      }
+      if (gb.buttons.released(BUTTON_B))
+      {
+        m_Update = false;
+        m_ButtonA_Lock = false;
+      }
+    }
   }
 }
 
@@ -318,6 +431,14 @@ void Game::UpdateInfo()
             m_Credit = m_Credit + 50;
           }
           break;
+        case HOME_BLUE:
+          SerialUSB.printf("HOME BLUE X = %i - Y = %i \n", X , Y);
+          if ( m_City->Error(X, Y) == 0 )
+          {
+            m_Citizen = m_Citizen + 4;
+            m_Credit = m_Credit + 100;
+          }
+          break;  
         case ROAD:
         case ROAD_DL:
         case ROAD_DR:
@@ -353,17 +474,38 @@ void Game::UpdateInfo()
     for ( uint8_t X = 0 ; X < MAP_COLUMN; X++)
     {
       CityTile = m_City->Type(X, Y);
-      if ( CityTile == HOME_RED )
+      if ( CityTile == HOME_RED or CityTile == HOME_BLUE )
       {
         if ( m_Job == 0 )
         {
           m_City->Error(X, Y, ERROR_JOB);
-          m_Citizen = m_Citizen - 2;
-          m_Credit = m_Credit - 50;
+          switch(CityTile)
+          {
+            case HOME_RED:
+              m_Citizen = m_Citizen - 2;
+              m_Credit = m_Credit - 50;
+              break;
+            case HOME_BLUE:
+              m_Citizen = m_Citizen - 4;
+              m_Credit = m_Credit - 100;
+              break;
+            default:
+              break; 
+          }     
         }
         else
         {
-          m_Job = m_Job - 2;
+          switch(CityTile)
+          {
+            case HOME_RED:
+              m_Job = m_Job - 2;
+              break;
+            case HOME_BLUE:
+              m_Job = m_Job - 4;
+              break;
+            default:
+              break;
+          }      
         }
       }
     }

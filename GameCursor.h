@@ -7,7 +7,7 @@
 
 void Game::DisplayCursor()
 {
-  if (m_Menu->CursorState() == true and m_Menu->State() == false )
+  if (m_Menu->CursorState() == true and m_Menu->GetState() == false )
   {
     m_Cursor->State(true);
   }
@@ -34,12 +34,16 @@ void Game::MoveCursor()
   // exit mode construction
   if (gb.buttons.pressed(BUTTON_B) )
   {
-    if (m_Menu->ButtonBLock() == false)
+    if (m_ButtonB_Lock == true)
     {
       m_Menu->CursorState(false);
       m_Cursor->State(false);
+      m_ButtonB_Lock = false;
     }
-    m_Menu->ButtonBLock(false);
+    else
+    {
+      m_ButtonB_Lock = true;
+    }
   }
   // Movements
   uint16_t Column = m_Cursor->ViewColumn();
@@ -401,7 +405,7 @@ void Game::ConstructCursor()
   uint16_t Cost = m_Menu->Cost();
   uint8_t CityTile = m_City->Type(i, j);
   // disable the a button if the menu is visible
-  if (m_Menu->State() == false)
+  if (m_Menu->GetState() == false)
   {
     if (gb.buttons.pressed(BUTTON_A) )
     {

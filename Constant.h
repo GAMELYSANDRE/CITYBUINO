@@ -67,6 +67,7 @@ const uint8_t UPDATE = 10;
 const uint8_t GRASS = 20;
 const uint8_t SAND = 21;
 const uint8_t SEA = 22;
+
 // tile road
 const uint8_t ROAD_DR = 23;
 const uint8_t ROAD_DL = 24;
@@ -81,6 +82,10 @@ const uint8_t ROAD_V = 32;
 
 // variable grouping all roads
 const uint8_t ROAD = 100;
+
+// variable grouping all roads
+const uint8_t HOME_BLUE = 101;
+const uint8_t BUILDING_1 = 102;
 
 // variable type error
 const uint8_t ERROR_ROAD = 200;
@@ -159,6 +164,10 @@ const Gamebuino_Meta::Sound_FX SOUND_ERROR[] =
 const Gamebuino_Meta::Sound_FX SOUND_BULL[] =
 {
   {Gamebuino_Meta::Sound_FX_Wave::SQUARE, 0, 212, 57, -64, 477, 5},
+};
+const Gamebuino_Meta::Sound_FX SOUND_UPDATE[] = 
+{
+	{Gamebuino_Meta::Sound_FX_Wave::SQUARE,0,254,-64,-25,25,10},
 };
 
 // Logo
