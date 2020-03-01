@@ -1,11 +1,12 @@
 #ifndef __LANGUAGE__
 #define __LANGUAGE__
-
+//----------------------------------------------------------------------
 // file : game.cpp method : DisplayMoney
+//----------------------------------------------------------------------
 const char* const TranslateSymbMoney[] =
 {
-  " $ ",
-  " E "
+  "$ ",
+  "E "
 };
 
 const char* const TranslateDay[] =
@@ -14,12 +15,14 @@ const char* const TranslateDay[] =
   " JOUR "
 };
 
+//----------------------------------------------------------------------
 // file : game.cpp method : ChoiceManagement()
+//----------------------------------------------------------------------
 
 const char* const TranslateCitizen[] =
 {
-  "CITIZEN ",
-  "CITOYEN "
+  "CITIZENS ",
+  "CITOYENS "
 };
 const char* const TranslateMenuInfo[] =
 {
@@ -46,8 +49,22 @@ const char* const TranslateNo[] =
   "NO",
   "NON"
 };
+// -- UPDATE -- //
+const char* const TranslateUpdateHouSe[] =
+{
+  "IMPROVE HOUSING",
+  "AMELIORER LOGEMENT"
+};
+const char* const TranslateCost[] =
+{
+  " COST : ",
+  " COUT : "
+};
 
+
+//----------------------------------------------------------------------
 // file : game.cpp method : Memory()
+//----------------------------------------------------------------------
 
 const char* const TranslateBackupAction[] =
 {
@@ -55,15 +72,20 @@ const char* const TranslateBackupAction[] =
   "SAUVEGAR. EN COURS"
 };
 
+//----------------------------------------------------------------------
 // file : game.cpp method : Message()
+//----------------------------------------------------------------------
 const char* const TranslateError[] =
 {
   " ERROR !",
   "ERREUR !"
 };
 
+//----------------------------------------------------------------------
 // file : game.cpp method : ConstructCursor()
 // max 18 characters
+//----------------------------------------------------------------------
+
 const char* const TranslateErrorPresent[] =
 {
   "PRESENT CONSTRUCT.",

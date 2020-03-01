@@ -452,6 +452,7 @@ void Game::ConstructCursor()
         m_City->Type(i, j, SAND );
         m_City->ResetError(i, j);
         gb.sound.fx(SOUND_BULL);
+        UpdateInfo();
       }
       m_Data = true;
     }

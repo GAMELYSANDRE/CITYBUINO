@@ -12,23 +12,24 @@
 
 Game::Game () :
   m_Data(true), //avoid unnecessary loops
-  m_Language(FRENCH),
-  m_Mode(NEWGAME),
-  m_Setting(ENGLISH),
+  m_Language(ENGLISH),
+  m_Mode(MENU),
+  m_Setting(PAUSE),
   m_Update(false),
   m_ButtonA_Lock(false),
   m_ButtonB_Lock(false),
+  m_PlayMusicMoney(false),
   m_Tutorial(true),
   m_TutorialLevel(1),
-  m_Money(10000),
+  m_Money(8000),
   m_NbrDay(0),
   m_Credit(0),
   m_Debit(0),
   m_Citizen(0),
   m_Job(0)
 {
-  m_MainMenuEnglish = new MainMenu(MainMenuTextEnglish, 5);
-  m_MainMenuFrench = new MainMenu(MainMenuTextFrench, 5);
+  m_MainMenuEnglish = new MainMenu(MainMenuTextEnglish, 4);
+  m_MainMenuFrench = new MainMenu(MainMenuTextFrench, 4);
   m_SettingMenuEnglish = new MainMenu(SettingMenuTextEnglish, 3);
   m_SettingMenuFrench = new MainMenu(SettingMenuTextFrench, 3);
   m_City = new Grid(MAP, MAP_LINE, MAP_COLUMN);
@@ -48,7 +49,32 @@ Game::~Game()
   delete m_Menu;
   delete m_Cursor;
   delete m_Time;
+  delete m_TileUpdate;
 }
+
+//----------------------------------------------------------------------
+//                           RESET MAP
+//----------------------------------------------------------------------
+void Game::Reset()
+{
+  m_Data = true;
+  m_Update = false;
+  m_ButtonA_Lock = false;
+  m_ButtonB_Lock = false;
+  m_PlayMusicMoney = false;
+  m_Tutorial = true;
+  m_TutorialLevel = 1;
+  m_Money = 10000;
+  m_NbrDay = 0;
+  m_Credit = 0;
+  m_Debit = 0;
+  m_Citizen = 0;
+  m_Job = 0;
+  m_City->Reset(MAP, MAP_LINE, MAP_COLUMN);
+
+}
+
+
 //----------------------------------------------------------------------
 //                       method display Game
 //----------------------------------------------------------------------
@@ -58,6 +84,14 @@ void Game::Display()
   switch (m_Mode)
   {
     case MENU:
+      // SAVE LANGUAGE
+      if ( gb.save.get(32) == 0)
+      {
+      }
+      else
+      {
+        m_Language = gb.save.get(32);
+      }
       switch (m_Language)
       {
         case ENGLISH:
@@ -75,45 +109,63 @@ void Game::Display()
       }
       break;
     case NEWGAME:
+      // display city
       m_City->Display();
       // Display the money
       DisplayMoney();
-      // show or not the cursor
-      DisplayCursor();
-      // show or not the menu
-      DisplayMenu();
-      // Action for info, save, read
-      ChoiceManagement();
-      // inactive cursor move map
-      if (m_Cursor->State() == false)
+      if ( m_Money < 0)
       {
-        m_City->Move();
+        //GAME OVER
+        gb.display.drawImage(18, 20, IMG_GAMEOVER);
+        if (gb.buttons.pressed(BUTTON_A) or
+            gb.buttons.pressed(BUTTON_B))
+        {
+          // reset objet menu
+          m_MainMenuEnglish->SetMode(MENU);
+          m_SettingMenuEnglish->SetMode(PAUSE);
+          m_MainMenuFrench->SetMode(MENU);
+          m_SettingMenuFrench->SetMode(PAUSE);
+          m_Mode = MENU;
+          Reset();
+        }
       }
       else
       {
-        if ( m_Update == false)
+
+        // show or not the cursor
+        DisplayCursor();
+        // show or not the menu
+        DisplayMenu();
+        // Action for info, save, read
+        ChoiceManagement();
+        // inactive cursor move map
+        if (m_Cursor->State() == false)
         {
-          MoveCursor();
-        }  
-        ConstructCursor();
-        if ( m_Data )
-        {
-          // Engine
-          m_City->CheckTheTile();
-          // information
-          UpdateInfo();
-          // Desactive
-          m_Data = false;
+          m_City->Move();
         }
+        else
+        {
+          if ( m_Update == false)
+          {
+            MoveCursor();
+          }
+          ConstructCursor();
+          if ( m_Data )
+          {
+            // Engine
+            m_City->CheckTheTile();
+            // information
+            UpdateInfo();
+            // Desactive
+            m_Data = false;
+          }
+        }
+        // Display time
+        DisplayTime();
       }
-      // Display time
-      DisplayTime();
       break;
     case CONTINUE:
       m_Menu->Choice(LOAD);
-      m_Mode = NEWGAME;
-      break;
-    case TUTORIAL:
       m_Mode = NEWGAME;
       break;
     case SETTING:
@@ -138,9 +190,13 @@ void Game::Display()
           break;
         case ENGLISH:
           m_Language = ENGLISH;
+          gb.save.del(32);
+          gb.save.set(32, m_Language);
           break;
         case FRENCH:
           m_Language = FRENCH;
+          gb.save.del(32);
+          gb.save.set(32, m_Language);
           break;
         case EXIT_SETTING:
           // reset objet menu
@@ -157,7 +213,12 @@ void Game::Display()
       }
       break;
     case CREDITS:
-      m_Mode = NEWGAME;
+      // reset objet menu
+      m_MainMenuEnglish->SetMode(MENU);
+      m_SettingMenuEnglish->SetMode(PAUSE);
+      m_MainMenuFrench->SetMode(MENU);
+      m_SettingMenuFrench->SetMode(PAUSE);
+      m_Mode = MENU;
       break;
     default:
       gb.display.setCursor(10, 30);
@@ -190,21 +251,23 @@ void Game::ChoiceManagement()
     // Text Credit
     gb.display.setCursor(4, 16);
     gb.display.setColor(BLACK);
-    gb.display.print(" CREDIT ");
+    gb.display.print("  CREDIT ");
     gb.display.setColor(BLUE);
     gb.display.print(m_Credit);
+    gb.display.print(" ");
     gb.display.print(TranslateSymbMoney[m_Language]);
     // Text Debit
     gb.display.setCursor(4, 22);
     gb.display.setColor(BLACK);
-    gb.display.print("  DEBIT ");
+    gb.display.print("   DEBIT ");
     gb.display.setColor(BLUE);
     gb.display.print(m_Debit);
+    gb.display.print(" ");
     gb.display.print(TranslateSymbMoney[m_Language]);
     // Text Job
     gb.display.setCursor(4, 28);
     gb.display.setColor(BLACK);
-    gb.display.print("    JOB ");
+    gb.display.print("    JOBS ");
     gb.display.setColor(BLUE);
     gb.display.print(m_Job);
     // Button Exit
@@ -302,8 +365,8 @@ void Game::ChoiceManagement()
     }
   }
   // Update playback management window
-  if ( m_Menu->Choice() == UPDATE and m_Menu->GetState() == false and 
-  m_Menu->CursorState() == true)
+  if ( m_Menu->Choice() == UPDATE and m_Menu->GetState() == false and
+       m_Menu->CursorState() == true)
   {
     uint8_t Y = m_Cursor->GridLine();
     uint8_t X = m_Cursor->GridColumn();
@@ -313,21 +376,21 @@ void Game::ChoiceManagement()
       if ( CityUpdate == HOME_RED or CityUpdate == HOME_BLUE )
       {
         m_Update = true;
-      }  
+      }
       gb.sound.fx(SOUND_UPDATE);
     }
-    if( m_Update == true)
+    if ( m_Update == true)
     {
       gb.display.setColor(WHITE);
       gb.display.fillRect(2, 8, 76, 54);
       gb.display.setColor(BLACK);
       gb.display.drawRect(2, 8, 76, 54);
-      gb.display.drawImage(14,50, IMG_BUTTON_A);
-      gb.display.setCursor(26,52);
-      gb.display.print("OUI");
-      gb.display.drawImage(44,50, IMG_BUTTON_B);
-      gb.display.setCursor(56,52);
-      gb.display.print("NON");
+      gb.display.drawImage(14, 50, IMG_BUTTON_A);
+      gb.display.setCursor(26, 52);
+      gb.display.print(TranslateYes[m_Language]);
+      gb.display.drawImage(44, 50, IMG_BUTTON_B);
+      gb.display.setCursor(56, 52);
+      gb.display.print(TranslateNo[m_Language]);
       m_TileUpdate->Type(CityUpdate);
       m_TileUpdate->CartX(14);
       m_TileUpdate->CartY(21);
@@ -340,33 +403,45 @@ void Game::ChoiceManagement()
         case HOME_RED:
           gb.display.setColor(BLACK);
           gb.display.setCursor(4, 11);
-          gb.display.print("AMELIORER LOGEMENT");
+          gb.display.print(TranslateUpdateHouSe[m_Language]);
           m_TileUpdate->Type(HOME_BLUE);
           m_TileUpdate->CartX(50);
           m_TileUpdate->CartY(21);
           m_TileUpdate->Display(0);
           gb.display.setColor(BLACK);
           gb.display.setCursor(10, 32);
-          gb.display.print(" COUT : 1000 $");
+          gb.display.print(TranslateCost[m_Language]);
+          gb.display.print(COST_HOME_BLUE);
+          gb.display.print(" ");
+          gb.display.print(TranslateSymbMoney[m_Language]);
           gb.display.setCursor(10, 40);
-          gb.display.print(" 4 CITOYENS ");
+          gb.display.print(" ");
+          gb.display.print(COST_HOME_BLUE_CITIZEN);
+          gb.display.print(" ");
+          gb.display.print(TranslateCitizen[m_Language]);
           break;
         case HOME_BLUE:
           gb.display.setColor(BLACK);
           gb.display.setCursor(4, 11);
-          gb.display.print("AMELIORER LOGEMENT");
+          gb.display.print(TranslateUpdateHouSe[m_Language]);
           m_TileUpdate->Type(BUILDING_1);
           m_TileUpdate->CartX(50);
           m_TileUpdate->CartY(21);
           m_TileUpdate->Display(0);
           gb.display.setColor(BLACK);
           gb.display.setCursor(10, 32);
-          gb.display.print(" COUT : 3000 $");
+          gb.display.print(TranslateCost[m_Language]);
+          gb.display.print(COST_BUILDING_1);
+          gb.display.print(" ");
+          gb.display.print(TranslateSymbMoney[m_Language]);
           gb.display.setCursor(10, 40);
-          gb.display.print(" 10 CITOYENS ");
-          break;  
+          gb.display.print(" ");
+          gb.display.print(COST_BUILDING_1_CITIZEN);
+          gb.display.print(" ");
+          gb.display.print(TranslateCitizen[m_Language]);
+          break;
         default:
-          break;  
+          break;
       }
       if (gb.buttons.released(BUTTON_A) )
       {
@@ -375,23 +450,38 @@ void Game::ChoiceManagement()
           switch ( CityUpdate )
           {
             case HOME_RED:
-              m_City->Type(Y, X, HOME_BLUE );
-              m_Money = m_Money - 1000;
+              if ( m_Money > COST_HOME_BLUE  )
+              {
+                m_City->Type(Y, X, HOME_BLUE );
+                m_Money = m_Money - COST_HOME_BLUE;
+              }
+              else
+              {
+                Message(TranslateErrorNoMoney[m_Language]);
+              }  
               break;
             case HOME_BLUE:
-              m_City->Type(Y, X, BUILDING_1 );
-              m_Money = m_Money - 3000;
-              break;  
+              if ( m_Money > COST_BUILDING_1  )
+              {
+                m_City->Type(Y, X, BUILDING_1 );
+                m_Money = m_Money - COST_BUILDING_1;
+              }
+              else
+              {
+                Message(TranslateErrorNoMoney[m_Language]);
+              }  
+              break;
             default:
-              break;  
+              break;
           }
           m_Update = false;
           m_ButtonA_Lock = false;
+          UpdateInfo();
         }
         else
         {
-          m_ButtonA_Lock = true;  
-        }  
+          m_ButtonA_Lock = true;
+        }
       }
       if (gb.buttons.released(BUTTON_B))
       {
@@ -427,16 +517,24 @@ void Game::UpdateInfo()
           SerialUSB.printf("HOME RED X = %i - Y = %i \n", X , Y);
           if ( m_City->Error(X, Y) == 0 )
           {
-            m_Citizen = m_Citizen + 2;
-            m_Credit = m_Credit + 50;
+            m_Citizen = m_Citizen + COST_HOME_RED_CITIZEN;
+            m_Credit = m_Credit + COST_HOME_RED_CREDIT;
           }
           break;
         case HOME_BLUE:
           SerialUSB.printf("HOME BLUE X = %i - Y = %i \n", X , Y);
           if ( m_City->Error(X, Y) == 0 )
           {
-            m_Citizen = m_Citizen + 4;
-            m_Credit = m_Credit + 100;
+            m_Citizen = m_Citizen + COST_HOME_BLUE_CITIZEN;
+            m_Credit = m_Credit + COST_HOME_BLUE_CREDIT;
+          }
+          break;
+        case BUILDING_1:
+          SerialUSB.printf("BUILDING LEVEL 1 X = %i - Y = %i \n", X , Y);
+          if ( m_City->Error(X, Y) == 0 )
+          {
+            m_Citizen = m_Citizen + COST_BUILDING_1_CITIZEN;
+            m_Credit = m_Credit + COST_BUILDING_1_CREDIT;
           }
           break;  
         case ROAD:
@@ -452,15 +550,15 @@ void Game::UpdateInfo()
         case ROAD_UR:
         case ROAD_V:
           SerialUSB.printf("ROAD X = %i - Y = %i \n", X , Y);
-          m_Debit = m_Debit + 2;
+          m_Debit = m_Debit + COST_ROAD_DEBIT;
           break;
         case POWER_STATION:
           SerialUSB.printf("POWER STATION X = %i - Y = %i \n", X , Y);
-          m_Debit = m_Debit + 200;
+          m_Debit = m_Debit + COST_POWER_STATION_DEBIT;
           break;
         case WATER_TOWER:
           SerialUSB.printf("WATER_TOWER X = %i - Y = %i \n", X , Y);
-          m_Debit = m_Debit + 50;
+          m_Debit = m_Debit + COST_WATER_TOWER_DEBIT;
           break;
         default:
           break;
@@ -474,43 +572,56 @@ void Game::UpdateInfo()
     for ( uint8_t X = 0 ; X < MAP_COLUMN; X++)
     {
       CityTile = m_City->Type(X, Y);
-      if ( CityTile == HOME_RED or CityTile == HOME_BLUE )
+      if ( CityTile == HOME_RED or 
+           CityTile == HOME_BLUE or
+           CityTile == BUILDING_1 )
       {
         if ( m_Job == 0 )
         {
-          m_City->Error(X, Y, ERROR_JOB);
-          switch(CityTile)
+          if (m_City->Error(X, Y) == 0 )
           {
-            case HOME_RED:
-              m_Citizen = m_Citizen - 2;
-              m_Credit = m_Credit - 50;
-              break;
-            case HOME_BLUE:
-              m_Citizen = m_Citizen - 4;
-              m_Credit = m_Credit - 100;
-              break;
-            default:
-              break; 
-          }     
+            m_City->Error(X, Y, ERROR_JOB);
+            switch (CityTile)
+            {
+              case HOME_RED:
+                m_Citizen = m_Citizen - COST_HOME_RED_CITIZEN;
+                m_Credit = m_Credit - COST_HOME_RED_CREDIT;
+                break;
+              case HOME_BLUE:
+                m_Citizen = m_Citizen - COST_HOME_BLUE_CITIZEN;
+                m_Credit = m_Credit - COST_HOME_BLUE_CREDIT;
+                break;
+              case BUILDING_1:
+                m_Citizen = m_Citizen - COST_BUILDING_1_CITIZEN;
+                m_Credit = m_Credit - COST_BUILDING_1_CREDIT;
+                break;  
+              default:
+                break;
+            }
+          }
         }
         else
         {
-          switch(CityTile)
+          switch (CityTile)
           {
             case HOME_RED:
-              m_Job = m_Job - 2;
+              m_Job = m_Job - COST_HOME_RED_CITIZEN;
               break;
             case HOME_BLUE:
-              m_Job = m_Job - 4;
+              m_Job = m_Job - COST_HOME_BLUE_CITIZEN;
               break;
+            case BUILDING_1:
+              m_Job = m_Job - COST_BUILDING_1_CITIZEN;
+              break;  
             default:
               break;
-          }      
+          }
         }
       }
     }
   }
   m_Job = SaveJob;
+  m_City->CheckTheTile();
 }
 
 
@@ -528,7 +639,19 @@ void Game::DisplayTime()
     m_NbrDay++;
     m_Time->Reset();
     m_Money = m_Money + m_Credit - m_Debit;
+    //m_PlayMusicMoney = true;
   }
+  if ( m_Time->TempTime() > ( DELAY_MONEY * 1000 - 2000 ) )
+  {
+    AnimateMoney();
+  }
+  /*
+    if ( m_PlayMusicMoney == true )
+    {
+    gb.sound.fx(SOUND_MONEY);
+    m_PlayMusicMoney = false;
+    }
+  */
 }
 
 //----------------------------------------------------------------------

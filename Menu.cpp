@@ -121,20 +121,20 @@ void Menu::SquareSelection()
         m_Cost = 0;
         break;
       case ROAD_H:
-        m_Cost = 50;
+        m_Cost = COST_ROAD;
         break;
       case HOME_RED:
-        m_Cost = 250;
+        m_Cost = COST_HOME_RED;
         break;
       case POWER_STATION:
-        m_Cost = 1000;
+        m_Cost = COST_POWER_STATION;
         break;
       case WATER_TOWER:
-        m_Cost = 500;
+        m_Cost = COST_WATER_TOWER;
         break;
       case FACTORY:
-        m_Cost = 2000;
-        break;  
+        m_Cost = COST_FACTORY;
+        break;
       default:
         m_Cost = 0;
         break;

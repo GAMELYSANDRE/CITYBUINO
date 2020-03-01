@@ -7,7 +7,6 @@ const char* const MainMenuTextEnglish[] =
 {
   "NEW GAME",
   "LOAD GAME",
-  "TUTORIAL",
   "SETTING",
   "CREDITS"
 };
@@ -15,16 +14,16 @@ const char* const MainMenuTextFrench[] =
 {
   "NOUVEAU JEU",
   "CONTINUER JEU",
-  "DIDACTICIEL",
   "OPTIONS",
   "CREDITS"
 };
+
 const uint8_t MENU = 100;
 const uint8_t NEWGAME = 0;
 const uint8_t CONTINUE = 1;
-const uint8_t TUTORIAL = 2;
-const uint8_t SETTING = 3;
-const uint8_t CREDITS = 4;
+const uint8_t SETTING = 2;
+const uint8_t CREDITS = 3;
+
 // variable for the option menu
 const char* const SettingMenuTextEnglish[] =
 {
@@ -38,6 +37,7 @@ const char* const SettingMenuTextFrench[] =
   "FRANCAIS",
   "SORTIR"
 };
+
 // Translate
 const uint8_t PAUSE = 100;
 const uint8_t ENGLISH = 0;
@@ -49,7 +49,8 @@ const uint8_t EXIT_SETTING = 2;
 const uint8_t NBR_ITEM_MENU = 10;
 
 // variable for the game
-const uint8_t DELAY_MONEY = 10; // seconds before recovering the money
+// seconds before recovering the money
+const uint8_t DELAY_MONEY = 30; // default = 30
 
 // Menu
 const uint8_t INFO = 1;
@@ -62,6 +63,39 @@ const uint8_t POWER_STATION = 7;
 const uint8_t WATER_TOWER = 8;
 const uint8_t FACTORY = 9;
 const uint8_t UPDATE = 10;
+
+// COST ROAD
+const uint8_t COST_ROAD = 50;
+const uint8_t COST_ROAD_DEBIT = 5;
+
+// COST HOME
+const uint8_t COST_HOME_RED = 250;
+const uint8_t COST_HOME_RED_CREDIT = 50;
+const uint8_t COST_HOME_RED_CITIZEN = 2;
+
+const uint16_t COST_HOME_BLUE = 500;
+const uint8_t COST_HOME_BLUE_CREDIT = 100;
+const uint8_t COST_HOME_BLUE_CITIZEN = 4;
+
+const uint16_t COST_BUILDING_1 = 1000;
+const uint8_t COST_BUILDING_1_CREDIT = 200;
+const uint8_t COST_BUILDING_1_CITIZEN = 10;
+
+// COST POWER STATION
+const uint16_t COST_POWER_STATION = 1000;
+const uint8_t COST_POWER_STATION_DEBIT = 100;
+
+// COST WATER TOWER
+const uint16_t COST_WATER_TOWER = 500;
+const uint8_t COST_WATER_TOWER_DEBIT = 50;
+
+// COST FACTORY
+const uint16_t COST_FACTORY = 2000;
+
+
+// variable grouping all roads
+const uint8_t HOME_BLUE = 101;
+const uint8_t BUILDING_1 = 102;
 
 // tile map
 const uint8_t GRASS = 20;
@@ -83,15 +117,16 @@ const uint8_t ROAD_V = 32;
 // variable grouping all roads
 const uint8_t ROAD = 100;
 
-// variable grouping all roads
-const uint8_t HOME_BLUE = 101;
-const uint8_t BUILDING_1 = 102;
-
 // variable type error
 const uint8_t ERROR_ROAD = 200;
 const uint8_t ERROR_ELEC = 201;
 const uint8_t ERROR_WATER = 202;
 const uint8_t ERROR_JOB = 203;
+
+// Save game
+const uint8_t MEM_READ = 0;
+const uint8_t MEM_SAVE = 1;
+const uint8_t MEM_DEL = 2;
 
 // camera dimension
 const uint8_t NBR_TILES_WIDTH = 14;
@@ -165,10 +200,17 @@ const Gamebuino_Meta::Sound_FX SOUND_BULL[] =
 {
   {Gamebuino_Meta::Sound_FX_Wave::SQUARE, 0, 212, 57, -64, 477, 5},
 };
-const Gamebuino_Meta::Sound_FX SOUND_UPDATE[] = 
+const Gamebuino_Meta::Sound_FX SOUND_UPDATE[] =
 {
-	{Gamebuino_Meta::Sound_FX_Wave::SQUARE,0,254,-64,-25,25,10},
+  {Gamebuino_Meta::Sound_FX_Wave::SQUARE, 0, 254, -64, -25, 25, 10},
 };
+
+const Gamebuino_Meta::Sound_FX SOUND_MONEY[] =
+{
+  {Gamebuino_Meta::Sound_FX_Wave::SQUARE, 1, 255, -87, -67, 30, 100},
+};
+
+
 
 // Logo
 // new color
@@ -184,10 +226,5 @@ const void IMG_ARROW_UP();
 const void IMG_ARROW_DOWN();
 
 void IMG_NO_ENTRY(uint8_t PosX, uint8_t PosY);
-
-// Save game
-const uint8_t MEM_READ = 0;
-const uint8_t MEM_SAVE = 1;
-const uint8_t MEM_DEL = 2;
 
 #endif

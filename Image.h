@@ -49,5 +49,7 @@ extern Image IMG_ERROR_JOB;
 extern Image IMG_BUTTON_A;
 extern Image IMG_BUTTON_B;
 
+// GAME OVER
+extern Image IMG_GAMEOVER;
 
 #endif

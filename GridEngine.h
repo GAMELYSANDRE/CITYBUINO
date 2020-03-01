@@ -52,12 +52,13 @@ void Grid::CheckTheTile()
       //----------------------------------------------------------------
       // check if there is a road near the house
       //----------------------------------------------------------------
-      if ( TileCenter == HOME_RED or 
-           TileCenter == HOME_BLUE or 
+      if ( TileCenter == HOME_RED or
+           TileCenter == HOME_BLUE or
+           TileCenter == BUILDING_1 or
            TileCenter == POWER_STATION or
-           TileCenter == WATER_TOWER or 
+           TileCenter == WATER_TOWER or
            TileCenter == FACTORY
-        )
+         )
       {
         if ( TileUp == ROAD or TileDown == ROAD or
              TileLeft == ROAD or TileRight == ROAD )
@@ -69,28 +70,39 @@ void Grid::CheckTheTile()
           m_Grid[i][j].Error( ERROR_ROAD );
         }
       }
+      
       //----------------------------------------------------------------
       // check if there is a station power
       //----------------------------------------------------------------
       if ( ( TileCenter == HOME_RED and m_Grid[i][j].Error() == 0 ) or
-           ( TileCenter == WATER_TOWER and m_Grid[i][j].Error() == 0 )
+           ( TileCenter == HOME_BLUE and m_Grid[i][j].Error() == 0 ) or
+           ( TileCenter == BUILDING_1 and m_Grid[i][j].Error() == 0 ) or
+           ( TileCenter == FACTORY and m_Grid[i][j].Error() == 0 ) 
          )
       {
         DetectionArea(i, j, 10, POWER_STATION, ERROR_ELEC);
       }
-
+      
       //----------------------------------------------------------------
       // check if there is a water tower
       //----------------------------------------------------------------
-      if ( TileCenter == HOME_RED and m_Grid[i][j].Error() == 0 )
+      if ( ( TileCenter == HOME_RED and m_Grid[i][j].Error() == 0 ) or
+           ( TileCenter == HOME_BLUE and m_Grid[i][j].Error() == 0 ) or
+           ( TileCenter == BUILDING_1 and m_Grid[i][j].Error() == 0 ) or
+           ( TileCenter == FACTORY and m_Grid[i][j].Error() == 0 ) or
+           ( TileCenter == POWER_STATION and m_Grid[i][j].Error() == 0 )
+         )
       {
         DetectionArea(i, j, 10, WATER_TOWER, ERROR_WATER );
-      }
+      }      
 
       //----------------------------------------------------------------
       // check if there is a factory
       //----------------------------------------------------------------
-      if ( TileCenter == HOME_RED and m_Grid[i][j].Error() == 0 )
+      if ( ( TileCenter == HOME_RED and m_Grid[i][j].Error() == 0 ) or
+           ( TileCenter == HOME_BLUE and m_Grid[i][j].Error() == 0 ) or
+           ( TileCenter == BUILDING_1 and m_Grid[i][j].Error() == 0 )
+         )  
       {
         DetectionArea(i, j, 20, FACTORY, ERROR_JOB );
       }

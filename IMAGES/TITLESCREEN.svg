@@ -17,7 +17,7 @@
    id="svg8"
    inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
    sodipodi:docname="TITLESCREEN.svg"
-   inkscape:export-filename="/media/laurent/COLAS/GAMEBUINO/CITYBUINO/BIN/TITLESCREEN.png"
+   inkscape:export-filename="/media/laurent/COLAS/GAMEBUINO/CITYBUINO/BIN/TITLESCREEN.bmp.png"
    inkscape:export-xdpi="25.4"
    inkscape:export-ydpi="25.4">
   <defs
@@ -116,8 +116,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="2.3970736"
-     inkscape:cx="124.37506"
-     inkscape:cy="112.60138"
+     inkscape:cx="102.75979"
+     inkscape:cy="110.93268"
      inkscape:document-units="mm"
      inkscape:current-layer="layer3"
      showgrid="false"
@@ -3058,5 +3058,15 @@
            y="713.70074"
            style="fill:#000000;fill-opacity:1" /></flowRegion><flowPara
          id="flowPara1129"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:74.66748047px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1">v 0.85</flowPara></flowRoot>  </g>
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:74.66748047px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1">v 0.86</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot1115"
+       style="fill:black;fill-opacity:1;stroke:none;font-family:sans-serif;font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;letter-spacing:0px;word-spacing:0px"><flowRegion
+         id="flowRegion1117"><rect
+           id="rect1119"
+           width="351.26163"
+           height="278.25595"
+           x="-17.104189"
+           y="-16.341774" /></flowRegion><flowPara
+         id="flowPara1121"></flowPara></flowRoot>  </g>
 </svg>

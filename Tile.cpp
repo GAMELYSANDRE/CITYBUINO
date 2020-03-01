@@ -145,7 +145,7 @@ void Tile::Display(bool Cart_OR_iso)
       break;
     case BUILDING_1: // Delta in X +2
       gb.display.drawImage(IsoX, IsoY - 2, IMG_BUILDING_1 );
-      break;      
+      break;
     case POWER_STATION: // Delta in X +4
       gb.display.drawImage(IsoX, IsoY - 4, IMG_POWER_STATION );
       break;

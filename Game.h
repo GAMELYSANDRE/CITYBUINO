@@ -19,6 +19,7 @@ class Game
     ~Game();
     // method of use
     void Display();
+    void Reset();
 
   private:
     MainMenu *m_MainMenuEnglish;
@@ -30,7 +31,7 @@ class Game
     Cursor *m_Cursor;
     GBTime *m_Time;
     //avoid unnecessary loops
-    bool m_Data; 
+    bool m_Data;
     // main menu variable
     uint8_t m_Language;
     // main menu variable
@@ -43,6 +44,8 @@ class Game
     // variable to block the buttons
     bool m_ButtonA_Lock;
     bool m_ButtonB_Lock;
+    // stop musique money
+    bool m_PlayMusicMoney;
     // activate or not the tutorial
     bool m_Tutorial;
     uint8_t m_TutorialLevel;
@@ -62,6 +65,7 @@ class Game
     void ErrorCursor();
     void ConstructCursor();
     void DisplayMoney();
+    void AnimateMoney();
     void DisplayTime();
     void UpdateInfo();
     void Message(const char TextMessage[18] );

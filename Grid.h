@@ -14,6 +14,8 @@ class Grid
     Grid (const uint8_t Map[], uint8_t NumberLine, uint8_t NumberColumn);
     // Destructor
     ~Grid();
+    // Reset Map
+    void Reset (const uint8_t Map[], uint8_t NumberLine, uint8_t NumberColumn);
 
     // getters methods
     uint8_t CameraX() const;

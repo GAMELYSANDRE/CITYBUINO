@@ -18,6 +18,7 @@ Grid::Grid (const uint8_t Map[], uint8_t NumberLine, uint8_t NumberColumn) :
   {
     m_Grid[X] = new Tile[NumberColumn];
   }
+  // reads the map and fills in the grid
   for (uint8_t X = 0; X < NumberLine ; X++)
   {
     for (uint8_t Y = 0; Y < NumberColumn ; Y++)
@@ -36,6 +37,26 @@ Grid::~Grid()
 {
   delete[] m_Grid;
 }
+
+//----------------------------------------------------------------------
+//                           RESET
+//----------------------------------------------------------------------
+
+void Grid::Reset(const uint8_t Map[], uint8_t NumberLine, uint8_t NumberColumn)
+{
+  // reads the map and fills in the grid
+  for (uint8_t X = 0; X < NumberLine ; X++)
+  {
+    for (uint8_t Y = 0; Y < NumberColumn ; Y++)
+    {
+      m_Grid[X][Y].Line(X);
+      m_Grid[X][Y].Column(Y);
+      m_Grid[X][Y].Type(Map[X + (NumberColumn * Y)]);
+      m_Grid[X][Y].Error(0);
+    }
+  }
+}
+
 
 //----------------------------------------------------------------------
 //                       Getters methods

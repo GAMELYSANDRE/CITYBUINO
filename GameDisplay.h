@@ -49,7 +49,6 @@ void Game::DisplayMenu()
 
 void Game::Message(const char TextMessage[18] )
 {
-  gb.sound.fx(SOUND_ERROR);
   gb.display.setColor(RED);
   gb.display.fillRect(2, 20, 76, 20);
   gb.display.setColor(BLACK);
@@ -59,7 +58,35 @@ void Game::Message(const char TextMessage[18] )
   gb.display.print(TranslateError[m_Language]);
   gb.display.setCursor(6, 30);
   gb.display.print(TextMessage);
+  //gb.sound.fx(SOUND_ERROR);
   delay(1000);
+}
+
+
+
+void Game::AnimateMoney()
+{
+  int16_t Profit = m_Credit - m_Debit;
+  if ( Profit >= 0 )
+  {
+    gb.display.setCursor(12, 9);
+    gb.display.setColor(GRAY);
+    gb.display.print("+");
+    gb.display.print(Profit);
+    gb.display.setCursor(11, 8);
+    gb.display.setColor(0, 255, 0);
+    gb.display.print("+");
+    gb.display.print(Profit);
+  }
+  else
+  {
+    gb.display.setCursor(12, 9);
+    gb.display.setColor(GRAY);
+    gb.display.print(Profit);
+    gb.display.setCursor(11, 8);
+    gb.display.setColor(255, 0, 0);
+    gb.display.print(Profit);
+  }
 }
 
 #endif

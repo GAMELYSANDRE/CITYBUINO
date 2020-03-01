@@ -54,11 +54,12 @@ const void IMG_ARROW_DOWN()
 
 void IMG_NO_ENTRY(uint8_t PosX, uint8_t PosY)
 {
+  gb.sound.fx(SOUND_ERROR);
   gb.display.setColor(SUPERRED);
   gb.display.fillCircle(PosX, PosY, 6);
   gb.display.setColor(WHITE);
   gb.display.fillRect(PosX - 3, PosY - 1, 6, 3);
-  gb.sound.fx(SOUND_ERROR);
+
 }
 
 
