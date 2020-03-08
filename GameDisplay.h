@@ -38,7 +38,7 @@ void Game::DisplayMenu()
   }
   if (m_Menu->GetState() == true)
   {
-    m_Menu->Display();
+    m_Menu->Display(m_Language);
     m_Cursor->State(false);
   }
 }

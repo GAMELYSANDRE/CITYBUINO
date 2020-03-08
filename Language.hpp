@@ -73,12 +73,32 @@ const char* const TranslateBackupAction[] =
 };
 
 //----------------------------------------------------------------------
-// file : game.cpp method : Message()
+// file : game.cpp method : Message() et ChoiceManagement
 //----------------------------------------------------------------------
 const char* const TranslateError[] =
 {
   " ERROR !",
   "ERREUR !"
+};
+const char* const TranslateErrorRoad[] =
+{
+  "MISSES A ROAD ON",
+  "MANQUE UNE ROUTE"
+};
+const char* const TranslateErrorRoad2[] =
+{
+  "A CONSTRUCTION",
+  "SUR UNE CONSTRUC.."
+};
+const char* const TranslateErrorConst[] =
+{
+  "BUILD A",
+  "CONSTRUIRE UNE"
+};
+const char* const TranslateErrorConst2[] =
+{
+  "BUILD A",
+  "CONSTRUIRE UN"
 };
 
 //----------------------------------------------------------------------
@@ -100,6 +120,46 @@ const char* const TranslateErrorNoMoney[] =
 {
   "   MORE MONEY",
   "  PLUS D'ARGENT"
+};
+
+//----------------------------------------------------------------------
+// file : menu.cpp method : TextCost()
+// max 13 characters
+//----------------------------------------------------------------------
+const char* const TranslateSave[] =
+{
+  "BACKUP",
+  "SAUVEGARDE"
+};
+const char* const TranslateRestore[] =
+{
+  "RESTORE",
+  "RESTAURER"
+};
+const char* const TranslateRoad[] =
+{
+  "ROAD",
+  "ROUTE"
+};
+const char* const TranslateHome[] =
+{
+  "HOUSING",
+  "LOGEMENT"
+};
+const char* const TranslatePowerStation[] =
+{
+  "POWER STATION",
+  "CENTRALE ELEC"
+};
+const char* const TranslateWaterTower[] =
+{
+  "WATER TOWER",
+  "CHATEAU D'EAU"
+};
+const char* const TranslateFactory[] =
+{
+  "FACTORY",
+  "USINE"
 };
 
 #endif

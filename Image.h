@@ -51,5 +51,6 @@ extern Image IMG_BUTTON_B;
 
 // GAME OVER
 extern Image IMG_GAMEOVER;
+extern Image IMG_LOGO;
 
 #endif

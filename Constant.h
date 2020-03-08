@@ -46,11 +46,12 @@ const uint8_t EXIT_SETTING = 2;
 
 
 // variable for the menu game
+const uint8_t ITEM_MENU_HEIGHT[10] = {10,10,10,10,10,10,14,14,10,10};
 const uint8_t NBR_ITEM_MENU = 10;
 
 // variable for the game
 // seconds before recovering the money
-const uint8_t DELAY_MONEY = 30; // default = 30
+const uint8_t DELAY_MONEY = 40; // default = 30
 
 // Menu
 const uint8_t INFO = 1;

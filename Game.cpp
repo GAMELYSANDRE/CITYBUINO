@@ -19,14 +19,13 @@ Game::Game () :
   m_ButtonA_Lock(false),
   m_ButtonB_Lock(false),
   m_PlayMusicMoney(false),
-  m_Tutorial(true),
-  m_TutorialLevel(1),
   m_Money(8000),
   m_NbrDay(0),
   m_Credit(0),
   m_Debit(0),
   m_Citizen(0),
-  m_Job(0)
+  m_Job(0),
+  m_Error(0)
 {
   m_MainMenuEnglish = new MainMenu(MainMenuTextEnglish, 4);
   m_MainMenuFrench = new MainMenu(MainMenuTextFrench, 4);
@@ -62,16 +61,14 @@ void Game::Reset()
   m_ButtonA_Lock = false;
   m_ButtonB_Lock = false;
   m_PlayMusicMoney = false;
-  m_Tutorial = true;
-  m_TutorialLevel = 1;
   m_Money = 10000;
   m_NbrDay = 0;
   m_Credit = 0;
   m_Debit = 0;
   m_Citizen = 0;
   m_Job = 0;
+  m_Error = 0;
   m_City->Reset(MAP, MAP_LINE, MAP_COLUMN);
-
 }
 
 
@@ -213,12 +210,23 @@ void Game::Display()
       }
       break;
     case CREDITS:
+      gb.display.drawImage(23, 2, IMG_LOGO);
+      gb.display.setColor(154, 205, 50);
+      gb.display.setCursor(8, 32);
+      gb.display.println("CODE et GRAPHISME");
+      gb.display.setCursor(15, 41);
+      gb.display.println("- LYSANDRE -");
+      gb.display.setCursor(0, 50);
+      gb.display.println("gamelysandre@gmail.com");
       // reset objet menu
       m_MainMenuEnglish->SetMode(MENU);
       m_SettingMenuEnglish->SetMode(PAUSE);
       m_MainMenuFrench->SetMode(MENU);
       m_SettingMenuFrench->SetMode(PAUSE);
-      m_Mode = MENU;
+      if (gb.buttons.pressed(BUTTON_A) or gb.buttons.pressed(BUTTON_B) )
+      {
+        m_Mode = MENU;
+      }  
       break;
     default:
       gb.display.setCursor(10, 30);
@@ -270,6 +278,34 @@ void Game::ChoiceManagement()
     gb.display.print("    JOBS ");
     gb.display.setColor(BLUE);
     gb.display.print(m_Job);
+    // Text Error
+    gb.display.setCursor(4, 36);
+    gb.display.setColor(RED);
+    switch(m_Error)
+    {
+      case ERROR_ROAD:
+        gb.display.print(TranslateErrorRoad[m_Language]);
+        gb.display.setCursor(4, 42);
+        gb.display.print(TranslateErrorRoad2[m_Language]);
+        break;
+      case ERROR_ELEC:
+        gb.display.print(TranslateErrorConst[m_Language]);
+        gb.display.setCursor(4, 42);
+        gb.display.print(TranslatePowerStation[m_Language]);
+        break;
+      case ERROR_WATER:
+        gb.display.print(TranslateErrorConst2[m_Language]);
+        gb.display.setCursor(4, 42);
+        gb.display.print(TranslateWaterTower[m_Language]);
+        break;
+      case ERROR_JOB:
+        gb.display.print(TranslateErrorConst[m_Language]);
+        gb.display.setCursor(4, 42);
+        gb.display.print(TranslateFactory[m_Language]);
+        break; 
+      default:
+        break;
+    }
     // Button Exit
     gb.display.setColor(BLACK);
     gb.display.setCursor(40, 51);
@@ -502,20 +538,23 @@ void Game::UpdateInfo()
   m_Credit = 0;
   m_Debit = 0;
   m_Job = 0;
-  uint8_t CityTile = m_City->Type(0, 0);
+  uint8_t CityTileType = m_City->Type(0, 0);
+  uint8_t CityTileError = m_City->Error(0, 0);
+  m_Error = 0;
   for ( uint8_t Y = 0 ; Y < MAP_LINE; Y++)
   {
     for ( uint8_t X = 0 ; X < MAP_COLUMN; X++)
     {
-      CityTile = m_City->Type(X, Y);
-      switch ( CityTile )
+      CityTileType = m_City->Type(X, Y);
+      CityTileError = m_City->Error(X, Y);
+      switch ( CityTileType )
       {
         case FACTORY:
           m_Job = m_Job + 20;
           break;
         case HOME_RED:
           SerialUSB.printf("HOME RED X = %i - Y = %i \n", X , Y);
-          if ( m_City->Error(X, Y) == 0 )
+          if ( CityTileError == 0 )
           {
             m_Citizen = m_Citizen + COST_HOME_RED_CITIZEN;
             m_Credit = m_Credit + COST_HOME_RED_CREDIT;
@@ -523,7 +562,7 @@ void Game::UpdateInfo()
           break;
         case HOME_BLUE:
           SerialUSB.printf("HOME BLUE X = %i - Y = %i \n", X , Y);
-          if ( m_City->Error(X, Y) == 0 )
+          if ( CityTileError == 0 )
           {
             m_Citizen = m_Citizen + COST_HOME_BLUE_CITIZEN;
             m_Credit = m_Credit + COST_HOME_BLUE_CREDIT;
@@ -531,7 +570,7 @@ void Game::UpdateInfo()
           break;
         case BUILDING_1:
           SerialUSB.printf("BUILDING LEVEL 1 X = %i - Y = %i \n", X , Y);
-          if ( m_City->Error(X, Y) == 0 )
+          if ( CityTileError == 0 )
           {
             m_Citizen = m_Citizen + COST_BUILDING_1_CITIZEN;
             m_Credit = m_Credit + COST_BUILDING_1_CREDIT;
@@ -563,6 +602,26 @@ void Game::UpdateInfo()
         default:
           break;
       }
+      // save message error
+      switch ( CityTileError )
+      {
+        case 0:
+          break;
+        case ERROR_ROAD:
+          m_Error = ERROR_ROAD;
+          break;
+        case ERROR_ELEC:
+          m_Error = ERROR_ELEC;
+          break;
+        case ERROR_WATER:
+          m_Error = ERROR_WATER;
+          break; 
+        case ERROR_JOB:
+          m_Error = ERROR_JOB;
+          break;     
+        default:
+          break;    
+      }    
     }
   }
   // compares citizens and work
@@ -571,17 +630,18 @@ void Game::UpdateInfo()
   {
     for ( uint8_t X = 0 ; X < MAP_COLUMN; X++)
     {
-      CityTile = m_City->Type(X, Y);
-      if ( CityTile == HOME_RED or 
-           CityTile == HOME_BLUE or
-           CityTile == BUILDING_1 )
+      CityTileType = m_City->Type(X, Y);
+      CityTileError = m_City->Error(X, Y);
+      if ( CityTileType == HOME_RED or 
+           CityTileType == HOME_BLUE or
+           CityTileType == BUILDING_1 )
       {
         if ( m_Job == 0 )
         {
-          if (m_City->Error(X, Y) == 0 )
+          if (CityTileError == 0 )
           {
             m_City->Error(X, Y, ERROR_JOB);
-            switch (CityTile)
+            switch (CityTileType)
             {
               case HOME_RED:
                 m_Citizen = m_Citizen - COST_HOME_RED_CITIZEN;
@@ -602,7 +662,7 @@ void Game::UpdateInfo()
         }
         else
         {
-          switch (CityTile)
+          switch (CityTileType)
           {
             case HOME_RED:
               m_Job = m_Job - COST_HOME_RED_CITIZEN;

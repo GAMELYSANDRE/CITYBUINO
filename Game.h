@@ -32,11 +32,10 @@ class Game
     GBTime *m_Time;
     //avoid unnecessary loops
     bool m_Data;
-    // main menu variable
+    // Game language
     uint8_t m_Language;
-    // main menu variable
+    // menu variable
     uint8_t m_Mode;
-    // Setting menu variable
     uint8_t m_Setting;
     // open update menu
     bool m_Update;
@@ -46,9 +45,6 @@ class Game
     bool m_ButtonB_Lock;
     // stop musique money
     bool m_PlayMusicMoney;
-    // activate or not the tutorial
-    bool m_Tutorial;
-    uint8_t m_TutorialLevel;
     // Variables Information
     int32_t m_Money;
     uint16_t m_NbrDay;
@@ -56,6 +52,7 @@ class Game
     uint32_t m_Debit;
     uint16_t m_Citizen;
     uint16_t m_Job;
+    uint8_t m_Error;
 
 
     // method of use

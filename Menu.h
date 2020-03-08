@@ -3,6 +3,7 @@
 
 #include "Tile.h"
 #include "Constant.h"
+#include "Language.hpp"
 #include <Gamebuino-Meta.h>
 
 class Menu
@@ -21,6 +22,8 @@ class Menu
     uint16_t Citizen() const;
     uint16_t Credit() const;
     uint16_t Debit() const;
+    
+
 
     // setters methods
     void State(bool ChangeState);
@@ -31,7 +34,7 @@ class Menu
     void Credit(uint16_t ChangeCredit);
     void Debit(uint16_t ChangeDebit);
 
-    void Display();
+    void Display(uint8_t Language);
 
   private:
     bool m_State; 	       // inactive (0) or active (1)
@@ -41,10 +44,13 @@ class Menu
     bool m_CursorState;    // inactive (0) or active (1)
     uint16_t m_Cost;        // cost of construction
     bool m_ButtonBLock;    // LockButtonB
+    uint8_t m_Language;
 
     // others methods
     void DebugMenu();
-    void SquareSelection();
+    void Selection();
+    void Square(uint8_t Y, uint8_t Height );
+    void TextCost(uint8_t Y);
     void DisplayInfo();
 
 };
