@@ -23,11 +23,21 @@ __Pour l'instant' le jeu est en développement, il peut y avoir des bugs__
 
 ## Commandes du jeu ##
 
-![IMAGE GAME MENU](/VIDEOS/CITYBUINO_1.gif)
+### **La carte:**
 
-**Mouvements sur la carte:**
+![IMAGE MOVE MAP](/VIDEOS/CITYBUINO_1.gif)
 
 - **Se déplacer:** flèches droite gauche haut et bas
-- **Bouton Menu:** Fait apparaitre ou disparaitre le menu de droite
 
-**Mouvements dans le menu:**
+En haut à gauche est indiqué la somme que vous possedez ainsi
+que le nombre de jour d'existance de votre ville.
+
+### **Mouvements dans le menu:**
+
+![IMAGE GAME MENU](/VIDEOS/CITYBUINO_2.gif)
+
+- **Bouton Menu:** Fait apparaitre ou disparaitre le menu de droite
+- **Se déplacer de bas en haut :** Bouton A 
+- **Selectionnner une action ou une construction :** Bouton B
+
+----------------- 
