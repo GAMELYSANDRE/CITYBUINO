@@ -50,7 +50,8 @@ class Game
     uint16_t m_NbrDay;
     uint32_t m_Credit;
     uint32_t m_Debit;
-    uint16_t m_Citizen;
+    uint16_t m_CitizenInTheCity;
+    uint16_t m_CitizenMax;
     uint16_t m_Job;
     uint8_t m_Error;
 

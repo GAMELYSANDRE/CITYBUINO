@@ -23,7 +23,8 @@ Game::Game () :
   m_NbrDay(0),
   m_Credit(0),
   m_Debit(0),
-  m_Citizen(0),
+  m_CitizenInTheCity(0),
+  m_CitizenMax(0),
   m_Job(0),
   m_Error(0)
 {
@@ -65,7 +66,8 @@ void Game::Reset()
   m_NbrDay = 0;
   m_Credit = 0;
   m_Debit = 0;
-  m_Citizen = 0;
+  m_CitizenInTheCity = 0;
+  m_CitizenMax = 0;
   m_Job = 0;
   m_Error = 0;
   m_City->Reset(MAP, MAP_LINE, MAP_COLUMN);
@@ -149,8 +151,14 @@ void Game::Display()
           ConstructCursor();
           if ( m_Data )
           {
-            // Engine
-            m_City->CheckTheTile();
+            // GridEngine.h
+            // 3 times loop for errors
+            uint8_t ctrl = 0;
+            while ( ctrl < 3)
+            {
+              m_City->CheckTheTile();
+              ctrl++;
+            }
             // information
             UpdateInfo();
             // Desactive
@@ -226,7 +234,7 @@ void Game::Display()
       if (gb.buttons.pressed(BUTTON_A) or gb.buttons.pressed(BUTTON_B) )
       {
         m_Mode = MENU;
-      }  
+      }
       break;
     default:
       gb.display.setCursor(10, 30);
@@ -244,7 +252,7 @@ void Game::Display()
 void Game::ChoiceManagement()
 {
   // Backup management window
-  if ( m_Menu->Choice() == INFO and m_Menu->GetState() == false )
+  if ( m_Menu->Choice() == INFO and m_Menu->getState() == false )
   {
     // frame
     gb.display.setColor(WHITE);
@@ -255,7 +263,9 @@ void Game::ChoiceManagement()
     gb.display.setCursor(4, 10);
     gb.display.print(TranslateCitizen[m_Language]);
     gb.display.setColor(BLUE);
-    gb.display.print(m_Citizen);
+    gb.display.print(m_CitizenInTheCity);
+    gb.display.print("/");
+    gb.display.print(m_CitizenMax);
     // Text Credit
     gb.display.setCursor(4, 16);
     gb.display.setColor(BLACK);
@@ -281,7 +291,7 @@ void Game::ChoiceManagement()
     // Text Error
     gb.display.setCursor(4, 36);
     gb.display.setColor(RED);
-    switch(m_Error)
+    switch (m_Error)
     {
       case ERROR_ROAD:
         gb.display.print(TranslateErrorRoad[m_Language]);
@@ -302,7 +312,7 @@ void Game::ChoiceManagement()
         gb.display.print(TranslateErrorConst[m_Language]);
         gb.display.setCursor(4, 42);
         gb.display.print(TranslateFactory[m_Language]);
-        break; 
+        break;
       default:
         break;
     }
@@ -320,7 +330,7 @@ void Game::ChoiceManagement()
     m_Menu->CursorState(false);
   }
   // Backup management window
-  if ( m_Menu->Choice() == SAVE and m_Menu->GetState() == false )
+  if ( m_Menu->Choice() == SAVE and m_Menu->getState() == false )
   {
     gb.display.setColor(WHITE);
     gb.display.fillRect(2, 20, 76, 20);
@@ -359,7 +369,7 @@ void Game::ChoiceManagement()
     m_Cursor->State(false);
   }
   // Backup playback management window
-  if ( m_Menu->Choice() == LOAD and m_Menu->GetState() == false )
+  if ( m_Menu->Choice() == LOAD and m_Menu->getState() == false )
   {
     gb.display.setColor(WHITE);
     gb.display.fillRect(2, 14, 76, 30);
@@ -401,7 +411,7 @@ void Game::ChoiceManagement()
     }
   }
   // Update playback management window
-  if ( m_Menu->Choice() == UPDATE and m_Menu->GetState() == false and
+  if ( m_Menu->Choice() == UPDATE and m_Menu->getState() == false and
        m_Menu->CursorState() == true)
   {
     uint8_t Y = m_Cursor->GridLine();
@@ -494,7 +504,7 @@ void Game::ChoiceManagement()
               else
               {
                 Message(TranslateErrorNoMoney[m_Language]);
-              }  
+              }
               break;
             case HOME_BLUE:
               if ( m_Money > COST_BUILDING_1  )
@@ -505,7 +515,7 @@ void Game::ChoiceManagement()
               else
               {
                 Message(TranslateErrorNoMoney[m_Language]);
-              }  
+              }
               break;
             default:
               break;
@@ -534,48 +544,57 @@ void Game::ChoiceManagement()
 void Game::UpdateInfo()
 {
   // reset information variables
-  m_Citizen = 0;
+  m_CitizenInTheCity = 0;
+  m_CitizenMax = 0;
   m_Credit = 0;
   m_Debit = 0;
   m_Job = 0;
   uint8_t CityTileType = m_City->Type(0, 0);
-  uint8_t CityTileError = m_City->Error(0, 0);
+  uint8_t CityTileError = m_City->getError(0, 0);
   m_Error = 0;
   for ( uint8_t Y = 0 ; Y < MAP_LINE; Y++)
   {
     for ( uint8_t X = 0 ; X < MAP_COLUMN; X++)
     {
       CityTileType = m_City->Type(X, Y);
-      CityTileError = m_City->Error(X, Y);
+      CityTileError = m_City->getError(X, Y);
       switch ( CityTileType )
       {
         case FACTORY:
-          m_Job = m_Job + 20;
+          if ( CityTileError == 0 )
+          {
+            m_Job = m_Job + 20;
+          }
           break;
+        // CREDITS
         case HOME_RED:
           SerialUSB.printf("HOME RED X = %i - Y = %i \n", X , Y);
           if ( CityTileError == 0 )
           {
-            m_Citizen = m_Citizen + COST_HOME_RED_CITIZEN;
-            m_Credit = m_Credit + COST_HOME_RED_CREDIT;
+            m_CitizenInTheCity += COST_HOME_RED_CITIZEN;
+            m_Credit += ( COST_HOME_RED * COST_CREDIT );
           }
+          m_CitizenMax += COST_HOME_RED_CITIZEN;
           break;
         case HOME_BLUE:
           SerialUSB.printf("HOME BLUE X = %i - Y = %i \n", X , Y);
           if ( CityTileError == 0 )
           {
-            m_Citizen = m_Citizen + COST_HOME_BLUE_CITIZEN;
-            m_Credit = m_Credit + COST_HOME_BLUE_CREDIT;
+            m_CitizenInTheCity += COST_HOME_BLUE_CITIZEN;
+            m_Credit += ( COST_HOME_BLUE * COST_CREDIT );
           }
+          m_CitizenMax += COST_HOME_BLUE_CITIZEN;
           break;
         case BUILDING_1:
           SerialUSB.printf("BUILDING LEVEL 1 X = %i - Y = %i \n", X , Y);
           if ( CityTileError == 0 )
           {
-            m_Citizen = m_Citizen + COST_BUILDING_1_CITIZEN;
-            m_Credit = m_Credit + COST_BUILDING_1_CREDIT;
+            m_CitizenInTheCity += COST_BUILDING_1_CITIZEN;
+            m_Credit += ( COST_BUILDING_1 * COST_CREDIT );
           }
-          break;  
+          m_CitizenMax += COST_BUILDING_1_CITIZEN;
+          break;
+        // DEBITS
         case ROAD:
         case ROAD_DL:
         case ROAD_DR:
@@ -589,15 +608,15 @@ void Game::UpdateInfo()
         case ROAD_UR:
         case ROAD_V:
           SerialUSB.printf("ROAD X = %i - Y = %i \n", X , Y);
-          m_Debit = m_Debit + COST_ROAD_DEBIT;
+          m_Debit += ( COST_ROAD * COST_DEBIT );
           break;
         case POWER_STATION:
           SerialUSB.printf("POWER STATION X = %i - Y = %i \n", X , Y);
-          m_Debit = m_Debit + COST_POWER_STATION_DEBIT;
+          m_Debit += ( COST_POWER_STATION * COST_DEBIT );
           break;
         case WATER_TOWER:
           SerialUSB.printf("WATER_TOWER X = %i - Y = %i \n", X , Y);
-          m_Debit = m_Debit + COST_WATER_TOWER_DEBIT;
+          m_Debit += ( COST_WATER_TOWER * COST_DEBIT );
           break;
         default:
           break;
@@ -615,14 +634,19 @@ void Game::UpdateInfo()
           break;
         case ERROR_WATER:
           m_Error = ERROR_WATER;
-          break; 
+          break;
         case ERROR_JOB:
           m_Error = ERROR_JOB;
-          break;     
+          break;
         default:
-          break;    
-      }    
+          break;
+      }
     }
+  }
+  // compare job and citizen
+  if ( m_CitizenInTheCity > m_Job )
+  {
+    m_CitizenInTheCity = m_Job;
   }
   // compares citizens and work
   uint16_t SaveJob = m_Job;
@@ -631,33 +655,32 @@ void Game::UpdateInfo()
     for ( uint8_t X = 0 ; X < MAP_COLUMN; X++)
     {
       CityTileType = m_City->Type(X, Y);
-      CityTileError = m_City->Error(X, Y);
-      if ( CityTileType == HOME_RED or 
-           CityTileType == HOME_BLUE or
-           CityTileType == BUILDING_1 )
+      CityTileError = m_City->getError(X, Y);
+      if ( ( CityTileType == HOME_RED and CityTileError == 0 ) or
+           ( CityTileType == HOME_BLUE and CityTileError == 0 ) or
+           ( CityTileType == BUILDING_1 and CityTileError == 0 ) )
       {
         if ( m_Job == 0 )
         {
-          if (CityTileError == 0 )
+          m_City->setError(X, Y, ERROR_JOB);
+          // save message error
+          m_Error = ERROR_JOB;
+          switch (CityTileType)
           {
-            m_City->Error(X, Y, ERROR_JOB);
-            switch (CityTileType)
-            {
-              case HOME_RED:
-                m_Citizen = m_Citizen - COST_HOME_RED_CITIZEN;
-                m_Credit = m_Credit - COST_HOME_RED_CREDIT;
-                break;
-              case HOME_BLUE:
-                m_Citizen = m_Citizen - COST_HOME_BLUE_CITIZEN;
-                m_Credit = m_Credit - COST_HOME_BLUE_CREDIT;
-                break;
-              case BUILDING_1:
-                m_Citizen = m_Citizen - COST_BUILDING_1_CITIZEN;
-                m_Credit = m_Credit - COST_BUILDING_1_CREDIT;
-                break;  
-              default:
-                break;
-            }
+            case HOME_RED:
+              m_CitizenInTheCity -= COST_HOME_RED_CITIZEN;
+              m_Credit -= ( COST_HOME_RED * COST_CREDIT );
+              break;
+            case HOME_BLUE:
+              m_CitizenInTheCity -= COST_HOME_BLUE_CITIZEN;
+              m_Credit -= ( COST_HOME_BLUE * COST_CREDIT );
+              break;
+            case BUILDING_1:
+              m_CitizenInTheCity -= COST_BUILDING_1_CITIZEN;
+              m_Credit -= ( COST_BUILDING_1 * COST_CREDIT );
+              break;
+            default:
+              break;
           }
         }
         else
@@ -665,14 +688,14 @@ void Game::UpdateInfo()
           switch (CityTileType)
           {
             case HOME_RED:
-              m_Job = m_Job - COST_HOME_RED_CITIZEN;
+              m_Job -= COST_HOME_RED_CITIZEN;
               break;
             case HOME_BLUE:
-              m_Job = m_Job - COST_HOME_BLUE_CITIZEN;
+              m_Job -= COST_HOME_BLUE_CITIZEN;
               break;
             case BUILDING_1:
-              m_Job = m_Job - COST_BUILDING_1_CITIZEN;
-              break;  
+              m_Job -= COST_BUILDING_1_CITIZEN;
+              break;
             default:
               break;
           }
@@ -681,7 +704,6 @@ void Game::UpdateInfo()
     }
   }
   m_Job = SaveJob;
-  m_City->CheckTheTile();
 }
 
 

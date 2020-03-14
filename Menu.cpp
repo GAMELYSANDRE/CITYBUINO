@@ -32,7 +32,7 @@ Menu::~Menu()
 //----------------------------------------------------------------------
 //                       Getters methods
 //----------------------------------------------------------------------
-bool Menu::GetState() const
+bool Menu::getState() const
 {
   return (m_State);
 }
@@ -98,7 +98,7 @@ void Menu::Display(uint8_t Language)
     if ( m_Choice == x )
     {
       // Display square
-      Square(MenuPosY - ( ITEM_MENU_HEIGHT[ x - 1] - 4 ),ITEM_MENU_HEIGHT[x-1] );
+      Square(MenuPosY - ( ITEM_MENU_HEIGHT[ x - 1] - 4 ), ITEM_MENU_HEIGHT[x - 1] );
       // Display text cost
       TextCost(MenuPosY - ( ITEM_MENU_HEIGHT[ x - 1] - 8 ));
     }
@@ -136,7 +136,7 @@ void Menu::TextCost(uint8_t Y)
       gb.display.setCursor(3, 9);
       gb.display.setColor(WHITE);
       gb.display.print(TranslateRestore[m_Language]);
-      break;    
+      break;
     case BULL:
       gb.display.print("BULLDOZER");
       gb.display.setCursor(3, 9);
@@ -148,7 +148,7 @@ void Menu::TextCost(uint8_t Y)
       gb.display.setCursor(3, 9);
       gb.display.setColor(WHITE);
       gb.display.print(TranslateRoad[m_Language]);
-      break; 
+      break;
     case HOME_RED:
       gb.display.print(TranslateHome[m_Language]);
       gb.display.setCursor(3, 9);
@@ -178,7 +178,7 @@ void Menu::TextCost(uint8_t Y)
       gb.display.setCursor(3, 9);
       gb.display.setColor(WHITE);
       gb.display.print("EVOLUTION");
-      break;  
+      break;
     default:
       break;
   }

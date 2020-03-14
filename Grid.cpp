@@ -75,7 +75,7 @@ int8_t Grid::Type(uint8_t I, uint8_t J ) const
   return (m_Grid[I][J].Type());
 }
 // Method return error tile
-uint8_t Grid::Error(uint8_t I, uint8_t J ) const
+uint8_t Grid::getError(uint8_t I, uint8_t J ) const
 {
   return (m_Grid[I][J].Error());
 }
@@ -97,7 +97,7 @@ void Grid::Type(uint8_t I, uint8_t J, uint8_t ChangeType)
   m_Grid[I][J].Type(ChangeType);
 }
 //  Method change error tile
-void Grid::Error(uint8_t I, uint8_t J, uint8_t ChangeError)
+void Grid::setError(uint8_t I, uint8_t J, uint8_t ChangeError)
 {
   m_Grid[I][J].Error(ChangeError);
 }

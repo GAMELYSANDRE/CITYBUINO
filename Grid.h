@@ -21,13 +21,13 @@ class Grid
     uint8_t CameraX() const;
     uint8_t CameraY() const;
     int8_t Type(uint8_t I, uint8_t J ) const;
-    uint8_t Error(uint8_t I, uint8_t J ) const;
+    uint8_t getError(uint8_t I, uint8_t J ) const;
 
     // setters methods
     void CameraX( uint8_t ChangeCameraX);
     void CameraY( uint8_t ChangeCameraY);
     void Type(uint8_t I, uint8_t J, uint8_t ChangeType);
-    void Error(uint8_t I, uint8_t J, uint8_t ChangeError);
+    void setError(uint8_t I, uint8_t J, uint8_t ChangeError);
 
     // methods
     void Display();

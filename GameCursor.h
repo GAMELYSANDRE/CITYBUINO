@@ -7,7 +7,7 @@
 
 void Game::DisplayCursor()
 {
-  if (m_Menu->CursorState() == true and m_Menu->GetState() == false )
+  if (m_Menu->CursorState() == true and m_Menu->getState() == false )
   {
     m_Cursor->State(true);
   }
@@ -405,7 +405,7 @@ void Game::ConstructCursor()
   uint16_t Cost = m_Menu->Cost();
   uint8_t CityTile = m_City->Type(i, j);
   // disable the a button if the menu is visible
-  if (m_Menu->GetState() == false)
+  if (m_Menu->getState() == false)
   {
     if (gb.buttons.pressed(BUTTON_A) )
     {
@@ -422,7 +422,7 @@ void Game::ConstructCursor()
             m_City->Type(i, j, Choise );
             m_Money = m_Money - Cost;
             gb.sound.fx(SOUND_CONST);
-          }  
+          }
         }
         else
         {
@@ -452,7 +452,8 @@ void Game::ConstructCursor()
         m_City->Type(i, j, SAND );
         m_City->ResetError(i, j);
         gb.sound.fx(SOUND_BULL);
-        UpdateInfo();
+
+
       }
       m_Data = true;
     }

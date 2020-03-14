@@ -46,7 +46,7 @@ const uint8_t EXIT_SETTING = 2;
 
 
 // variable for the menu game
-const uint8_t ITEM_MENU_HEIGHT[10] = {10,10,10,10,10,10,14,14,10,10};
+const uint8_t ITEM_MENU_HEIGHT[10] = {10, 10, 10, 10, 10, 10, 14, 14, 10, 10};
 const uint8_t NBR_ITEM_MENU = 10;
 
 // variable for the game
@@ -65,36 +65,34 @@ const uint8_t WATER_TOWER = 8;
 const uint8_t FACTORY = 9;
 const uint8_t UPDATE = 10;
 
+// COST VARIABLES GLOBALS
+const float COST_DEBIT = 0.05; // 5 % for the cost
+const float COST_CREDIT = 0.20; // 20 % for the cost
+
 // COST ROAD
-const uint8_t COST_ROAD = 50;
-const uint8_t COST_ROAD_DEBIT = 5;
+const uint8_t COST_ROAD = 40;
 
 // COST HOME
 const uint8_t COST_HOME_RED = 250;
-const uint8_t COST_HOME_RED_CREDIT = 50;
 const uint8_t COST_HOME_RED_CITIZEN = 2;
 
 const uint16_t COST_HOME_BLUE = 500;
-const uint8_t COST_HOME_BLUE_CREDIT = 100;
 const uint8_t COST_HOME_BLUE_CITIZEN = 4;
 
 const uint16_t COST_BUILDING_1 = 1000;
-const uint8_t COST_BUILDING_1_CREDIT = 200;
 const uint8_t COST_BUILDING_1_CITIZEN = 10;
 
 // COST POWER STATION
-const uint16_t COST_POWER_STATION = 1000;
-const uint8_t COST_POWER_STATION_DEBIT = 100;
+const uint16_t COST_POWER_STATION = 800;
 
 // COST WATER TOWER
 const uint16_t COST_WATER_TOWER = 500;
-const uint8_t COST_WATER_TOWER_DEBIT = 50;
 
 // COST FACTORY
-const uint16_t COST_FACTORY = 2000;
+const uint16_t COST_FACTORY = 1000;
 
 
-// variable grouping all roads
+// upgrade home
 const uint8_t HOME_BLUE = 101;
 const uint8_t BUILDING_1 = 102;
 

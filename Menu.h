@@ -15,14 +15,14 @@ class Menu
     ~Menu();
 
     // getters methods
-    bool GetState() const;
+    bool getState() const;
     uint8_t Choice() const;
     bool CursorState() const;
     uint16_t Cost() const;
     uint16_t Citizen() const;
     uint16_t Credit() const;
     uint16_t Debit() const;
-    
+
 
 
     // setters methods
