@@ -177,7 +177,14 @@ void Grid::CheckTheTile()
              and TileLeft == ROAD and TileUp != ROAD
              and TileRight != ROAD )
         {
-          m_Grid[i][j - 1].Type(ROAD_V);
+          if ( TileUpLeft == ROAD )
+          {
+            m_Grid[i][j - 1].Type(ROAD_DR);
+          }
+          else
+          {
+            m_Grid[i][j - 1].Type(ROAD_V);
+          }
           m_Grid[i][j].Type(ROAD_UL);
           m_Grid[i + 1][j].Type(ROAD_H);
         }
@@ -197,7 +204,14 @@ void Grid::CheckTheTile()
         {
           m_Grid[i - 1][j].Type(ROAD_H);
           m_Grid[i][j].Type(ROAD_DL);
-          m_Grid[i][j - 1].Type(ROAD_V);
+          if ( TileDownLeft == ROAD)
+          {
+            m_Grid[i][j - 1].Type(ROAD_UR);
+          }
+          else
+          {
+            m_Grid[i][j - 1].Type(ROAD_V);
+          }
         }
 
         // detects vertical roads

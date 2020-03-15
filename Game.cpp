@@ -197,18 +197,22 @@ void Game::Display()
           m_Language = ENGLISH;
           gb.save.del(32);
           gb.save.set(32, m_Language);
+          m_MainMenuEnglish->SetMode(MENU);
+          m_SettingMenuEnglish->SetMode(PAUSE);
           break;
         case FRENCH:
           m_Language = FRENCH;
+          m_MainMenuFrench->SetMode(MENU);
+          m_SettingMenuFrench->SetMode(PAUSE);
           gb.save.del(32);
           gb.save.set(32, m_Language);
           break;
         case EXIT_SETTING:
           // reset objet menu
-          m_MainMenuEnglish->SetMode(MENU);
-          m_SettingMenuEnglish->SetMode(PAUSE);
           m_MainMenuFrench->SetMode(MENU);
           m_SettingMenuFrench->SetMode(PAUSE);
+          m_MainMenuEnglish->SetMode(MENU);
+          m_SettingMenuEnglish->SetMode(PAUSE);
           m_Mode = MENU;
           break;
         default:

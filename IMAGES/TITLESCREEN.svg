@@ -116,8 +116,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="2.3970736"
-     inkscape:cx="102.75979"
-     inkscape:cy="110.93268"
+     inkscape:cx="98.696797"
+     inkscape:cy="109.26398"
      inkscape:document-units="mm"
      inkscape:current-layer="layer3"
      showgrid="false"
@@ -3058,7 +3058,7 @@
            y="713.70074"
            style="fill:#000000;fill-opacity:1" /></flowRegion><flowPara
          id="flowPara1129"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:74.66748047px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1">v 0.86</flowPara></flowRoot>    <flowRoot
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:74.66748047px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1">v 0.90</flowPara></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot1115"
        style="fill:black;fill-opacity:1;stroke:none;font-family:sans-serif;font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;letter-spacing:0px;word-spacing:0px"><flowRegion
@@ -3068,5 +3068,5 @@
            height="278.25595"
            x="-17.104189"
            y="-16.341774" /></flowRegion><flowPara
-         id="flowPara1121"></flowPara></flowRoot>  </g>
+         id="flowPara1121" /></flowRoot>  </g>
 </svg>
