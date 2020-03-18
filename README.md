@@ -54,9 +54,7 @@ le jeu sauvegarde automatiquement le type de language.
 En <u>haut à gauche</u> est indiqué la <u>somme</u> que vous possedez ainsi
 que le <u>nombre de jour</u> d'existance de votre ville *( changement tous les 60 secondes )*.
 
-
-### Mouvements dans le menu : ###
-
+### Les actions dans le menu de droite : ###
 
 ![IMAGE GAME MENU](/VIDEOS/CITYBUINO_2.gif)
 
@@ -65,12 +63,15 @@ que le <u>nombre de jour</u> d'existance de votre ville *( changement tous les 6
 - **BOUTON B :** Selectionnner une action ou une construction
 
 Ce menu permet de sélectionner des constructions ou des actions.
+En dessous de votre somme est renseigné l'information sur l'icone et 
+aussi sa valeur d'achat.
+Si il n'y a pas de de valeur d'achat, c'est juste une action ( info, sauvegarde etc...)
 
 ### Les informations sur votre ville : ###
 
 ![IMAGE GAME INFORMATION](/VIDEOS/CITYBUINO_3.gif)
 
-![IMAGE MOVE MAP](/VIDEOS/CITY_INFO.gif) En cliquant sur le premier icone du menu, une fenêtre apparait avec 4 indicateurs sur l'état de votre ville.
+![IMAGE ICON INFO](/VIDEOS/CITY_INFO.gif) En cliquant sur le premier icone du menu, une fenêtre apparait avec 4 indicateurs sur l'état de votre ville.
 
  1. **Les citoyens :** Le nombre de **citoyen** dans la ville et le nombre maxi de **citoyen**
  2. **Le debit :** Le cout d'entretien des installations de la ville est de **5 %** de la valeur
@@ -84,6 +85,17 @@ Ce menu permet de sélectionner des constructions ou des actions.
     - *Immeuble niveau 1 = **+200***
  4. **Le travail :** Correspond simplement au nombre d'usine.
     - *Usine = **20 emplois***
+
+### La sauvegarde de votre ville : ###
+
+![IMAGE SAVE GAME](/VIDEOS/CITYBUINO_4.gif)
+
+![IMAGE ICON SAVE](/VIDEOS/CITY_SAVE.gif) En cliquant sur le second icone du menu, une fenêtre apparait pour vous permettre de sauvegarder votre ville.
+
+**!! ATTENTION !! :** L'ancienne sauvegarde est automatiquement écrasée.
+
+### La chargement de votre ville : ###
+
 
 
 ----------------- 
