@@ -15,7 +15,7 @@ FRANCAIS / FRENCH
 
 **Release V0.90 :** 14/03/2020
 
-Pour l'instant, le jeu est en développement, il peut y avoir des quelques bugs
+Pour l'instant, le jeu est en développement, il peut y avoir quelques bugs !
 
 -----------------
 
@@ -80,9 +80,17 @@ Si il n'y a pas de coût, c'est juste une action (info, sauvegarde etc.)
 ## LES CONSTRUCTIONS ##
 
 -----------------
+Les constructions ont tous besoin au minimum
+ 
+ 1. une route d'accès
+ 2. de l'électricité (sauf la centrale)
+ 3. de l'eau (sauf le château d'eau)
+ 
 ### Les routes : ###
 
-![IMAGE ROAD](VIDEOS/CITY_ROAD.gif) : Tracez des routes à côté de vos constructions 
+![IMAGE ROAD](VIDEOS/CITY_ROAD.gif) : Tracez des routes à côté de vos constructions
+
+![IMAGE ERROR ROAD](VIDEOS/ERROR_ROAD.gif) : cet erreur apparait si la construction ne possèdent aucune route autour d'elle.
 
 Les virages, les intersections et l'orientation des voies sont gérés automatiquement par le jeu.
 
@@ -94,9 +102,23 @@ Les virages, les intersections et l'orientation des voies sont gérés automatiq
 
 ### La centrale électrique : ###
 
-![IMAGE POWER STATION](VIDEOS/CITY_PS.gif) : La centrale électrique est indispensable pour alimenter les constructions
+![IMAGE POWER STATION](VIDEOS/CITY_PS.gif) : La centrale électrique est indispensable pour alimenter les constructions en électricité
+
+![IMAGE ERROR ELEC](VIDEOS/ERROR_ELEC.gif) : cet erreur apparait sur les constructions en manque d'électricité
 
 La centale électrique permet d'alimenter les constructions sur une supercifie rectangulaire de 10 par 10.
+
+### Le château : ###
+
+![IMAGE WATER TOWER](VIDEOS/CITY_WATER_TOWER.gif) : Le château d'eau permet d'alimenter en eau les constructions.
+
+![IMAGE POWER STATION](VIDEOS/ERROR_WATER.gif) : cet erreur apparait sur les constructions en manque d'électricité
+
+### L'usine : ###
+
+![IMAGE FACTORY](VIDEOS/CITY_FACTORY.gif) : Elle permet de créer de l'emploi.
+
+![IMAGE JOB](VIDEOS/ERROR_JOB.gif) : cet erreur apparait sur les logements en manque de travail.
 
 -----------------
 
@@ -144,8 +166,3 @@ La centale électrique permet d'alimenter les constructions sur une supercifie r
 
 
 <u>**!! ATTENTION !! :**</u> La ville actuelle sera définitivement perdue. il est possible de charger la sauvegarde directement à partir du menu principal.
-
------------------ 
-## LES ERREURS ##
-
------------------
